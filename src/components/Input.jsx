@@ -1,4 +1,4 @@
-function Input({type, placeholder, register, name, required = false}) {
+export function Input({type, placeholder, register, name, required = false}) {
     return (
       <input
         type={type}
@@ -9,5 +9,4 @@ function Input({type, placeholder, register, name, required = false}) {
     )
   }
   
-  export default Input;
   
