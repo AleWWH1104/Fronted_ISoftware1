@@ -28,7 +28,7 @@ function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-white px-4">
       <div className="flex flex-col md:flex-row gap-[150px] items-center max-w-6xl w-full">
         
-        {/* 💫 Animated Login Form */}
+        {/* cuadro animado*/}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,7 +96,7 @@ function LoginPage() {
           </p>
         </motion.div>
 
-        {/* Logo Image with hover animation */}
+        {/* Logo animado */}
         <motion.img
           src="/logo.png"
           alt="Logo"
