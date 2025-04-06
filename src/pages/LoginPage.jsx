@@ -21,29 +21,81 @@ function LoginPage() {
     }, [isAuthenticated]);
 
     return (
-    <div className="bg-blue-950"> 
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXCJQJyh5dnZshnzGWYkQi3_91-MUSnAl66A&s" alt="piscina" />
-        <div className="bg-blue-300 max-w-md p-10 rounded-md">
-            {loginErrors.map((error, i) => 
-                    <div className="bg-red-500 text-white my-2" key={i}>{error}</div>
-            )}
-            <h1 className="text-3xl font-bold">Login</h1>
-            
-            <form onSubmit={onSubmit}>
-                <Label htmlFor="email">Email</Label>
-                <Input type="email" placeholder="youremail@gmail.com" register={register} name="email" required />
-                {errors.email && ( <p className="text-red-500">Email is required</p>) }
-                <Label htmlFor="password">Password</Label>
-                <Input type="password" placeholder="password" register={register} name="password" required />
-                {errors.password && ( <p className="text-red-500">Password is required</p>) }
-                <Button>Sign In</Button>
-            </form>
-            <p className="flex gap-x-2 justify-between">
-                Don't have an account? <Link to="/register" className="text-blue-600"> Register</Link>
-            </p>
+        <div className="min-h-screen flex items-center justify-center bg-white px-4">
+          <div className="flex flex-col md:flex-row gap-12 items-center max-w-6xl w-full">
+            {/* Login Form */}
+            <div className="bg-blue-300 rounded-xl p-8 md:p-12 w-full md:w-[400px] flex flex-col justify-center min-h-[500px]">
+              {loginErrors.map((error, i) => (
+                <div
+                  className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm"
+                  key={i}
+                >
+                  {error}
+                </div>
+              ))}
+    
+              <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
+    
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="email" className="mb-1 block">
+                    Email
+                  </Label>
+                  <Input
+                    type="email"
+                    placeholder="youremail@gmail.com"
+                    name="email"
+                    register={register}
+                    required
+                  />
+                  {errors.email && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Email is required
+                    </p>
+                  )}
+                </div>
+    
+                <div>
+                  <Label htmlFor="password" className="mb-1 block">
+                    Password
+                  </Label>
+                  <Input
+                    type="password"
+                    placeholder="password"
+                    name="password"
+                    register={register}
+                    required
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Password is required
+                    </p>
+                  )}
+                </div>
+    
+                <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-2">
+                  Sign In
+                </Button>
+              </form>
+    
+              <p className="mt-6 text-center text-sm">
+                Don’t have an account?
+                <Link to="/register" className="text-black font-medium ml-1">
+                  Register
+                </Link>
+              </p>
+            </div>
+    
+            {/* Logo Image */}
+            <img
+              src="/Fronted_ISoftware1/src/pages/logo.png"
+              alt="Logo"
+              className="w-full max-w-lg hidden md:block rounded-xl"
+            />
+          </div>
         </div>
-    </div>
-  )
-}
+      );
+    }
+    
 
-export default LoginPage;
+export default LoginPage 
