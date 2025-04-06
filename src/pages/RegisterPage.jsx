@@ -9,13 +9,15 @@ function Register() {
     const {signUp,  isAuthenticated, errors: registerErrors} = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isAuthenticated) navigate("/dashboard");
-      }, [isAuthenticated]);
-
     const onSubmit = handleSubmit( async (values)=> {
        await signUp(values);
     });
+
+    useEffect(() => {
+        if (isAuthenticated) {
+          navigate("/home");
+        }
+    }, [isAuthenticated]);
  
     return (
         // Contenedor principal

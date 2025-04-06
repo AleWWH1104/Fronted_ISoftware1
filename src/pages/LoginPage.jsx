@@ -1,16 +1,24 @@
 import { useForm } from "react-hook-form";
 import {Input, Button, Label} from "../components";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function LoginPage() {
 
     const {register, handleSubmit, formState: { errors }} = useForm();
-    const {signIn, errors: loginErrors} = useAuth();
+    const {signIn, errors: loginErrors, isAuthenticated} = useAuth();
+    const navigate = useNavigate();
 
     const onSubmit = handleSubmit((data)=> {
         signIn(data);
     });
+
+    useEffect(() => {
+        if (isAuthenticated) {
+          navigate("/home");
+        }
+    }, [isAuthenticated]);
 
     return (
     <div className="bg-blue-950"> 

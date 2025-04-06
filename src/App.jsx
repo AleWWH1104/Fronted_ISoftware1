@@ -15,7 +15,7 @@ function App (){
             <Route path='/register' element={<RegisterPage/>} />
             {/* Rutas protegidas */}
             <Route element= {<ProtectedRoutes/>}>
-              <Route path='/home' element={HomePage} />
+              <Route path='/home' element={<HomePage/>} />
             </Route>
           </Routes>
       </BrowserRouter>
