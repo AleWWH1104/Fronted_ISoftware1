@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 import {Input, Button, Label} from "../components";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 function Register() {
     const {register, handleSubmit, formState: { errors }} = useForm();
     const {signUp,  isAuthenticated, errors: registerErrors} = useAuth();
@@ -24,7 +24,7 @@ function Register() {
             <div className="bg-blue-300 max-w-md p-10 rounded-md">
                 <h1 className="text-3xl font-bold">Register</h1>
                 {registerErrors.map((error, i) => 
-                    <div className="bg-red-500 text-white" key={i}>{error}</div>
+                    <div className="bg-red-500 text-white my-2" key={i}>{error}</div>
                 )}
                 <form onSubmit={onSubmit}>
                     <Label htmlFor="username">Full Name</Label>
@@ -38,9 +38,8 @@ function Register() {
                     {errors.password && ( <p className="text-red-500">Password is required</p>) }
                     <Button>Register</Button>
                 </form>
-                <p>
-                    <h3>Already have an account?</h3>
-                    <a className="text-white" href="">Login</a>
+                <p className="flex gap-x-2 justify-between">
+                    Already have an account? <Link to= "/login"  className="text-blue-600"> Sign In</Link>
                 </p>
             </div>
         </div>
