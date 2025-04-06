@@ -1,37 +1,52 @@
 import { useForm } from "react-hook-form";
-import {Input, Button, Label} from "../components";
+import { Input, Button, Label } from "../components";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion"; 
+
 function Register() {
-    const {register, handleSubmit, formState: { errors }} = useForm();
-    const {signUp,  isAuthenticated, errors: registerErrors} = useAuth();
-    const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const { signUp, isAuthenticated, errors: registerErrors } = useAuth();
+  const navigate = useNavigate();
 
-    const onSubmit = handleSubmit( async (values)=> {
-       await signUp(values);
-    });
+  const onSubmit = handleSubmit(async (values) => {
+    await signUp(values);
+  });
 
-    useEffect(() => {
-        if (isAuthenticated) {
-          navigate("/home");
-        }
-    }, [isAuthenticated]);
- 
-    return (
-        <div className="flex justify-between items-center px-[150px] h-screen bg-white">
-          <div className="bg-blue-300 max-w-md w-full p-8 rounded-lg">
-            <h1 className="text-2xl font-bold text-center mb-6">Register</h1>
-    
-            {registerErrors.map((error, i) => (
-              <div className="bg-red-500 text-white my-2 p-2 rounded" key={i}>
-                {error}
-              </div>
-            ))}
-    
-            <form onSubmit={onSubmit}>
-              <Label htmlFor="Fullname">Full Name</Label>
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/home");
+    }
+  }, [isAuthenticated]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="flex flex-col md:flex-row gap-[150px] items-center max-w-6xl w-full">
+        {/* 💫 Animated Register Form */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="bg-blue-300 rounded-xl p-8 md:p-12 w-full md:w-[400px] flex flex-col justify-center min-h-[500px]"
+        >
+          <h1 className="text-3xl font-bold text-center mb-6">Register</h1>
+
+          {registerErrors.map((error, i) => (
+            <div className="bg-red-500 text-white my-2 p-2 rounded" key={i}>
+              {error}
+            </div>
+          ))}
+
+          <form onSubmit={onSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="Fullname" className="mb-1 block">
+                Full Name
+              </Label>
               <Input
                 type="text"
                 placeholder="Write your name"
@@ -40,10 +55,14 @@ function Register() {
                 required
               />
               {errors.Fullname && (
-                <p className="text-red-500 text-sm">Name is required</p>
+                <p className="text-red-500 text-sm mt-1">Name is required</p>
               )}
-    
-              <Label htmlFor="email">Email</Label>
+            </div>
+
+            <div>
+              <Label htmlFor="email" className="mb-1 block">
+                Email
+              </Label>
               <Input
                 type="email"
                 placeholder="youremail@gmail.com"
@@ -52,10 +71,14 @@ function Register() {
                 required
               />
               {errors.email && (
-                <p className="text-red-500 text-sm">Email is required</p>
+                <p className="text-red-500 text-sm mt-1">Email is required</p>
               )}
-    
-              <Label htmlFor="password">Password</Label>
+            </div>
+
+            <div>
+              <Label htmlFor="password" className="mb-1 block">
+                Password
+              </Label>
               <Input
                 type="password"
                 placeholder="Password"
@@ -64,33 +87,34 @@ function Register() {
                 required
               />
               {errors.password && (
-                <p className="text-red-500 text-sm">Password is required</p>
+                <p className="text-red-500 text-sm mt-1">Password is required</p>
               )}
-    
-              <Button className="mt-4 w-full bg-blue-800 hover:bg-blue-600 text-white py-2 rounded">
-                Register
-              </Button>
-            </form>
-    
-            <p className="flex justify-center gap-2 mt-4 text-center">
-              Already have an account?
-              <Link to="/login" className="text-blue-600">
-                Sign In
-              </Link>
-            </p>
-          </div>
-    
-          {/* Image */}
-          <div className="hidden md:block">
-            <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXCJQJyh5dnZshnzGWYkQi3_91-MUSnAl66A&s"
-              alt="piscina"
-              className="rounded-lg w-[600px]"
-            />
-          </div>
-        </div>
-      );
-    }
-    
+            </div>
 
-export default Register
+            <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-2">
+              Register
+            </Button>
+          </form>
+
+          <p className="mt-6 text-center text-sm">
+            Already have an account?
+            <Link to="/login" className="text-black font-medium ml-1">
+              Sign In
+            </Link>
+          </p>
+        </motion.div>
+
+        {/* Logo Image with hover animation */}
+        <motion.img
+          src="/logo.png"
+          alt="Logo"
+          className="w-full max-w-lg hidden md:block rounded-xl"
+          whileHover={{ scale: 1.1, rotate: 15 }} // Animación de hover
+          transition={{ duration: 0.3 }} // Duración de la animación
+        />
+      </div>
+    </div>
+  );
+}
+
+export default Register;
