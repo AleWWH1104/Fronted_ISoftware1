@@ -1,7 +1,9 @@
-function LoginPage() {
-  return (
-    <div>LoginPage</div>
-  )
-}
+import React from "react";
 
-export default LoginPage 
+export default function LoginPage() {
+  return (
+    <div>
+      <h1>Login Page</h1>
+    </div>
+  );
+}
