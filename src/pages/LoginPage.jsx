@@ -1,56 +1,49 @@
-import { useForm } from "react-hook-form"
+import { useForm } from "react-hook-form";
 import {Input, Button, Label} from "../components";
 import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
-  const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Datos del login:", data);
-    //Falta lógica de autenticación (iris creo o idk xd)
-  };
+    const {register, handleSubmit, formState: { errors }} = useForm();
+    const {signIn, errors: loginErrors, isAuthenticated} = useAuth();
+    const navigate = useNavigate();
 
-  return (
-    <div className="flex h-screen w-full items-center justify-center bg-gray-100">
-      <div className="flex w-[80%] max-w-4xl shadow-lg rounded-lg overflow-hidden">
-        {/* Sección de login */}
-        <div className="w-1/2 bg-[#89CFF0] p-8 rounded-l-lg">
-          <h2 className="text-3xl font-bold text-center text-white mb-6">Login</h2>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <label className="text-sm text-white font-semibold">Email</label>
-            <Input
-              type="email"
-              placeholder="username@gmail.com"
-              register={register}
-              name="email"
-              required
-            />
+    const onSubmit = handleSubmit((data)=> {
+        signIn(data);
+    });
 
-            <label className="text-sm text-white font-semibold">Password</label>
-            <Input
-              type="password"
-              placeholder="Password"
-              register={register}
-              name="password"
-              required
-            />
+    useEffect(() => {
+        if (isAuthenticated) {
+          navigate("/home");
+        }
+    }, [isAuthenticated]);
 
-            <Button type="submit">Sign In</Button>
-          </form>
-          <p className="text-center text-sm text-white mt-4">
-            ¿No tienes cuenta? <span className="text-black font-medium cursor-pointer">Regístrate</span>
-          </p>
+    return (
+    <div className="bg-blue-950"> 
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXCJQJyh5dnZshnzGWYkQi3_91-MUSnAl66A&s" alt="piscina" />
+        <div className="bg-blue-300 max-w-md p-10 rounded-md">
+            {loginErrors.map((error, i) => 
+                    <div className="bg-red-500 text-white my-2" key={i}>{error}</div>
+            )}
+            <h1 className="text-3xl font-bold">Login</h1>
+            
+            <form onSubmit={onSubmit}>
+                <Label htmlFor="email">Email</Label>
+                <Input type="email" placeholder="youremail@gmail.com" register={register} name="email" required />
+                {errors.email && ( <p className="text-red-500">Email is required</p>) }
+                <Label htmlFor="password">Password</Label>
+                <Input type="password" placeholder="password" register={register} name="password" required />
+                {errors.password && ( <p className="text-red-500">Password is required</p>) }
+                <Button>Sign In</Button>
+            </form>
+            <p className="flex gap-x-2 justify-between">
+                Don't have an account? <Link to="/register" className="text-blue-600"> Register</Link>
+            </p>
         </div>
-
-        {/* Sección del logo */}
-        <div className="w-1/2 flex items-center justify-center bg-white rounded-r-lg">
-          <img src="/logo.png" alt="Logo PoolCenter" className="w-64" />
-        </div>
-      </div>
     </div>
-  );
+  )
 }
 
 export default LoginPage;

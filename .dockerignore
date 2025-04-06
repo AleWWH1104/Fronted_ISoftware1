@@ -1,0 +1,17 @@
+# Ignorar node_modules, ya que serán instalados dentro del contenedor
+node_modules/
+
+# Ignorar archivos de configuración locales (de tu IDE)
+.vscode/
+
+# Ignorar el archivo .env que podría contener datos sensibles
+.env
+
+# Ignorar archivos de git
+.git/
+
+# Ignorar los archivos de build, ya que los generaremos dentro del contenedor
+dist/
+
+# Ignorar logs
+*.log
