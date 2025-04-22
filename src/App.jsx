@@ -4,6 +4,8 @@ import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import ProtectedRoutes from './ProtectedRoutes'
+import ServiciosPage from "./pages/ServiciosPage";
+
 
 function App (){
   return (
@@ -11,6 +13,7 @@ function App (){
         <BrowserRouter>
           <Routes>
             <Route path='/' element={<h1>Home page for clients</h1>} />
+            <Route path="/servicios" element={<ServiciosPage />} />
             <Route path='/login' element={<LoginPage/>} />
             <Route path='/register' element={<RegisterPage/>} />
             {/* Rutas protegidas */}
