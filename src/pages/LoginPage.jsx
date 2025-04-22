@@ -6,11 +6,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors }} = useForm();
   const { signIn, errors: loginErrors, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -36,10 +32,7 @@ function LoginPage() {
           className="bg-blue-300 rounded-xl p-8 md:p-12 w-full md:w-[400px] flex flex-col justify-center min-h-[500px]"
         >
           {loginErrors.map((error, i) => (
-            <div
-              className="bg-red-100 text-red-700 p-2 rounded mb-4 text-sm"
-              key={i}
-            >
+            <div className="bg-red-700 text-white p-2 rounded mb-4 text-sm" key={i}>
               {error}
             </div>
           ))}
@@ -48,39 +41,15 @@ function LoginPage() {
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email" className="mb-1 block">
-                Email
-              </Label>
-              <Input
-                type="email"
-                placeholder="youremail@gmail.com"
-                name="email"
-                register={register}
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">
-                  Email is required
-                </p>
-              )}
+              <Label htmlFor="email" className="mb-1 block">Email</Label>
+              <Input type="email" placeholder="youremail@gmail.com" register={register} name="email" required />
+              {errors.email && ( <p className="text-red-500 text-sm mt-1">Email is required</p>) }
             </div>
 
             <div>
-              <Label htmlFor="password" className="mb-1 block">
-                Password
-              </Label>
-              <Input
-                type="password"
-                placeholder="password"
-                name="password"
-                register={register}
-                required
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">
-                  Password is required
-                </p>
-              )}
+              <Label htmlFor="password" className="mb-1 block">Password</Label>
+              <Input type="password" placeholder="password" register={register} name="password" required />
+              {errors.password && ( <p className="text-red-500 text-sm mt-1">Password is required</p>) }
             </div>
 
             <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-2">
@@ -90,9 +59,7 @@ function LoginPage() {
 
           <p className="mt-6 text-center text-sm">
             Don’t have an account?
-            <Link to="/register" className="text-black font-medium ml-1">
-              Register
-            </Link>
+            <Link to="/register" className="text-black font-medium ml-1">Register</Link>
           </p>
         </motion.div>
 

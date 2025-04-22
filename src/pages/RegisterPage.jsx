@@ -6,11 +6,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion"; 
 
 function Register() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const { signUp, isAuthenticated, errors: registerErrors } = useAuth();
   const navigate = useNavigate();
 
@@ -37,58 +33,28 @@ function Register() {
           <h1 className="text-3xl font-bold text-center mb-6">Register</h1>
 
           {registerErrors.map((error, i) => (
-            <div className="bg-red-500 text-white my-2 p-2 rounded" key={i}>
+            <div className="bg-red-700 text-white p-2 rounded mb-4 text-sm" key={i}>
               {error}
             </div>
           ))}
 
           <form onSubmit={onSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="Fullname" className="mb-1 block">
-                Full Name
-              </Label>
-              <Input
-                type="text"
-                placeholder="Write your name"
-                register={register}
-                name="Fullname"
-                required
-              />
-              {errors.Fullname && (
-                <p className="text-red-500 text-sm mt-1">Name is required</p>
-              )}
+              <Label htmlFor="Fullname" className="mb-1 block">Full Name</Label>
+              <Input type="text" placeholder="write your name" register={register} name="Fullname" required />
+              {errors.Fullname && (<p className="text-red-500 text-sm mt-1">Name is required</p>)}
             </div>
 
             <div>
-              <Label htmlFor="email" className="mb-1 block">
-                Email
-              </Label>
-              <Input
-                type="email"
-                placeholder="youremail@gmail.com"
-                register={register}
-                name="email"
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">Email is required</p>
-              )}
+              <Label htmlFor="email" className="mb-1 block">Email</Label>
+              <Input type="email" placeholder="youremail@gmail.com" register={register} name="email" required />
+              {errors.email && (<p className="text-red-500 text-sm mt-1">Email is required</p>)}
             </div>
 
             <div>
-              <Label htmlFor="password" className="mb-1 block">
-                Password
-              </Label>
-              <Input
-                type="password"
-                placeholder="Password"
-                register={register}
-                name="password"
-                required
-              />
-              {errors.password && (
-                <p className="text-red-500 text-sm mt-1">Password is required</p>
-              )}
+              <Label htmlFor="password" className="mb-1 block">Password</Label>
+              <Input type="password" placeholder="password" register={register} name="password" required />
+              {errors.password && (<p className="text-red-500 text-sm mt-1">Password is required</p>)}
             </div>
 
             <Button className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-2">
@@ -98,9 +64,7 @@ function Register() {
 
           <p className="mt-6 text-center text-sm">
             Already have an account?
-            <Link to="/login" className="text-black font-medium ml-1">
-              Sign In
-            </Link>
+            <Link to="/login" className="text-black font-medium ml-1">Sign In</Link>
           </p>
         </motion.div>
 
