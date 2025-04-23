@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-[#3e6386] text-white flex justify-between items-center px-8 py-4 font-serif mt-auto">
+    <footer className="bg-[#2e6a8f] text-white flex justify-between items-center px-8 py-4 mt-auto">
       <div>
         <span>© Copyright 2025</span>
       </div>
