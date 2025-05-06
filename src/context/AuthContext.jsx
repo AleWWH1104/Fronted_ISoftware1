@@ -1,6 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { registerRequest, loginRequest, verifyTokenRequest } from "../services/auth";
-import Cookies from 'js-cookie';
 
 export const AuthContext = createContext();
 
@@ -21,13 +20,14 @@ export const AuthProvider = ({children}) => {
     const signUp= async (user) => {
         try {
             const res = await registerRequest(user);
-            console.log(res.data);
-            setUser(res.data);
+            console.log(res);
             setAuthenticated(true);
-        }
-        catch (error){
-            console.log(error.response);
-            setErrors(error.response.data)
+            setUser(res.data);
+        }catch (error){
+            if (Array.isArray(error.response.data)){
+                return setErrors(error.response.data)
+            }
+            setErrors([error.response.data.message])
         }
     }
 
@@ -47,26 +47,18 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const checkLogin = async () => {
-        const cookies = Cookies.get();
-        if (!cookies.token) {
-            setAuthenticated(false);
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const res = await verifyTokenRequest(cookies.token);
-            if (!res.data) return setAuthenticated(false);
-            setAuthenticated(true);
+          try {
+            const res = await verifyTokenRequest(); // No cookies en front
             setUser(res.data);
-            setLoading(false);
-        } catch (error) {
+            setAuthenticated(true);
+          } catch (error) {
             setAuthenticated(false);
-            setLoading(false);
-        }
+            setUser(null);
+          }
+          setLoading(false);
         };
         checkLogin();
-    }, []);
+      }, []);
 
     const logout = () => {
         Cookies.remove("token");
