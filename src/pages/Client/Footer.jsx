@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-[#2e6a8f] text-white flex justify-between items-center px-8 py-4 mt-auto">
+    <footer className="bg-[#046bb1] text-white flex justify-between items-center p-4">
       <div>
         <span>© Copyright 2025</span>
       </div>
@@ -17,12 +17,6 @@ function Footer() {
           src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
           alt="WhatsApp"
           onClick={() => openLink('https://wa.me/')}
-        />
-        <img
-          className="w-7 h-7 cursor-pointer transition-transform duration-200 hover:scale-110"
-          src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-          alt="LinkedIn"
-          onClick={() => openLink('https://linkedin.com')}
         />
         <img
           className="w-7 h-7 cursor-pointer transition-transform duration-200 hover:scale-110"

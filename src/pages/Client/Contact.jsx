@@ -3,7 +3,7 @@ import React from 'react'
 function Contact() {
   return (
     <div id="contacto" className="h-[50vh] flex flex-col items-center justify-around">
-        <h1 className="text-5xl font-bold text-center text-[#0d3750]">Información de contacto</h1>
+      <h1 className="text-5xl font-bold text-center text-[#0d3750]">Información de contacto</h1>
 
       <div className="flex justify-evenly flex-wrap text-center w-[100%]">
         <div className="w-[30%]">

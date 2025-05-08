@@ -10,7 +10,7 @@ const navItems = [
 export default function NavBar() {
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-[#2e6a8f] h-[8dvh] flex justify-center items-center">
-      <ul className="flex justify-between w-[40%]">
+      <ul className="flex w-full justify-evenly">
         {navItems.map((item, index) => (
           <motion.li
             key={item.label}
