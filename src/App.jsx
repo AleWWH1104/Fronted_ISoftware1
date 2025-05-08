@@ -13,7 +13,6 @@ function App (){
           <Routes>
             <Route path='/' element={<ClientPage/>} />
             <Route path='/login' element={<LoginPage/>} />
-            <Route path='/register' element={<RegisterPage/>} />
             {/* Rutas protegidas */}
             <Route element= {<ProtectedRoutes/>}>
               <Route path='/home' element={<HomePage/>} />

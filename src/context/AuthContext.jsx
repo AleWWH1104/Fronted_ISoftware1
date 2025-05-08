@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { registerRequest, loginRequest, verifyTokenRequest } from "../services/auth";
+import Cookies from "js-cookie";
+
 
 export const AuthContext = createContext();
 
@@ -47,18 +49,27 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const checkLogin = async () => {
-          try {
-            const res = await verifyTokenRequest(); // No cookies en front
-            setUser(res.data);
-            setAuthenticated(true);
-          } catch (error) {
-            setAuthenticated(false);
-            setUser(null);
-          }
-          setLoading(false);
+            const token = Cookies.get("token"); // <- revisa si hay token primero
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+    
+            try {
+                const res = await verifyTokenRequest();
+                setUser(res.data);
+                setAuthenticated(true);
+            } catch (error) {
+                setAuthenticated(false);
+                setUser(null);
+            } finally {
+                setLoading(false);
+            }
         };
+    
         checkLogin();
-      }, []);
+    }, []);
+    
 
     const logout = () => {
         Cookies.remove("token");
