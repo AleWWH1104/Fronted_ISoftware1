@@ -1,1 +1,8 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: 'Mifuente';
+  src: url('@/HussarBoldWebEdition-xq5O') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
