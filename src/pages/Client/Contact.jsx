@@ -8,7 +8,7 @@ function Contact() {
      <h1 className=" font-mifuente text-5xl text-center text-[#0d3750] mb-12">Contactanos</h1>
       <div className="w-full flex flex-col lg:flex-row justify-between gap-10">
         {/* INFO */}
-        <div className="w-full lg:w-1/2 text-center lg:text-left space-y-10 text-black text-lg">
+        <div className="w-full lg:w-1/2 text-center lg:text-left space-y-10 text-black text-lg pl-45">
           <div>
             <h3 className="font-bold text-xl mb-2">Dirección</h3>
             <p>20 avenida A 11-13 Zona 11<br />Ciudad de Guatemala, Guatemala</p>
