@@ -25,7 +25,7 @@ function Contact() {
           <p>502 5966-7171</p>
         </div>
       </div>
-      <div className='bg-gray-100'>
+      <div className='m-[25px]'>
         <ContactUs/>
       </div>
     </div>
