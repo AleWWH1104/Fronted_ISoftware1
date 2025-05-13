@@ -1,8 +1,8 @@
 import React from 'react'
-
+import { ContactUs } from '../../components/ContactForm'
 function Contact() {
   return (
-    <div id="contacto" className="h-[50vh] flex flex-col items-center justify-around">
+    <div id="contacto" className="flex flex-col items-center justify-around">
       <h1 className="text-5xl font-bold text-center text-[#0d3750]">Información de contacto</h1>
 
       <div className="flex justify-evenly flex-wrap text-center w-[100%]">
@@ -24,6 +24,9 @@ function Contact() {
           <p>502 2479-0349</p>
           <p>502 5966-7171</p>
         </div>
+      </div>
+      <div className='bg-gray-100'>
+        <ContactUs/>
       </div>
     </div>
   )
