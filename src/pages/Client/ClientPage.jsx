@@ -13,7 +13,6 @@ function ClientPage() {
       <NavBar />
       <Hover />
       <Services/>
-      <Projects />
       <Contact />
       <Footer />
     </div>

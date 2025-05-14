@@ -15,7 +15,7 @@ function Register() {
   });
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated ) {
       navigate("/home");
     }
   }, [isAuthenticated]);

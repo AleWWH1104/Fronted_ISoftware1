@@ -18,7 +18,7 @@ function Hover() {
           </motion.h4>
 
           <motion.h1
-            className="text-[100px] font-bold z-10"
+            className="text-[100px] font-bold z-10 text-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}

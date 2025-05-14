@@ -22,12 +22,7 @@ function Footer() {
           alt="WhatsApp"
           onClick={() => openLink('https://wa.me/')}
         />
-        <img
-          className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
-          src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-          alt="LinkedIn"
-          onClick={() => openLink('https://linkedin.com')}
-        />
+
         <img
           className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
           src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
