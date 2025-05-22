@@ -1,10 +1,8 @@
 import NavBar from "./NavBar";
 import Footer from "./Footer";
-import { useState } from "react";
 import Services from "./Services";
 import Hover from "./Hover";
 import Contact from "./Contact";
-import Projects from "./Projects";
 
 function ClientPage() {
  
