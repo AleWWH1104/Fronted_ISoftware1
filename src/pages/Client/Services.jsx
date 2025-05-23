@@ -118,15 +118,17 @@ function Services() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <motion.h1 
+    <div id="servicios" className="container mx-auto px-4 py-8 lg:py-16">
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-5xl font-bold text-center text-[#0d3750]"
+        className="w-full text-center sm:flex sm:justify-center sm:items-center gap-1.5 text-[#046bb1]"
       >
-        Nuestros Servicios
-      </motion.h1>
+        <h2 className="text-[20px] lg:text-[30px] font-bold">Nuestros</h2>
+        <h1 className="text-[50px] lg:text-[70px]" style={{ fontFamily: '"Colonna MT", serif', fontWeight:'normal'}}
+        >Servicios</h1>
+      </motion.div>
 
       {/* Botones de categorías */}
       <motion.div 
@@ -140,7 +142,7 @@ function Services() {
             key={category.id}
             onClick={() => filterByCategory(category.id)}
             className={`py-4 px-6 text-white font-medium rounded transition-colors ${
-              selectedCategory === category.id ? "bg-[#cfdde9] text-gray-800" : "bg-[#046bb1]"
+              selectedCategory === category.id ? "bg-[#046bb1] text-gray-800" : "bg-[#8dcdf4]"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -182,7 +184,7 @@ function Services() {
             animate={{ x: `-${currentIndex * (100 / 3)}%` }}
           >
             {filteredImages.map((image, index) => (
-              <motion.div 
+              <div 
                 key={index} 
                 className="w-full md:w-1/3 flex-shrink-0 px-2"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -199,7 +201,7 @@ function Services() {
                     e.target.src = "/placeholder.svg?height=300&width=400";
                   }}
                 />
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         </div>
@@ -217,18 +219,6 @@ function Services() {
           </svg>
         </motion.button>
       </motion.div>
-
-      {/* Título de la categoría seleccionada */}
-      {selectedCategory && (
-        <motion.h2 
-          className="text-2xl font-bold text-center mt-8 text-[#0d3750]"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {categories.find((cat) => cat.id === selectedCategory)?.name}
-        </motion.h2>
-      )}
     </div>
   );
 }

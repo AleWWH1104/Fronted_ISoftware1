@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import NavBar from './NavBar';
 
 function Equipos() {
   // Definir las categorías y productos
@@ -58,7 +59,8 @@ function Equipos() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="my-[8dvh] px-4 py-8 scroll-mt-20">
+      <NavBar/>
       <motion.h1 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,7 +80,7 @@ function Equipos() {
         >
           <h2 className="text-xl font-semibold mb-6">{category.name}</h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-8">
             {category.products.map((product) => (
               <motion.div 
                 key={product.id}
