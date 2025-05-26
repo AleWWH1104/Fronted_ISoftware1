@@ -21,41 +21,45 @@ function LoginPage() {
   }, [isAuthenticated]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center gap-20 m-[25px] flex-col-reverse lg:flex-row lg:justify-around">  
-      {/* cuadro animado */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-[#8dcdf4] p-8 mx-[15px] w-full rounded-md lg:w-[400px] flex flex-col justify-center min-h-[500px]"
-      >
-        {loginErrors.map((error, i) => (
-          <div className="bg-red-700 text-white p-2 rounded mb-4 text-sm" key={i}>
-            {error}
-          </div>
-        ))}
-
-        <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="email" className="mb-1 block">Email</Label>
-            <Input type="email" placeholder="youremail@gmail.com" register={register} name="email" required />
-            {errors.email && (<p className="text-red-500 text-sm mt-1">Email is required</p>)}
+    <div 
+    className="min-h-screen flex items-center flex-col-reverse lg:flex-row lg:justify-around">  
+      <div className="w-full md:w-3/5 flex text-white md:min-h-screen h-[70dvh]">
+        <div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="bg-[#046bb1] w-full md:w-3/4 flex flex-col justify-center items-center "
+        >
+          {loginErrors.map((error, i) => (
+            <div className="bg-red-700 text-white p-2 rounded mb-4 text-sm" key={i}>
+              {error}
+            </div>
+          ))}
+          <div className="w-[80%] ">
+            <h2 className="text-3xl font-bold mb-6">Iniciar Sesión</h2>
+            <hr className="w-full mb-8 border-2"/>
           </div>
 
-          <div>
-            <Label htmlFor="password" className="mb-1 block">Password</Label>
-            <Input type="password" placeholder="password" register={register} name="password" required />
-            {errors.password && (<p className="text-red-500 text-sm mt-1">Password is required</p>)}
-          </div>
+          <form onSubmit={onSubmit} className="space-y-8 w-[80%] ">
+            <div>
+              <Label htmlFor="email" className="mb-1 block">Correo</Label>
+              <Input type="email" placeholder="Email@gmail.com" register={register} name="email" required />
+              {errors.email && (<p className="text-red-500 text-sm mt-1">Email es requerido</p>)}
+            </div>
 
-          <Button className="w-full bg-[#046bb1] hover:bg-blue-800 text-white rounded py-2">
-            Sign In
-          </Button>
-        </form>
-      </motion.div>
-      <div>
+            <div>
+              <Label htmlFor="password" className="mb-1 block">Contraseña</Label>
+              <Input type="password" placeholder="Contraseña" register={register} name="password" required />
+              {errors.password && (<p className="text-red-500 text-sm mt-1">Contraseña es requerida</p>)}
+            </div>
+
+            <Button>Ingresar</Button>
+          </form>
+        </div>
+        <img src="/g.png" alt="styled" className="min-h-screen w-1/4 hidden md:block" />
+      </div>
+      
+      <div className="sm:w-2/5 flex flex-col items-center sm:space-y-16 sm:pr-[70px] p-[25px] w-full space-y-8">
         {/* Logo animado */}
         <motion.img
           src="/logo.png"
@@ -64,6 +68,7 @@ function LoginPage() {
           whileHover={{ scale: 1.1, rotate: 15 }}
           transition={{ duration: 0.3 }}
         />
+        <h4 className="text-[#046bb1] font-semibold sm:text-2xl text-center sm:w-[70%]">"Innovación en cada gota, confianza en cada proyecto."</h4>
       </div>
     </div>
   );
