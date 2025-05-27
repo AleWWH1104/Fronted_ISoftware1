@@ -4,10 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion"; 
+import RoleCard from "../components/RoleCard";
+import useRoles from "../hooks/useRoles";
 
 function Register() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { signUp, errors: registerErrors } = useAuth();
+  const {roles} = useRoles();
   const navigate = useNavigate();
 
   const onSubmit = handleSubmit(async (values) => {
@@ -62,7 +65,14 @@ function Register() {
         <h1 className="font-bold text-2xl text-[#046bb1]">02. Asignar Roles</h1>
         <hr className="w-full mb-2 border-1 border-[#046bb1]"/>
         <p className="mb-4">Seleccione los roles principal que desempeñará el usuario en el sistema.</p>
-        
+        <div className="w-full ">
+        {roles.map((role, index)=>(
+            <RoleCard
+             key={index}
+             name={role.name}
+            />
+          ))}
+        </div>
         <hr className="w-full mb-2 border-1-white"/>
         <div className="flex justify-between">
           <button className="bg-[#cfdde9] py-3 px-5 rounded-md">Cancelar y Salir</button>
