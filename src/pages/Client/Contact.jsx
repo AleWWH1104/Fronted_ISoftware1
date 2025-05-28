@@ -9,7 +9,7 @@ function Contact() {
       <div className="relative w-full">
         <div className="absolute top-0 left-0 w-full h-full bg-[#046bb1] z-0" />
         <img
-          src="/gh.png"
+          src="/ghh1.png"
           alt="Decorativo"
           className="w-full h-auto block relative z-10"
           style={{ marginBottom: "-5px" }}
