@@ -58,14 +58,18 @@ function Equipos() {
     }
   ];
 
+  const openLink = (url) => {
+    window.open(url, '_blank');
+  };
+
   return (
-    <div className="my-[8dvh] px-4 py-8 scroll-mt-20 max-w-7xl mx-auto">
+    <div className="my-[8dvh] px-1 py- scroll-mt-20 mx-auto flex flex-col min-h-screen">
       <div className="scroll-mt-20">
         <div
           className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
-          style={{ backgroundImage: "url('/equi2.jpg')" }}
+          style={{ backgroundImage: "url('/b_equipos.png')" }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-30 z-0"></div>
+          <div className="absolute inset-0 bg-opacity-30 z-0"></div>
           <div className="relative z-10 text-right text-white px-4 w-full max-w-7xl mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: -20 }}
@@ -126,38 +130,100 @@ function Equipos() {
         </motion.div>
       ))}
 
-      {/* Sección de contacto con info y formulario */}
-      <div className="mt-20 bg-[#046bb1] text-white rounded-xl overflow-hidden max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 p-8">
-        {/* Información de contacto */}
-        <div className="lg:w-1/2 space-y-6 px-4 lg:px-12">
-          <h2 className="text-4xl font-normal mb-6" style={{ fontFamily: '"Colonna MT", serif' }}>
-            Contactate con <span className="text-5xl lg:text-6xl">Nosotros</span>
-          </h2>
-
-
-          <div>
-            <h3 className="font-bold text-xl mb-2">Correos</h3>
-            <p className="leading-relaxed text-base">
-              gerencia@poolcenter.com.gt<br />
-              ventas@poolcenter.com.gt
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-bold text-xl mb-2">Teléfonos</h3>
-            <p className="leading-relaxed text-base">
-              +502 5516 0480<br />
-              +502 5966 7171<br />
-              +502 2479-0349
-            </p>
-          </div>
+      {/* NUEVO DISEÑO DEL FORMULARIO DE CONTACTO */}
+      <div className="min-h-screen bg-[#046bb1] overflow-hidden mt-20">
+        <div className="relative w-full">
+          <div className="absolute top-0 left-0 w-full h-full bg-[#046bb1] z-0" />
+          <img
+            src="/ghh1.png"
+            alt="Decorativo"
+            className="w-full h-auto block relative z-10"
+            style={{ marginBottom: "-5px" }}
+          />
         </div>
 
-        {/* Formulario */}
-        <div className="lg:w-1/2 bg-white rounded-xl p-8 text-black">
-          <ContactUs />
+        <div
+          id="contacto"
+          className="container mx-auto px-4 py-2 min-h-[calc(100vh-80px)] flex flex-col lg:flex-row justify-center items-start gap-8"
+        >
+          <div className="w-full lg:w-[45%] text-white pt-0 lg:pt-2 pl-4 lg:pl-16">
+            <div className="mb-8">
+              <h1 className="text-[24px] lg:text-[32px] font-normal">
+                Contactate con{" "}
+                <span
+                  className="text-[45px] lg:text-[55px] leading-none"
+                  style={{ fontFamily: '"Colonna MT", serif', fontWeight: "normal" }}
+                >
+                  Nosotros
+                </span>
+              </h1>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-bold text-xl mb-2">Dirección</h3>
+                <p className="text-white leading-relaxed text-base">
+                  Aguilar Batres 45-54, zona 11 oficina 121.
+                  <br />
+                  Ciudad de Guatemala, Guatemala
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-2">Correos</h3>
+                <p className="text-white leading-relaxed text-base">
+                  gerencia@poolcenter.com.gt
+                  <br />
+                  ventas@poolcenter.com.gt
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-2">Teléfonos</h3>
+                <p className="text-white leading-relaxed text-base">
+                  +502 5516 0480
+                  <br />
+                  +502 5966 7171
+                  <br />
+                  +502 2479-0349
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-[40%] pt-0 lg:pt-2 pl-0 lg:pl-8">
+            <ContactUs />
+          </div>
         </div>
       </div>
+
+      {/* FOOTER */}
+      <footer className="bg-[#046bb1] text-white flex flex-col md:flex-row justify-between items-center px-8 py-4 mt-auto">
+        <div className="mb-4 md:mb-0">
+          <span className="text-l">© Copyright 2025</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-l">Síguenos</span>
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+            alt="Facebook"
+            onClick={() => openLink('https://facebook.com')}
+          />
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+            alt="WhatsApp"
+            onClick={() => openLink('https://wa.me/')}
+          />
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
+            alt="Instagram"
+            onClick={() => openLink('https://instagram.com')}
+          />
+        </div>
+      </footer>
     </div>
   );
 }
