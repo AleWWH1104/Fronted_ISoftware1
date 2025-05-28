@@ -6,7 +6,7 @@ function Contact() {
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: "url('/fondo_pantalla.png')",
+        backgroundColor: "url('/fondo_pantalla.png')",
       }}
     >
       <div id="contacto" className="container mx-auto px-4 py-0">
@@ -20,7 +20,7 @@ function Contact() {
                 Contactate con{" "}
                 <span
                   className="text-[45px] lg:text-[55px] leading-none"
-                  style={{ fontFamily: '"Colonna MT", serif', fontWeight: "normal" }}
+                  style={{ fontFamily: '"Colonna MT", serif', fontWeight:'normal'}}
                 >
                   Nosotros
                 </span>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
+import { ContactUs } from '../../components/ContactForm';
 
 function Equipos() {
-  // Definir las categorías y productos
   const categories = [
     {
       name: "Filtración y bombeo",
@@ -60,18 +60,38 @@ function Equipos() {
 
   return (
     <div className="my-[8dvh] px-4 py-8 scroll-mt-20">
-      <NavBar/>
-      <motion.h1 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-5xl font-bold text-center text-[#046bb1] mb-12"
-      >
-        Equipo de piscinas
-      </motion.h1>
+      <div className="scroll-mt-20">
+        <div
+          className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
+          style={{ backgroundImage: "url('/b_equipos.PNG')" }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-30 z-0"></div>
+          <div className="relative z-10 text-right text-white px-4 w-full max-w-7xl mx-auto">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-5xl md:text-6xl font-bold mb-8"
+              style={{ fontFamily: '"Colonna MT", serif', fontWeight: 'normal' }}
+            >
+              Equipos de piscina
+            </motion.h1>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-[#046bb1] hover:bg-[#035a96] text-white px-8 py-3 rounded-full font-semibold transition-colors duration-300 shadow-lg"
+            >
+              Cotiza tus productos →
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      <NavBar />
 
       {categories.map((category, categoryIndex) => (
-        <motion.div 
+        <motion.div
           key={categoryIndex}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,19 +99,17 @@ function Equipos() {
           className="mb-12"
         >
           <h2 className="text-xl font-semibold mb-6">{category.name}</h2>
-          
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-8">
             {category.products.map((product) => (
-              <motion.div 
+              <motion.div
                 key={product.id}
                 whileHover={{ scale: 1.03 }}
                 className="flex flex-col items-center"
               >
-                {/* Cuadro de imagen con tamaño fijo */}
                 <div className="bg-[#cfdde9] rounded-lg p-4 w-full h-[180px] flex items-center justify-center">
-                  <img 
-                    src={product.image || "/placeholder.svg"} 
-                    alt={product.name} 
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
                     className="max-h-[140px] max-w-[140px] object-contain"
                     onError={(e) => {
                       e.target.onerror = null;
@@ -99,13 +117,43 @@ function Equipos() {
                     }}
                   />
                 </div>
-                {/* Nombre del producto fuera del cuadro */}
-                <h3 className="text-center font-medium text-gray-800 mt-3">{product.name}</h3>
+                <h3 className="text-center font-medium text-gray-800 mt-3">
+                  {product.name}
+                </h3>
               </motion.div>
             ))}
           </div>
         </motion.div>
       ))}
+
+      {/* Sección "Cotiza con Nosotros" */}
+      <div className="relative mt-20">
+        <div
+          className="bg-[#046bb1] py-16 px-4 relative overflow-hidden"
+          style={{
+            backgroundImage: "url('/pool17.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          <div className="absolute inset-0 bg-[#046bb1] bg-opacity-90"></div>
+          <div className="relative z-10 max-w-4xl mx-auto text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-4xl md:text-5xl font-bold text-white mb-8"
+            >
+              Cotiza con Nosotros
+            </motion.h2>
+          </div>
+        </div>
+
+        <div className="relative z-10 -mt-12 max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8">
+          <ContactUs />
+        </div>
+      </div>
     </div>
   );
 }
