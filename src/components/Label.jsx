@@ -5,3 +5,4 @@ export function Label({ htmlFor, children }) {
     </label>
   );
 }
+
