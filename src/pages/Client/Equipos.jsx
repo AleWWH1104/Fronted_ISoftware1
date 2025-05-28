@@ -59,7 +59,7 @@ function Equipos() {
   ];
 
   return (
-    <div className="my-[8dvh] px-4 py-8 scroll-mt-20">
+    <div className="my-[8dvh] px-4 py-8 scroll-mt-20 max-w-7xl mx-auto">
       <div className="scroll-mt-20">
         <div
           className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
@@ -126,31 +126,35 @@ function Equipos() {
         </motion.div>
       ))}
 
-      {/* Sección "Cotiza con Nosotros" */}
-      <div className="relative mt-20">
-        <div
-          className="bg-[#046bb1] py-16 px-4 relative overflow-hidden"
-          style={{
-            backgroundImage: "url('/pool17.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <div className="absolute inset-0 bg-[#046bb1] bg-opacity-90"></div>
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-bold text-white mb-8"
-            >
-              Cotiza con Nosotros
-            </motion.h2>
+      {/* Sección de contacto con info y formulario */}
+      <div className="mt-20 bg-[#046bb1] text-white rounded-xl overflow-hidden max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 p-8">
+        {/* Información de contacto */}
+        <div className="lg:w-1/2 space-y-6 px-4 lg:px-12">
+          <h2 className="text-4xl font-normal mb-6" style={{ fontFamily: '"Colonna MT", serif' }}>
+            Contactate con <span className="text-5xl lg:text-6xl">Nosotros</span>
+          </h2>
+
+
+          <div>
+            <h3 className="font-bold text-xl mb-2">Correos</h3>
+            <p className="leading-relaxed text-base">
+              gerencia@poolcenter.com.gt<br />
+              ventas@poolcenter.com.gt
+            </p>
+          </div>
+
+          <div>
+            <h3 className="font-bold text-xl mb-2">Teléfonos</h3>
+            <p className="leading-relaxed text-base">
+              +502 5516 0480<br />
+              +502 5966 7171<br />
+              +502 2479-0349
+            </p>
           </div>
         </div>
 
-        <div className="relative z-10 -mt-12 max-w-4xl mx-auto bg-white rounded-xl shadow-xl p-8">
+        {/* Formulario */}
+        <div className="lg:w-1/2 bg-white rounded-xl p-8 text-black">
           <ContactUs />
         </div>
       </div>
