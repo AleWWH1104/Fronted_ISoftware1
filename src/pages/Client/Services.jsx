@@ -53,7 +53,7 @@ function Services() {
       { src: "/ja8.JPG", category: "ja", alt: "Jacuzzi 8" },
 
       // Fuentes y cascadas
-      { src: "/fyc1.jpg", category: "fyc", alt: "Fuente y Cascada 1" },
+      { src: "/fyc1.jpg", category: "fyc", alt: "Fuente y Cascada 1" }, 
       { src: "/fyc3.JPG", category: "fyc", alt: "Fuente y Cascada 3" },
       { src: "/fyc4.JPG", category: "fyc", alt: "Fuente y Cascada 4" },
       { src: "/fyc5.JPG", category: "fyc", alt: "Fuente y Cascada 5" },
