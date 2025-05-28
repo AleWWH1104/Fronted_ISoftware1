@@ -63,7 +63,7 @@ function Equipos() {
       <div className="scroll-mt-20">
         <div
           className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
-          style={{ backgroundImage: "url('/b_equipos.PNG')" }}
+          style={{ backgroundImage: "url('/equi2.jpg')" }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-30 z-0"></div>
           <div className="relative z-10 text-right text-white px-4 w-full max-w-7xl mx-auto">

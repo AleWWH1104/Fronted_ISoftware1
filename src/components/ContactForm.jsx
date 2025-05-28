@@ -26,20 +26,20 @@ export const ContactUs = () => {
 
 return (
     <form ref={form} onSubmit={sendEmail} className="space-y-4 text-black mt-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input
           type="text"
           name="user_name"
           placeholder="Tu nombre"
           required
-          className="border-[#046bb1] border p-4 w-full rounded bg-white"
+          className="bg-white border-0 rounded-lg px-4 py-4 text-gray-600 placeholder:text-gray-400 shadow-sm"
         />
         <input
           type="email"
           name="user_email"
           placeholder="Tu correo"
           required
-          className="border-[#046bb1] border p-4 w-full rounded bg-white"
+          className="bg-white border-0 rounded-lg px-4 py-4 text-gray-600 placeholder:text-gray-400 shadow-sm"
         />
       </div>
       <input
@@ -47,13 +47,13 @@ return (
         name="subject"
         placeholder="Asunto"
         required
-        className="border-[#046bb1] border p-4 w-full rounded bg-white"
+        className="bg-white border-0 rounded-lg px-4 py-4 text-gray-600 placeholder:text-gray-400 w-full shadow-sm"
       />
       <textarea
         name="message"
         placeholder="¿Cómo podemos ayudarle?"
         required
-        className="border-[#046bb1] border p-4 w-full rounded h-32 resize-none bg-white"
+        className="bg-white border-0 rounded-lg px-4 py-4 text-gray-600 placeholder:text-gray-400 min-h-[140px] w-full resize-none shadow-sm"
       />
       <button
         type="submit"
