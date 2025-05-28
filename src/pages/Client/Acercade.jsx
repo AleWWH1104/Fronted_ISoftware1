@@ -7,7 +7,7 @@ function Acercade() {
       <div className="container mx-auto px-4 py-8">
     
         <div className="text-center mb-16">
-          <h1 className="text-[24px] lg:text-[32px] font-normal text-[#046bb1]">
+          <h1 className="text-[20px] lg:text-[30px] font-bold text-[#046bb1]">
             Acerca de{" "}
             <span
               className="text-[45px] lg:text-[55px] leading-none"
@@ -18,7 +18,7 @@ function Acercade() {
           </h1>
         </div>
 
-        {/* Contenido principal */}
+
         <div className="flex flex-col lg:flex-row items-start gap-12 max-w-6xl mx-auto">
           {/* Imagen de la piscina */}
           <div className="w-full lg:w-2/5">

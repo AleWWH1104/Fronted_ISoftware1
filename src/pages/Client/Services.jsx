@@ -26,7 +26,7 @@ function Services() {
     // Crear un array con todas las imágenes
     const images = [
       // Piscinas Regulares
-      { src: "/reg1.HEIC", category: "reg", alt: "Piscina Regular 1" },
+
       { src: "/reg2.JPG", category: "reg", alt: "Piscina Regular 2" },
       { src: "/reg3.heic", category: "reg", alt: "Piscina Regular 3" },
       { src: "/reg4.jpg", category: "reg", alt: "Piscina Regular 4" },
@@ -48,14 +48,12 @@ function Services() {
       { src: "/ja2.JPG", category: "ja", alt: "Jacuzzi 2" },
       { src: "/ja3.JPG", category: "ja", alt: "Jacuzzi 3" },
       { src: "/ja4.JPG", category: "ja", alt: "Jacuzzi 4" },
-      { src: "/ja5.heic", category: "ja", alt: "Jacuzzi 5" },
-      { src: "/ja6.heic", category: "ja", alt: "Jacuzzi 6" },
+      { src: "/ja1.heic", category: "ja", alt: "Jacuzzi 5" },
       { src: "/ja7.JPG", category: "ja", alt: "Jacuzzi 7" },
       { src: "/ja8.JPG", category: "ja", alt: "Jacuzzi 8" },
 
       // Fuentes y cascadas
       { src: "/fyc1.jpg", category: "fyc", alt: "Fuente y Cascada 1" },
-      { src: "/fyc2.HEIC", category: "fyc", alt: "Fuente y Cascada 2" },
       { src: "/fyc3.JPG", category: "fyc", alt: "Fuente y Cascada 3" },
       { src: "/fyc4.JPG", category: "fyc", alt: "Fuente y Cascada 4" },
       { src: "/fyc5.JPG", category: "fyc", alt: "Fuente y Cascada 5" },
