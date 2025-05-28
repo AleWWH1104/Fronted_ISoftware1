@@ -1,9 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
+import { ContactUs } from '../../components/ContactForm';
 
 function Equipos() {
-  // Definir las categorías y productos
   const categories = [
     {
       name: "Filtración y bombeo",
@@ -58,20 +58,44 @@ function Equipos() {
     }
   ];
 
+  const openLink = (url) => {
+    window.open(url, '_blank');
+  };
+
   return (
-    <div className="my-[8dvh] px-4 py-8 scroll-mt-20">
-      <NavBar/>
-      <motion.h1 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-5xl font-bold text-center text-[#046bb1] mb-12"
-      >
-        Equipo de piscinas
-      </motion.h1>
+    <div className="my-[8dvh] px-1 py- scroll-mt-20 mx-auto flex flex-col min-h-screen">
+      <div className="scroll-mt-20">
+        <div
+          className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
+          style={{ backgroundImage: "url('/b_equipos.png')" }}
+        >
+          <div className="absolute inset-0 bg-opacity-30 z-0"></div>
+          <div className="relative z-10 text-right text-white px-4 w-full max-w-7xl mx-auto">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-5xl md:text-6xl font-bold mb-8"
+              style={{ fontFamily: '"Colonna MT", serif', fontWeight: 'normal' }}
+            >
+              Equipos de piscina
+            </motion.h1>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-[#046bb1] hover:bg-[#035a96] text-white px-8 py-3 rounded-full font-semibold transition-colors duration-300 shadow-lg"
+            >
+              Cotiza tus productos →
+            </motion.button>
+          </div>
+        </div>
+      </div>
+
+      <NavBar />
 
       {categories.map((category, categoryIndex) => (
-        <motion.div 
+        <motion.div
           key={categoryIndex}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -79,19 +103,17 @@ function Equipos() {
           className="mb-12"
         >
           <h2 className="text-xl font-semibold mb-6">{category.name}</h2>
-          
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-8">
             {category.products.map((product) => (
-              <motion.div 
+              <motion.div
                 key={product.id}
                 whileHover={{ scale: 1.03 }}
                 className="flex flex-col items-center"
               >
-                {/* Cuadro de imagen con tamaño fijo */}
                 <div className="bg-[#cfdde9] rounded-lg p-4 w-full h-[180px] flex items-center justify-center">
-                  <img 
-                    src={product.image || "/placeholder.svg"} 
-                    alt={product.name} 
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.name}
                     className="max-h-[140px] max-w-[140px] object-contain"
                     onError={(e) => {
                       e.target.onerror = null;
@@ -99,13 +121,109 @@ function Equipos() {
                     }}
                   />
                 </div>
-                {/* Nombre del producto fuera del cuadro */}
-                <h3 className="text-center font-medium text-gray-800 mt-3">{product.name}</h3>
+                <h3 className="text-center font-medium text-gray-800 mt-3">
+                  {product.name}
+                </h3>
               </motion.div>
             ))}
           </div>
         </motion.div>
       ))}
+
+      {/* NUEVO DISEÑO DEL FORMULARIO DE CONTACTO */}
+      <div className="min-h-screen bg-[#046bb1] overflow-hidden mt-20">
+        <div className="relative w-full">
+          <div className="absolute top-0 left-0 w-full h-full bg-[#046bb1] z-0" />
+          <img
+            src="/ghh1.png"
+            alt="Decorativo"
+            className="w-full h-auto block relative z-10"
+            style={{ marginBottom: "-5px" }}
+          />
+        </div>
+
+        <div
+          id="contacto"
+          className="container mx-auto px-4 py-2 min-h-[calc(100vh-80px)] flex flex-col lg:flex-row justify-center items-start gap-8"
+        >
+          <div className="w-full lg:w-[45%] text-white pt-0 lg:pt-2 pl-4 lg:pl-16">
+            <div className="mb-8">
+              <h1 className="text-[24px] lg:text-[32px] font-normal">
+                Contactate con{" "}
+                <span
+                  className="text-[45px] lg:text-[55px] leading-none"
+                  style={{ fontFamily: '"Colonna MT", serif', fontWeight: "normal" }}
+                >
+                  Nosotros
+                </span>
+              </h1>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <h3 className="font-bold text-xl mb-2">Dirección</h3>
+                <p className="text-white leading-relaxed text-base">
+                  Aguilar Batres 45-54, zona 11 oficina 121.
+                  <br />
+                  Ciudad de Guatemala, Guatemala
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-2">Correos</h3>
+                <p className="text-white leading-relaxed text-base">
+                  gerencia@poolcenter.com.gt
+                  <br />
+                  ventas@poolcenter.com.gt
+                </p>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-xl mb-2">Teléfonos</h3>
+                <p className="text-white leading-relaxed text-base">
+                  +502 5516 0480
+                  <br />
+                  +502 5966 7171
+                  <br />
+                  +502 2479-0349
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-[40%] pt-0 lg:pt-2 pl-0 lg:pl-8">
+            <ContactUs />
+          </div>
+        </div>
+      </div>
+
+      {/* FOOTER */}
+      <footer className="bg-[#046bb1] text-white flex flex-col md:flex-row justify-between items-center px-8 py-4 mt-auto">
+        <div className="mb-4 md:mb-0">
+          <span className="text-l">© Copyright 2025</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-l">Síguenos</span>
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
+            alt="Facebook"
+            onClick={() => openLink('https://facebook.com')}
+          />
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+            alt="WhatsApp"
+            onClick={() => openLink('https://wa.me/')}
+          />
+          <img
+            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
+            src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
+            alt="Instagram"
+            onClick={() => openLink('https://instagram.com')}
+          />
+        </div>
+      </footer>
     </div>
   );
 }
