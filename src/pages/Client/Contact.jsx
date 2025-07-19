@@ -4,7 +4,7 @@ import { ContactUs } from '../../components/ContactForm'
 
 function Contact() {
   return (
-    <div className="min-h-screen bg-[#046bb1] overflow-hidden">
+    <div className="min-h-screen bg-[#046bb1] overflow-hidden pb-[25px]" id='contacto'>
       {/* Imagen decorativa arriba del todo, sobre fondo azul */}
       <div className="relative w-full">
         <div className="absolute top-0 left-0 w-full h-full bg-[#046bb1] z-0" />
@@ -18,7 +18,7 @@ function Contact() {
 
       {/* Contenido del contacto sobre fondo azul */}
       <div id="contacto" className="container mx-auto px-4 py-2">
-        <div className="flex flex-col lg:flex-row justify-center items-start gap-8">
+        <div className="flex flex-col lg:flex-row justify-around items-start gap-8">
           {/* Texto izquierda */}
           <div className="w-full lg:w-[45%] text-white pt-0 lg:pt-2 pl-4 lg:pl-16">
             <div className="mb-8">

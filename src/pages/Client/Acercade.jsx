@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 
 function Acercade() {
   return (
-    <div className=" bg-white">
-      <div className="container mx-auto px-4 py-8">
+    <div className=" bg-white" id="acercaDe">
+      <div className="container mx-auto px-4 py-8 h-[70dvh] flex flex-col justify-center">
     
         <div className="text-center mb-16">
           <h1 className="text-[20px] lg:text-[30px] font-bold text-[#046bb1]">
@@ -50,6 +50,9 @@ function Acercade() {
             </p>
           </div>
         </div>
+      </div>
+      <div>
+        <img src="/xx.png" alt=""  className="w-full my-8"/>
       </div>
     </div>
   )

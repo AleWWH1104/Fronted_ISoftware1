@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import NavBar from './NavBar';
 import { ContactUs } from '../../components/ContactForm';
+import Footer from './Footer';
 
 function Equipos() {
   const categories = [
@@ -63,7 +64,7 @@ function Equipos() {
   };
 
   return (
-    <div className="my-[8dvh] px-1 py- scroll-mt-20 mx-auto flex flex-col min-h-screen">
+    <div className="px-1 py- scroll-mt-20 mx-auto flex flex-col min-h-screen">
       <div className="scroll-mt-20">
         <div
           className="relative h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
@@ -100,7 +101,7 @@ function Equipos() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
-          className="mb-12"
+          className="mb-12 p-[25px]"
         >
           <h2 className="text-xl font-semibold mb-6">{category.name}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-8">
@@ -131,9 +132,9 @@ function Equipos() {
       ))}
 
       {/* NUEVO DISEÑO DEL FORMULARIO DE CONTACTO */}
-      <div className="min-h-screen bg-[#046bb1] overflow-hidden mt-20">
+      <div className="bg-[#046bb1] overflow-hidden ">
         <div className="relative w-full">
-          <div className="absolute top-0 left-0 w-full h-full bg-[#046bb1] z-0" />
+          <div className="absolute top-0 left-0 w-full  bg-[#046bb1] z-0" />
           <img
             src="/ghh1.png"
             alt="Decorativo"
@@ -144,7 +145,7 @@ function Equipos() {
 
         <div
           id="contacto"
-          className="container mx-auto px-4 py-2 min-h-[calc(100vh-80px)] flex flex-col lg:flex-row justify-center items-start gap-8"
+          className="container mx-auto px-4 py-10 flex flex-col lg:flex-row justify-center items-start gap-8"
         >
           <div className="w-full lg:w-[45%] text-white pt-0 lg:pt-2 pl-4 lg:pl-16">
             <div className="mb-8">
@@ -198,32 +199,7 @@ function Equipos() {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-[#046bb1] text-white flex flex-col md:flex-row justify-between items-center px-8 py-4 mt-auto">
-        <div className="mb-4 md:mb-0">
-          <span className="text-l">© Copyright 2025</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-l">Síguenos</span>
-          <img
-            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
-            src="https://cdn-icons-png.flaticon.com/512/733/733547.png"
-            alt="Facebook"
-            onClick={() => openLink('https://facebook.com')}
-          />
-          <img
-            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
-            src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
-            alt="WhatsApp"
-            onClick={() => openLink('https://wa.me/')}
-          />
-          <img
-            className="w-7 h-7 cursor-pointer hover:scale-110 transition-transform"
-            src="https://cdn-icons-png.flaticon.com/512/733/733558.png"
-            alt="Instagram"
-            onClick={() => openLink('https://instagram.com')}
-          />
-        </div>
-      </footer>
+      <Footer/>
     </div>
   );
 }
