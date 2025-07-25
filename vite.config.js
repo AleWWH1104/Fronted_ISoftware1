@@ -14,4 +14,9 @@ export default defineConfig({
       '@fonts': 'src/assets/fonts', // <- Esto agrega el alias @fonts
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+  },
 })

@@ -4,6 +4,7 @@ import Services from "./Services";
 import Hover from "./Hover";
 import Contact from "./Contact";
 import Acercade from "./Acercade";
+import Baner from "./Baner";
 
 function ClientPage() {
  
@@ -12,6 +13,7 @@ function ClientPage() {
       <NavBar />
       <Hover />
       <Acercade />
+      <Baner />
       <Services/>
       <Contact />
       <Footer />
