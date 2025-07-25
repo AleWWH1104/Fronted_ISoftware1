@@ -86,7 +86,7 @@ function Equipos() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-[#046bb1] hover:bg-[#035a96] text-white px-8 py-3 rounded-full font-semibold transition-colors duration-300 shadow-lg"
+              className="bg-[#046bb1] hover:bg-[#035a96] text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-300 shadow-lg"
             >
               Cotiza tus productos →
             </motion.button>
