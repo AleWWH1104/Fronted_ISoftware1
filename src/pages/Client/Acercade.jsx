@@ -51,9 +51,6 @@ function Acercade() {
           </div>
         </div>
       </div>
-      <div>
-        <img src="/xx.png" alt=""  className="w-full my-8"/>
-      </div>
     </div>
   )
 }
