@@ -139,8 +139,8 @@ function Services() {
           <motion.button
             key={category.id}
             onClick={() => filterByCategory(category.id)}
-            className={`py-4 px-6 text-white font-medium rounded transition-colors ${
-              selectedCategory === category.id ? "bg-[#046bb1] text-gray-800" : "bg-[#8dcdf4]"
+            className={`py-4 px-6 text-black font-medium rounded transition-colors ${
+              selectedCategory === category.id ? "bg-[#046bb1] text-white" : "bg-[#8dcdf4]"
             }`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
