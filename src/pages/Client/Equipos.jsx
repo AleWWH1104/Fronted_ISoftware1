@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import NavBar from './NavBar';
 import { ContactUs } from '../../components/ContactForm';
 import Footer from './Footer';
+import Contact from './Contact';
 
 function Equipos() {
   const categories = [
@@ -101,7 +102,7 @@ function Equipos() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: categoryIndex * 0.1 }}
-          className="mb-12 p-[25px]"
+          className="mb-12 px-[75px] py-[25px]"
         >
           <h2 className="text-xl font-semibold mb-6">{category.name}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-8">
@@ -131,72 +132,7 @@ function Equipos() {
         </motion.div>
       ))}
 
-      {/* NUEVO DISEÑO DEL FORMULARIO DE CONTACTO */}
-      <div className="bg-[#046bb1] overflow-hidden ">
-        <div className="relative w-full">
-          <div className="absolute top-0 left-0 w-full  bg-[#046bb1] z-0" />
-          <img
-            src="/ghh1.png"
-            alt="Decorativo"
-            className="w-full h-auto block relative z-10"
-            style={{ marginBottom: "-5px" }}
-          />
-        </div>
-
-        <div
-          id="contacto"
-          className="container mx-auto px-4 py-10 flex flex-col lg:flex-row justify-center items-start gap-8"
-        >
-          <div className="w-full lg:w-[45%] text-white pt-0 lg:pt-2 pl-4 lg:pl-16">
-            <div className="mb-8">
-              <h1 className="text-[24px] lg:text-[32px] font-normal">
-                Contactate con{" "}
-                <span
-                  className="text-[45px] lg:text-[55px] leading-none"
-                  style={{ fontFamily: '"Colonna MT", serif', fontWeight: "normal" }}
-                >
-                  Nosotros
-                </span>
-              </h1>
-            </div>
-
-            <div className="space-y-6">
-              <div>
-                <h3 className="font-bold text-xl mb-2">Dirección</h3>
-                <p className="text-white leading-relaxed text-base">
-                  Aguilar Batres 45-54, zona 11 oficina 121.
-                  <br />
-                  Ciudad de Guatemala, Guatemala
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-xl mb-2">Correos</h3>
-                <p className="text-white leading-relaxed text-base">
-                  gerencia@poolcenter.com.gt
-                  <br />
-                  ventas@poolcenter.com.gt
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-bold text-xl mb-2">Teléfonos</h3>
-                <p className="text-white leading-relaxed text-base">
-                  +502 5516 0480
-                  <br />
-                  +502 5966 7171
-                  <br />
-                  +502 2479-0349
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-full lg:w-[40%] pt-0 lg:pt-2 pl-0 lg:pl-8">
-            <ContactUs />
-          </div>
-        </div>
-      </div>
+      <Contact />
 
       {/* FOOTER */}
       <Footer/>
