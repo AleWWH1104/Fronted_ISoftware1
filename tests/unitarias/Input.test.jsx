@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { useForm } from 'react-hook-form'
-import { Input } from './Input'
+import { Input } from '../../src/components/Input'
 
 // Mock component to test Input with react-hook-form
 function TestInputWrapper({ inputProps }) {

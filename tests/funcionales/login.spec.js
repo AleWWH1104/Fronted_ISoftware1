@@ -27,3 +27,31 @@ test('Redirección a /home tras autenticación exitosa', async ({ page }) => {
   // Validamos que la nueva ruta sea /home
   expect(page.url()).toContain('/home');
 });
+
+//Prueba de regresion visual, Captura de errores visibles con credenciales incorrectas
+test('Mostrar errores cuando las credenciales son incorrectas', async ({ page }) => {
+  // Simulamos error del backend
+  await page.route('**/auth/login', async route => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ message: 'Credenciales incorrectas' })
+    });
+  });
+
+  await page.goto('http://localhost:5173/login');
+
+  // Llenamos el formulario
+  await page.fill('input[name="email"]', 'fail@example.com');
+  await page.fill('input[name="password"]', 'wrongpass');
+
+  await page.click('button:has-text("Ingresar")');
+
+  // Esperamos el mensaje de error
+  const error = await page.locator('text=Credenciales incorrectas');
+
+  await expect(error).toBeVisible();
+
+  // Captura visual opcional para regresión visual
+  await page.screenshot({ path: 'screenshots/login-error.png', fullPage: true });
+});
