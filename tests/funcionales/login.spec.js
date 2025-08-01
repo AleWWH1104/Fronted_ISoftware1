@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-//Prueba de integración, verificar que, tras una autenticación exitosa (isAuthenticated = true), se navega a /home.
+// Prueba de integración, verificar que, tras una autenticación exitosa (isAuthenticated = true), se navega a /home.
 test('Redirección a /home tras autenticación exitosa', async ({ page }) => {
   // Interceptamos la solicitud POST para simular un login exitoso
   await page.route('**/auth/login', async route => {
@@ -28,7 +28,7 @@ test('Redirección a /home tras autenticación exitosa', async ({ page }) => {
   expect(page.url()).toContain('/home');
 });
 
-//Prueba de regresion visual, Captura de errores visibles con credenciales incorrectas
+// Prueba de regresión visual, Captura de errores visibles con credenciales incorrectas
 test('Mostrar errores cuando las credenciales son incorrectas', async ({ page }) => {
   // Simulamos error del backend
   await page.route('**/auth/login', async route => {
@@ -54,4 +54,23 @@ test('Mostrar errores cuando las credenciales son incorrectas', async ({ page })
 
   // Captura visual opcional para regresión visual
   await page.screenshot({ path: 'tests/funcionales/screenshots/login-error.png', fullPage: true });
+});
+
+// ✅ Prueba funcional: Mostrar mensajes de error si los campos están vacíos
+test('Mostrar errores si los campos están vacíos al hacer submit', async ({ page }) => {
+  await page.goto('http://localhost:5173/login');
+
+  // Nos aseguramos de que los campos estén vacíos (opcional si ya están por defecto)
+  await page.fill('input[name="email"]', '');
+  await page.fill('input[name="password"]', '');
+
+  // Hacemos submit sin llenar los campos
+  await page.click('button:has-text("Ingresar")');
+
+  // Verificamos que los mensajes de error se muestren
+  const emailError = page.locator('text=El correo es obligatorio');
+  const passwordError = page.locator('text=La contraseña es obligatoria');
+
+  await expect(emailError).toBeVisible();
+  await expect(passwordError).toBeVisible();
 });
