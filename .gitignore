@@ -26,5 +26,6 @@ dist-ssr
 # Playwright
 /test-results/
 /playwright-report/
+tests/funcionales/screenshots/
 /blob-report/
 /playwright/.cache/

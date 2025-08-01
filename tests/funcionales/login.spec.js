@@ -53,5 +53,5 @@ test('Mostrar errores cuando las credenciales son incorrectas', async ({ page })
   await expect(error).toBeVisible();
 
   // Captura visual opcional para regresión visual
-  await page.screenshot({ path: 'screenshots/login-error.png', fullPage: true });
+  await page.screenshot({ path: 'tests/funcionales/screenshots/login-error.png', fullPage: true });
 });
