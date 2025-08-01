@@ -56,9 +56,10 @@ test('Mostrar errores cuando las credenciales son incorrectas', async ({ page })
   await page.screenshot({ path: 'screenshots/login-error.png', fullPage: true });
 });
 
-// ✅ Prueba funcional: Mostrar mensajes de error si los campos están vacíos
+// Prueba funcional: Mostrar mensajes de error si los campos están vacíos
 test('Mostrar errores si los campos están vacíos al hacer submit', async ({ page }) => {
   await page.goto('http://localhost:5173/login');
+  
 
   // Nos aseguramos de que los campos estén vacíos (opcional si ya están por defecto)
   await page.fill('input[name="email"]', '');
@@ -68,8 +69,9 @@ test('Mostrar errores si los campos están vacíos al hacer submit', async ({ pa
   await page.click('button:has-text("Ingresar")');
 
   // Verificamos que los mensajes de error se muestren
-  const emailError = page.locator('text=El correo es obligatorio');
-  const passwordError = page.locator('text=La contraseña es obligatoria');
+  const emailError = page.locator('text=Email es requerido');
+  const passwordError = page.locator('text=Contraseña es requerida');
+
 
   await expect(emailError).toBeVisible();
   await expect(passwordError).toBeVisible();
