@@ -1,7 +1,15 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar'
 
 export default function DashboardPage() {
   return (
-    <div>DashboardPage</div>
+    <div className="flex h-screen">
+      <Sidebar />
+      <div className="flex-1 p-6 overflow-y-auto">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <p>Hola! 🎉</p>
+        {/* Aquí va el contenido adicional del dashboard */}
+      </div>
+    </div>
   )
 }
