@@ -12,11 +12,13 @@ export default function Topbar() {
         </button>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3 rounded-full bg-[#D1EBFB] px-4 py-2">
+        <div className="flex items-center gap-3 rounded-full bg-[#D1EBFB] px-2 py-1 md:px-4 md:py-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-400 text-white">
             <User className="h-5 w-5" />
           </div>
-          <div className="flex flex-col text-sm">
+
+          {/* Mostrar solo en pantallas medianas o más grandes */}
+          <div className="hidden md:flex flex-col text-sm">
             <span className="font-medium text-gray-800">Nombre Apellido</span>
             <span className="text-gray-600">Rol</span>
           </div>
