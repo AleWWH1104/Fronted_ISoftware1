@@ -4,7 +4,7 @@ import { Home, Package, FolderOpen, FileText, Plus, PlusCircle, LogOut, Menu } f
 
 const generalItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Inventario", url: "/inventory", icon: Package }, // <- aquí
+  { title: "Inventario", url: "/inventory", icon: Package },
   { title: "Proyectos", url: "/proyectos", icon: FolderOpen },
   { title: "Reportes", url: "/reportes", icon: FileText },
 ]
@@ -25,7 +25,7 @@ export default function Sidebar() {
   const getLinkClasses = (isActive) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
-        ? "text-blue-700 font-medium"
+        ? "bg-[#D1EBFB] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
     }`
 
@@ -68,7 +68,6 @@ export default function Sidebar() {
                     key={title}
                     to={url}
                     onClick={handleLinkClick}
-                    style={isActive ? { backgroundColor: '#D1EBFB' } : {}}
                     className={getLinkClasses(isActive)}
                   >
                     <Icon className="h-4 w-4" />
@@ -90,7 +89,6 @@ export default function Sidebar() {
                     key={title}
                     to={url}
                     onClick={handleLinkClick}
-                    style={isActive ? { backgroundColor: '#D1EBFB' } : {}}
                     className={getLinkClasses(isActive)}
                   >
                     <Icon className="h-4 w-4" />
