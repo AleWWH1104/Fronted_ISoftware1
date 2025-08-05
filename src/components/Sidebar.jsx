@@ -4,7 +4,7 @@ import { Home, Package, FolderOpen, FileText, Plus, PlusCircle, LogOut, Menu } f
 
 const generalItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Inventario", url: "/inventario", icon: Package },
+  { title: "Inventario", url: "/inventory", icon: Package }, // <- aquí
   { title: "Proyectos", url: "/proyectos", icon: FolderOpen },
   { title: "Reportes", url: "/reportes", icon: FileText },
 ]
@@ -18,10 +18,16 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
 
-  // Función para cerrar sidebar en móvil al hacer click en link
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
   }
+
+  const getLinkClasses = (isActive) =>
+    `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
+      isActive
+        ? "text-blue-700 font-medium"
+        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+    }`
 
   return (
     <>
@@ -54,7 +60,6 @@ export default function Sidebar() {
           {/* General Section */}
           <div className="mb-8">
             <h3 style={{ color: '#046BB1' }} className="font-medium text-sm mb-4 px-2">General</h3>
-
             <nav className="space-y-1">
               {generalItems.map(({ title, url, icon: Icon }) => {
                 const isActive = location.pathname === url
@@ -63,11 +68,8 @@ export default function Sidebar() {
                     key={title}
                     to={url}
                     onClick={handleLinkClick}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
-                      isActive
-                        ? "bg-blue-100 text-blue-700 font-medium"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
+                    style={isActive ? { backgroundColor: '#D1EBFB' } : {}}
+                    className={getLinkClasses(isActive)}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{title}</span>
@@ -79,19 +81,23 @@ export default function Sidebar() {
 
           {/* Gestión Section */}
           <div className="mb-8">
-           <h3 style={{ color: '#046BB1' }} className="font-medium text-sm mb-4 px-2">Gestión</h3>
+            <h3 style={{ color: '#046BB1' }} className="font-medium text-sm mb-4 px-2">Gestión</h3>
             <nav className="space-y-1">
-              {gestionItems.map(({ title, url, icon: Icon }) => (
-                <Link
-                  key={title}
-                  to={url}
-                  onClick={handleLinkClick}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{title}</span>
-                </Link>
-              ))}
+              {gestionItems.map(({ title, url, icon: Icon }) => {
+                const isActive = location.pathname === url
+                return (
+                  <Link
+                    key={title}
+                    to={url}
+                    onClick={handleLinkClick}
+                    style={isActive ? { backgroundColor: '#D1EBFB' } : {}}
+                    className={getLinkClasses(isActive)}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{title}</span>
+                  </Link>
+                )
+              })}
             </nav>
           </div>
         </div>
