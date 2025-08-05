@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage'
 import Equipos from './pages/Client/Equipos' // Corregido aquí
 import ClientPage from './pages/Client/ClientPage'
 import ProtectedRoutes from './ProtectedRoutes'
+import InventoryPage from './pages/InventoryPage'
 
 function App (){
   return (
@@ -16,6 +17,7 @@ function App (){
             <Route path='/equipment' element={<Equipos/>} />
             <Route path='/login' element={<LoginPage/>} />
             <Route path='/register' element={<RegisterPage/>} />
+            <Route path='/inventory' element={<InventoryPage/>} />
             {/* Rutas protegidas */}
             <Route element= {<ProtectedRoutes/>}>
               <Route path='/home' element={<HomePage/>} />

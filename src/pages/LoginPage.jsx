@@ -30,27 +30,27 @@ function LoginPage() {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="bg-[#046bb1] w-full md:w-3/4 flex flex-col justify-center items-center "
         >
-          {loginErrors.map((error, i) => (
-            <div className="bg-red-700 text-white p-2 rounded mb-4 text-sm" key={i}>
-              {error}
-            </div>
-          ))}
           <div className="w-[80%] ">
             <h2 className="text-3xl font-bold mb-6">Iniciar Sesión</h2>
             <hr className="w-full mb-8 border-2"/>
           </div>
+          {loginErrors.map((error, i) => (
+            <div className="w-[80%] bg-[#f7d7da] text-[#920000] p-2 rounded mb-4 text-sm" key={i}>
+              {error}
+            </div>
+          ))}
 
           <form onSubmit={onSubmit} className="space-y-8 w-[80%] ">
             <div>
               <Label htmlFor="email" className="mb-1 block">Correo</Label>
               <Input type="email" placeholder="Email@gmail.com" register={register} name="email" required />
-              {errors.email && (<p className="text-red-500 text-sm mt-1">Email es requerido</p>)}
+              {errors.email && (<p className="text-red-500 text-sm mt-1">*Email es requerido</p>)}
             </div>
 
             <div>
               <Label htmlFor="password" className="mb-1 block">Contraseña</Label>
               <Input type="password" placeholder="Contraseña" register={register} name="password" required />
-              {errors.password && (<p className="text-red-500 text-sm mt-1">Contraseña es requerida</p>)}
+              {errors.password && (<p className="text-red-500 text-sm mt-1">*Contraseña es requerida</p>)}
             </div>
 
             <Button>Ingresar</Button>
