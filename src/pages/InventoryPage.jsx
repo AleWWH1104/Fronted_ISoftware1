@@ -1,4 +1,6 @@
 import React from 'react'
+import Sidebar from '../components/Sidebar'
+import Topbar from '../components/Topbar'
 import InventoryView from '../components/Inventory/InventoryView'
 
 export default function InventoryPage() {
