@@ -1,19 +1,19 @@
 import React from 'react'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/Topbar'
+import MovementView from '../components/Dashboard/MovementView'
 
 export default function DashboardPage() {
   return (
-    <div className="flex h-screen">
+    <div className="bg-[#EEF3F7] w-full h-screen flex overflow-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        <Topbar />
-        <div className="p-6 flex-1">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p>Hola! 🎉</p>
-          {/* Aquí va el contenido adicional del dashboard */}
-        </div>
-      </div>
+      <main className='flex-1 overflow-hidden flex flex-col'>
+        <Topbar/>
+        <section className='p-[25px] flex-1 overflow-y-auto'>
+          <h1 className='titulo mb-8'>Dashboard</h1>
+          <MovementView/>
+        </section>
+      </main>
     </div>
   )
 }

@@ -38,10 +38,10 @@ const getStockBadge = (nivel) => {
 
 export default function InventoryView() {
     const columns = [
-        { name: 'Código', selector: row => row.codigo, sortable: true },
-        { name: 'Material', selector: row => row.material, sortable: true },
-        { name: 'En bodega', selector: row => row.enBodega, sortable: true, center: true },
-        { name: 'Reservado', selector: row => row.reservado, sortable: true, center: true },
+        { name: 'Código', selector: row => row.codigo, sortable: "true" },
+        { name: 'Material', selector: row => row.material, sortable: "true" },
+        { name: 'En bodega', selector: row => row.enBodega, sortable: "true", center: "true" },
+        { name: 'Reservado', selector: row => row.reservado, sortable: "true", center: "true" },
         {
           name: 'Nivel de stock',
           selector: row => row.nivelStock,
@@ -60,9 +60,8 @@ export default function InventoryView() {
               </button>
             </div>
           ),
-          ignoreRowClick: true,
-          allowOverflow: true,
-          button: true,
+          ignoreRowClick: "true",
+          button: "true",
         },
     ];
 
@@ -78,14 +77,29 @@ export default function InventoryView() {
         );
         setRecords(newData);
     }
-
+    
+    const customStyles = {
+      rows: {
+        style: {
+          minHeight: '40px',
+        },
+      },
+      headCells: {
+        style:{
+          fontWeight: 'bold',
+          fontSize: '12px',
+        }
+      },
+    };
+    
     return (
     <section className="bg-white p-4 rounded-lg pb-0">
       <h2 className="subtitulo">Estado general de materiales</h2>
-      <div className='text-end mb-2'>
+      <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center'>
         <span className='parrafo'>Buscar: </span>
         <input type="text" onChange={handleFilter} className='border border-gray-300 rounded-sm px-2 py-1 parrafo'/>
       </div>
+      
       <DataTable
         columns={columns}
         data={records}
@@ -95,6 +109,7 @@ export default function InventoryView() {
         responsive
         highlightOnHover
         pointerOnHover
+        customStyles={customStyles}
       />
     </section>
   );

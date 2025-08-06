@@ -1,4 +1,3 @@
-import React from 'react'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/Topbar'
 import InventoryView from '../components/Inventory/InventoryView'
@@ -6,11 +5,9 @@ import InventoryView from '../components/Inventory/InventoryView'
 export default function InventoryPage() {
   return (
     <div className='bg-[#EEF3F7] w-full h-screen flex overflow-hidden'>
-      <aside>
-        <div className='bg-white min-h-screen w-[250px] p-[25px] flex-shrink-0'>Sidebar</div>
-      </aside>
+      <Sidebar /> 
       <main className='flex-1 overflow-hidden flex flex-col'>
-        <section className='h-[60px] bg-blue-100 flex-shrink-0'></section>
+        <Topbar/>
         <section className='p-[25px] flex-1 overflow-y-auto'>
           <h1 className='titulo mb-8'>Inventario</h1>
           <InventoryView/>
