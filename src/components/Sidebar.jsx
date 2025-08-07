@@ -59,7 +59,7 @@ export default function Sidebar() {
         <div className="flex-1 px-4 overflow-y-auto">
           {/* General Section */}
           <div className="mb-8">
-            <h3 style={{ color: '#046BB1' }} className="parrafo mb-2 px-2">General</h3>
+            <h3 style={{ color: '#046BB1' }} className="parrafo mb-2 px-2">GENERAL</h3>
             <nav className="space-y-1">
               {generalItems.map(({ title, url, icon: Icon }) => {
                 const isActive = location.pathname === url
@@ -80,7 +80,7 @@ export default function Sidebar() {
 
           {/* Gestión Section */}
           <div className="mb-8">
-            <h3 className="parrafo text-[#046BB1] mb-2">Gestión</h3>
+            <h3 className="parrafo text-[#046BB1] mb-2">GESTIÓN</h3>
             <nav className="space-y-1">
               {gestionItems.map(({ title, url, icon: Icon }) => {
                 const isActive = location.pathname === url

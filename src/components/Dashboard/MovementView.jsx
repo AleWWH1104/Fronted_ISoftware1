@@ -79,7 +79,7 @@ export default function MovementView() {
     return (
         <section className="bg-white p-4 rounded-lg pb-0">
             <h2 className="subtitulo">Movimiento de materiales</h2>
-            <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center'>
+            <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center gap-1'>
                 <span className='parrafo'>Buscar: </span>
                 <input type="text" onChange={handleFilter} className='ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo'/>
             </div>  
