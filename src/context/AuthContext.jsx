@@ -2,7 +2,6 @@ import { createContext, useState, useContext, useEffect } from "react";
 import { registerRequest, loginRequest, verifyTokenRequest } from "../services/auth";
 import Cookies from "js-cookie";
 
-
 export const AuthContext = createContext();
 
 export const useAuth = () => {
@@ -10,66 +9,96 @@ export const useAuth = () => {
     if (!context) throw new Error("useAuth must be used within a AuthProvider");
     return context;
 };
-  
 
 export const AuthProvider = ({children}) => {
-
     const [user, setUser] = useState(null);
     const [isAuthenticated, setAuthenticated] = useState(false);
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const signUp= async (user) => {
+    const signUp = async (userData) => {
         try {
-            const res = await registerRequest(user);
-            console.log(res);
-            setAuthenticated(true);
-            setUser(res.data);
-        }catch (error){
-            if (Array.isArray(error.response.data)){
-                return setErrors(error.response.data)
+            const res = await registerRequest(userData);
+            console.log("Registro exitoso:", res);
+            if (res.data.token) {
+                Cookies.set("token", res.data.token);
             }
-            setErrors([error.response.data.message])
+            setAuthenticated(true);
+            setUser(res.data.user || res.data);
+            setErrors([]);
+        } catch (error) {
+            console.error("Error en registro:", error);
+            if (error.response) {
+                if (Array.isArray(error.response.data)) {
+                    setErrors(error.response.data);
+                } else {
+                    setErrors([error.response.data.message || JSON.stringify(error.response.data)]);
+                }
+            } else if (error.request) {
+                setErrors(["No se pudo conectar con el servidor"]);
+            } else {
+                setErrors([error.message || "Error desconocido"]);
+            }
+            setAuthenticated(false);
+            setUser(null);
         }
-    }
+    };
 
-    const signIn = async (user) => {
+    const signIn = async (userData) => {
         try {
-            const res = await loginRequest(user);
-            console.log(res);
-            setAuthenticated(true);
-            setUser(res.data);
-        }catch (error){
-            if (Array.isArray(error.response.data)){
-                return setErrors(error.response.data)
+            const res = await loginRequest(userData);
+            console.log("Respuesta login:", res.data);
+
+            if (res.data.token) {
+                Cookies.set("token", res.data.token);
+            } else {
+                console.warn("No se recibió token en la respuesta de login");
             }
-            setErrors([error.response.data.message])
+
+            setAuthenticated(true);
+            setUser(res.data.user || res.data);
+            setErrors([]);
+        } catch (error) {
+            console.error("Error en login completo:", error);
+            if (error.response) {
+                if (Array.isArray(error.response.data)) {
+                    setErrors(error.response.data);
+                } else {
+                    setErrors([error.response.data.message || JSON.stringify(error.response.data)]);
+                }
+            } else if (error.request) {
+                setErrors(["No se pudo conectar con el servidor"]);
+            } else {
+                setErrors([error.message || "Error desconocido"]);
+            }
+            setAuthenticated(false);
+            setUser(null);
         }
-    }
+    };
 
     useEffect(() => {
         const checkLogin = async () => {
-            const token = Cookies.get("token"); // <- revisa si hay token primero
+            const token = Cookies.get("token");
             if (!token) {
                 setLoading(false);
                 return;
             }
-    
+
             try {
                 const res = await verifyTokenRequest();
-                setUser(res.data);
+                setUser(res.data.user || res.data);
                 setAuthenticated(true);
             } catch (error) {
                 setAuthenticated(false);
                 setUser(null);
+                Cookies.remove("token");
             } finally {
                 setLoading(false);
             }
         };
-    
+
         checkLogin();
     }, []);
-    
 
     const logout = () => {
         Cookies.remove("token");
