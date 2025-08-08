@@ -9,3 +9,13 @@ export const getEstadoMateriales = async () => {
       throw error;
     }
 };
+
+export const getMovimientoMaterial = async () => {
+  try {
+    const response = await axios.get(`/bodega-materiales`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching movimiento de material:', error);
+    throw error;
+  }
+};

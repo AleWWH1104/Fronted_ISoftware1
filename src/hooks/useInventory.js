@@ -1,4 +1,4 @@
-import { getEstadoMateriales } from "../services/inventory";
+import { getEstadoMateriales, getMovimientoMaterial } from "../services/inventory";
 import { useEffect, useState } from 'react';
 
 export default function useEstadoMateriales() {
@@ -14,4 +14,20 @@ export default function useEstadoMateriales() {
     }, []);
   
     return { estadoMateriales, loading, error };
+}
+
+
+export function useMaterialMovement(){
+    const [movimientoMaterial, setMovimientoMaterial] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+        getMovimientoMaterial()
+            .then(setMovimientoMaterial)
+            .catch(setError)
+            .finally(() => setLoading(false));
+    }, []);
+  
+    return { movimientoMaterial, loading, error };
 }
