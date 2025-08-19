@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Home, Package, FolderOpen, FileChartColumn, PlusCircle, LogOut, Menu } from "lucide-react"
+import { useAuth } from "../context/AuthContext"   // 👈 importa tu contexto
 
 const generalItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
@@ -17,9 +18,16 @@ const gestionItems = [
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { logout } = useAuth()   // 👈 obtén la función de logout del contexto
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
+  }
+
+  const handleLogout = () => {
+    logout()          // limpia el estado del usuario en AuthContext
+    navigate("/login") // redirige al login
   }
 
   const getLinkClasses = (isActive) =>
@@ -101,14 +109,14 @@ export default function Sidebar() {
         </div>
 
         {/* Cerrar Sesión */}
-        <div className=" border-t border-gray-200 p-4">
-          <a
-            href="/logout"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors w-full"
+        <div className="border-t border-gray-200 p-4">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors w-full text-left"
           >
             <LogOut className="h-4 w-4" />
             <span>Cerrar Sesión</span>
-          </a>
+          </button>
         </div>
       </aside>
 
