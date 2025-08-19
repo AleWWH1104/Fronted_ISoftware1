@@ -14,7 +14,7 @@ function LoginPage() {
     signIn(data);
   });
 
-  useEffect(() => {
+  useEffect(() => { 
     if (isAuthenticated) {
       navigate("/dashboard");
     }

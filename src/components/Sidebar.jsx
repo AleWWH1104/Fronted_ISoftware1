@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Home, Package, FolderOpen, FileChartColumn, PlusCircle, LogOut, Menu } from "lucide-react"
+import { useAuth } from '../context/AuthContext'
 
 const generalItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
@@ -28,6 +29,13 @@ export default function Sidebar() {
         ? "bg-[#D1EBFB] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
     }`
+  
+  const { logout} = useAuth();
+  const handleLogout = async () => {
+    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      await logout();
+    }
+  };
 
   return (
     <>
@@ -102,13 +110,13 @@ export default function Sidebar() {
 
         {/* Cerrar Sesión */}
         <div className=" border-t border-gray-200 p-4">
-          <a
-            href="/logout"
+          <button
+            onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors w-full"
           >
             <LogOut className="h-4 w-4" />
             <span>Cerrar Sesión</span>
-          </a>
+          </button>
         </div>
       </aside>
 

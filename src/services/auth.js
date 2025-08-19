@@ -27,3 +27,11 @@
       return response;
   };
 
+  export const logoutRequest = async () => {
+    const response = await axios.post(
+      '/auth/logout',
+      {}, // cuerpo vacío
+      { withCredentials: true }
+    );
+    return response;
+  };

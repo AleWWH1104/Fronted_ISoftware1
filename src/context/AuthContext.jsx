@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { registerRequest, loginRequest, verifyTokenRequest } from "../services/auth";
+import { registerRequest, loginRequest, verifyTokenRequest, logoutRequest } from "../services/auth";
 import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
@@ -49,11 +49,11 @@ export const AuthProvider = ({children}) => {
             const res = await loginRequest(userData);
             console.log("Respuesta login:", res.data);
 
-            if (res.data.token) {
-                Cookies.set("token", res.data.token);
-            } else {
-                console.warn("No se recibió token en la respuesta de login");
-            }
+            // if (res.data.token) {
+            //     Cookies.set("token", res.data.token);
+            // } else {
+            //     console.warn("No se recibió token en la respuesta de login");
+            // }
 
             setAuthenticated(true);
             setUser(res.data.user || res.data);
@@ -81,6 +81,7 @@ export const AuthProvider = ({children}) => {
             const token = Cookies.get("token");
             if (!token) {
                 setLoading(false);
+                setAuthenticated(false);
                 return;
             }
 
@@ -100,10 +101,18 @@ export const AuthProvider = ({children}) => {
         checkLogin();
     }, []);
 
-    const logout = () => {
-        Cookies.remove("token");
-        setUser(null);
-        setAuthenticated(false);
+    const logout = async () => {
+        try {
+            // Llamar al endpoint de logout del backend para limpiar la cookie
+            await logoutRequest();
+        } catch (error) {
+            console.error("Error during logout:", error);
+        } finally {
+            // Limpiar el estado igualmente
+            Cookies.remove("token");
+            setUser(null);
+            setAuthenticated(false);
+        }
     };
 
     return(

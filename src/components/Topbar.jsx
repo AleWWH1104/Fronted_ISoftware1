@@ -1,7 +1,11 @@
 import React from "react"
 import { Bell, User } from "lucide-react"
+import { useAuth } from "../context/AuthContext";
 
 export default function Topbar() {
+  const { user } = useAuth();
+
+
   return (
     <header className="flex h-[60px] items-center justify-end px-[25px] py-[5px] bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] flex-shrink-0">
       <div className="flex items-center gap-4">
@@ -19,7 +23,7 @@ export default function Topbar() {
 
           {/* Mostrar solo en pantallas medianas o más grandes */}
           <div className="hidden md:flex flex-col py-1">
-            <span className="text-sm">Nombre Apellido</span>
+            <span className="text-sm">{user?.Fullname}</span>
             <span className="text-xs text-gray-700">Rol</span>
           </div>
         </div>
