@@ -82,7 +82,7 @@ const KPICards = () => {
               {kpi.icon}
             </div>
             <div className="flex-1">
-              <p className="text-sm text-gray-600 mb-1">{kpi.title}</p>
+              <p className="text-md text-gray-600 mb-1">{kpi.title}</p>
               <p className="titulo text-xl font-bold" style={{ color: "#046BB1" }}>
                 {kpi.value}
               </p>
