@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../components/Sidebar'
 import Topbar from '../components/Topbar'
 import MovementView from '../components/Dashboard/MovementView'
+import KPICards from "../components/Dashboard/KPI"   // ✅ corregido
 
 export default function DashboardPage() {
   return (
@@ -11,6 +12,7 @@ export default function DashboardPage() {
         <Topbar/>
         <section className='p-[25px] flex-1 overflow-y-auto'>
           <h1 className='titulo mb-8'>Dashboard</h1>
+          <KPICards />  
           <MovementView/>
         </section>
       </main>
