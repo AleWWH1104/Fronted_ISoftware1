@@ -19,7 +19,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()   // 👈 obtén la función de logout del contexto
+  const { logout } = useAuth()   //
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)

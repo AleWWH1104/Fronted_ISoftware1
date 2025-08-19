@@ -15,7 +15,7 @@ export default function Topbar() {
         </button>
 
         <div className="flex items-center gap-3 rounded-full px-3 py-1" style={{ backgroundColor: "#709DBB40" }}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-600 -ml-1">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-600 -ml-1">
             <User className="h-6 w-6 text-white" />
           </div>
 
