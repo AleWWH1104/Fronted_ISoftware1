@@ -1,24 +1,26 @@
-import React from "react"
-import { Bell, User } from "lucide-react"
+import { Bell, User, Sun } from "lucide-react"
 
 export default function Topbar() {
   return (
     <header className="flex h-[60px] items-center justify-end px-[25px] py-[5px] bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1)] flex-shrink-0">
       <div className="flex items-center gap-4">
-        {/* Notification Bell */}
-        <button className="p-2 rounded-full hover:bg-gray-100">
+        <button className="p-2 rounded-full hover:bg-gray-100" style={{ backgroundColor: "#709DBB40" }}>
+          <Sun className="h-6 w-6" />
+          <span className="sr-only">Toggle theme</span>
+        </button>
+
+        <button className="p-2 rounded-full hover:bg-gray-100" style={{ backgroundColor: "#709DBB40" }}>
           <Bell className="h-6 w-6" />
           <span className="sr-only">Notifications</span>
         </button>
 
-        {/* User Profile */}
-        <div className="flex items-center gap-3 rounded-lg bg-[#D1EBFB] px-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 ">
-            <User className="h-5 w-5" />
+        <div className="flex items-center gap-3 rounded-full px-3 py-1" style={{ backgroundColor: "#709DBB40" }}>
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-600 -ml-1">
+            <User className="h-6 w-6 text-white" />
           </div>
 
           {/* Mostrar solo en pantallas medianas o más grandes */}
-          <div className="hidden md:flex flex-col py-1">
+          <div className="hidden md:flex flex-col py-">
             <span className="text-sm">Nombre Apellido</span>
             <span className="text-xs text-gray-700">Rol</span>
           </div>
