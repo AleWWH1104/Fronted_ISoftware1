@@ -7,7 +7,7 @@ const KPICards = () => {
       title: "Total de productos",
       value: "1000",
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M21 16V8C21 7.45 20.55 7 20 7H4C3.45 7 3 7.45 3 8V16C3 16.55 3.45 17 4 17H20C20.55 17 21 16.55 21 16Z"
             stroke="#046BB1"
@@ -28,7 +28,7 @@ const KPICards = () => {
       title: "Proyectos en ejecución",
       value: "5",
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="10" stroke="#374151" strokeWidth="2" />
           <path d="M12 6V12L16 14" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -38,7 +38,7 @@ const KPICards = () => {
       title: "Proyectos finalizados",
       value: "5000",
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="12" cy="12" r="10" stroke="#374151" strokeWidth="2" />
           <path d="M9 12L11 14L15 10" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -48,7 +48,7 @@ const KPICards = () => {
       title: "Total de clientes",
       value: "500",
       icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
             stroke="#374151"
@@ -76,7 +76,7 @@ const KPICards = () => {
         <div key={index} className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
           <div className="flex items-start gap-3">
             <div
-              className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+              className="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: "#DBE6EE" }}
             >
               {kpi.icon}
