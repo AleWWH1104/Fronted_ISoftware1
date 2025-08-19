@@ -71,14 +71,19 @@ const KPICards = () => {
   ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {kpiData.map((kpi, index) => (
-        <div key={index} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0">{kpi.icon}</div>
+        <div key={index} className="bg-white rounded-lg p-3 shadow-sm border border-gray-100">
+          <div className="flex items-start gap-3">
+            <div
+              className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: "#DBE6EE" }}
+            >
+              {kpi.icon}
+            </div>
             <div className="flex-1">
               <p className="text-sm text-gray-600 mb-1">{kpi.title}</p>
-              <p className="titulo text-2xl font-bold" style={{ color: index === 0 ? "#046BB1" : "#046BB1" }}>
+              <p className="titulo text-xl font-bold" style={{ color: "#046BB1" }}>
                 {kpi.value}
               </p>
             </div>
@@ -90,4 +95,5 @@ const KPICards = () => {
 }
 
 export default KPICards
+
 
