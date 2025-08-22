@@ -19,16 +19,11 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()   //
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
   }
 
-  const handleLogout = () => {
-    logout()          // limpia el estado del usuario en AuthContext
-    navigate("/login") // redirige al login
-  }
 
   const getLinkClasses = (isActive) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
