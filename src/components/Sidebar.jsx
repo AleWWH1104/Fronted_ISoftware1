@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Home, Package, FolderOpen, FileChartColumn, PlusCircle, LogOut, Menu } from "lucide-react"
 import { useAuth } from '../context/AuthContext'
 
@@ -18,9 +18,16 @@ const gestionItems = [
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { logout } = useAuth()   //
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
+  }
+
+  const handleLogout = () => {
+    logout()          // limpia el estado del usuario en AuthContext
+    navigate("/login") // redirige al login
   }
 
   const getLinkClasses = (isActive) =>
