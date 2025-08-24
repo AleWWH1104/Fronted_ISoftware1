@@ -1,21 +1,30 @@
-import React from 'react'
-import Sidebar from '../components/Sidebar'
-import Topbar from '../components/Topbar'
 import MovementView from '../components/Dashboard/MovementView'
-import KPICards from "../components/Dashboard/KPI"   // ✅ corregido
+import KPICard from "../components/Dashboard/KPI" 
+import Layout from '../components/Layout'
+import { Boxes, Users, ClockFading, CircleCheckBig } from "lucide-react"
+import { useCountCustomers, useFinishedProjects, useInProgressProjects } from '../hooks/useKPIs'
+import { CreateButton } from '../components/Button'
+
 
 export default function DashboardPage() {
+
+  const {countCustomers} =useCountCustomers();
+  const {finishedProjects} =useFinishedProjects();
+  const {InProgressProjects} =useInProgressProjects();
+
   return (
-    <div className="bg-[#EEF3F7] w-full h-screen flex overflow-hidden">
-      <Sidebar />
-      <main className='flex-1 overflow-hidden flex flex-col'>
-        <Topbar/>
-        <section className='p-[25px] flex-1 overflow-y-auto'>
-          <h1 className='titulo mb-8'>Dashboard</h1>
-          <KPICards />  
-          <MovementView/>
-        </section>
-      </main>
-    </div>
+    <Layout>
+      <div className='flex justify-between items-center mb-8'>
+        <h1 className='titulo'>Dashboard</h1>
+        <CreateButton label="Nuevo proyecto" onClick={() => console.log("click en crear")}/>
+      </div>
+      <section id='kpis-section' className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
+        <KPICard titulo="Total de productos" valor={countCustomers} icono={<Boxes/>}/> {/*Falta*/}
+        <KPICard titulo="Proyectos en progreso" valor={countCustomers} icono={<ClockFading/>}/> {/*Falta*/}
+        <KPICard titulo="Proyectos finalizados" valor={finishedProjects} icono={<CircleCheckBig/>}/>
+        <KPICard titulo="Total de clientes" valor={countCustomers} icono={<Users/>}/>
+      </section>  
+      <MovementView/>
+    </Layout>
   )
 }

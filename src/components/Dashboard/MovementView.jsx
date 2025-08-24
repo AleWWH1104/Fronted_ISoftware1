@@ -47,7 +47,7 @@ export default function MovementView() {
   };
 
   return (
-    <section className="bg-white p-4 rounded-lg pb-0">
+    <section className="bg-white p-4 rounded-lg pb-0 shadow-xs">
       <h2 className="subtitulo">Movimiento de materiales</h2>
       <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center gap-1'>
         <span className='parrafo'>Buscar: </span>
