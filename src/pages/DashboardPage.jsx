@@ -16,7 +16,6 @@ export default function DashboardPage() {
     <Layout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Dashboard</h1>
-        <CreateButton label="Nuevo proyecto" onClick={() => console.log("click en crear")}/>
       </div>
       <section id='kpis-section' className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
         <KPICard titulo="Total de productos" valor={countCustomers} icono={<Boxes/>}/> {/*Falta*/}

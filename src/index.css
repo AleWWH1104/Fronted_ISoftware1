@@ -9,7 +9,13 @@ body{
     font-weight: medium;
     font-size: 30px;
 }
-  
+
+.titulo2 {
+    font-weight:bold;
+    font-size: 20px; 
+    color: #046BB1;
+}
+
 .subtitulo {
     font-weight:bold;
     font-size: 16px; 
