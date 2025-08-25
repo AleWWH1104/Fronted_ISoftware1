@@ -3,8 +3,7 @@ import KPICard from "../components/Dashboard/KPI"
 import Layout from '../components/Layout'
 import { Boxes, Users, ClockFading, CircleCheckBig } from "lucide-react"
 import { useCountCustomers, useFinishedProjects, useInProgressProjects } from '../hooks/useKPIs'
-import { CreateButton } from '../components/Button'
-
+import ServiceChart from '../components/Dashboard/ServiceChart'
 
 export default function DashboardPage() {
 
@@ -22,8 +21,18 @@ export default function DashboardPage() {
         <KPICard titulo="Proyectos en progreso" valor={countCustomers} icono={<ClockFading/>}/> {/*Falta*/}
         <KPICard titulo="Proyectos finalizados" valor={finishedProjects} icono={<CircleCheckBig/>}/>
         <KPICard titulo="Total de clientes" valor={countCustomers} icono={<Users/>}/>
-      </section>  
-      <MovementView/>
+      </section> 
+      <section className='flex w-full gap-4'>
+        <div className='w-2/3'>
+          <MovementView/>
+        </div>
+        <div className='w-1/3'>
+          <ServiceChart/>
+        </div>
+      </section>
+
+      
+
     </Layout>
   )
 }

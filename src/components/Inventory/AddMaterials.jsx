@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { InputForm } from "../Input";
+import { SaveOrCancelButtons } from "../Button";
 
-export default function AddMaterials() {
+export default function AddMaterials({onClickCancel}) {
   const [material, setMaterial] = useState("");
   const [codigo, setCodigo] = useState("");
   const [cantidad, setCantidad] = useState("");
@@ -75,14 +76,14 @@ export default function AddMaterials() {
       </button>
 
       {/* Lista de materiales */}
-      <div className="border-t border-gray-200 my-6 py-4">
+      <div className="border-t border-gray-200 my-6 py-4 flex flex-col h-100">
         <h4 className="subtitulo">Materiales agregados</h4>
         {lista.length === 0 && (
             <div className="border border-gray-400 border-dashed flex justify-center items-center py-2 w-full rounded-lg my-4">
                 <p className="parrafo">No hay materiales aún</p>
             </div>
         )}
-        <div className="mt-4 space-y-2">
+        <div className="flex-1 overflow-y-auto mt-4 space-y-2">
           {lista.map((item) => (
             <div
               key={item.id}
@@ -97,6 +98,7 @@ export default function AddMaterials() {
             </div>
           ))}
         </div>
+        <SaveOrCancelButtons onClick1={onClickCancel} onClick2={""}/>
       </div>
     </div>
   );
