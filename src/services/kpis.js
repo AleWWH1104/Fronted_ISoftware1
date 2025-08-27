@@ -2,7 +2,7 @@ import axios from "./axios"
 
 export const getFinishedProjects = async () => {
     try {
-      const response = await axios.get(`projects/finished/count`);
+      const response = await axios.get(`/projects/finished/count`);
       return response.data;
     } catch (error) {
       console.error('Error fetching projects/finished:', error);
@@ -12,10 +12,10 @@ export const getFinishedProjects = async () => {
 
 export const getInProgressProjects = async () => {
     try {
-      const response = await axios.get(`/projects/in-progress`);
+      const response = await axios.get(`/projects/in-progress-count`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching projects/in-progress:', error);
+      console.error('Error fetching projects/in-progress-count:', error);
       throw error;
     }
 };
@@ -26,6 +26,26 @@ export const getCountCustomers = async () => {
       return response.data;
     } catch (error) {
       console.error('Error fetching clients_count:', error);
+      throw error;
+    }
+};
+
+export const getCountProducts = async () => {
+    try {
+      const response = await axios.get(`/materiales/total-cantidad`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching cantidad de productos:', error);
+      throw error;
+    }
+};
+
+export const getProjectsByService = async () => {
+    try {
+      const response = await axios.get(`/projects/Total-Projects-ByService`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching projects by service:', error);
       throw error;
     }
 };

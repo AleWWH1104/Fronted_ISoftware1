@@ -25,9 +25,8 @@ export default function Topbar() {
 
           {/* Mostrar solo en pantallas medianas o más grandes */}
           <div className="hidden md:flex flex-col pr-2">
-            <span className="text-sm">Gerardo Bran</span>
-            {/* <span className="text-sm">{user?.Fullname}</span> */}
-            <span className="text-xs text-gray-700">Rol</span>
+            <span className="text-sm">{user?.Fullname}</span>
+            <span className="text-xs text-gray-700">{user?.roles}</span>
           </div>
         </div>
       </div>
