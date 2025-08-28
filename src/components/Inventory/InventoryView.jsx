@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import DataTable from 'react-data-table-component';
 import { PackagePlus, Trash2 } from 'lucide-react';
 import useEstadoMateriales from '../../hooks/useInventory';
@@ -51,13 +51,18 @@ const handleAgregar = async (id) => {
   }
 };
 
-export default function InventoryView({ onAgregarMaterial }) {
-  const {estadoMateriales} = useEstadoMateriales();
+export default function InventoryView({onAgregarMaterial}) {
+  const {estadoMateriales, refetch} = useEstadoMateriales();
   const [records,  setRecords] = useState([]);
 
   useEffect(() => {
     setRecords(estadoMateriales);
   }, [estadoMateriales]);
+
+  const handleRefreshInventory = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   
   const columns = [
       { name: 'Código', selector: row => row.codigo, sortable: "true" },
@@ -76,7 +81,7 @@ export default function InventoryView({ onAgregarMaterial }) {
           <div style={{ display: 'flex', gap: 16 }}>
             <button 
               title="Agregar"
-              onClick={() => onAgregarMaterial(row.id_material)} >
+              onClick={() => onAgregarMaterial(row)} >
               <PackagePlus size={20} color='#046bb1'/>
             </button>
             <button

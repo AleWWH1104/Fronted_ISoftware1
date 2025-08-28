@@ -5,13 +5,14 @@ import { SaveOrCancelButtons } from "../Button";
 function MovementMaterialForm({material}){
   const [cantidad, setCantidad] = useState("");
   const [observaciones, setObservaciones] = useState("");
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-2 border-b border-gray-200 py-4">
         <InputForm
         type="text"
         label="Nombre de material"
-        placeholder={material.nombre}
-        value={material.nombre}
+        placeholder={material.nombre_material}
+        value={material.nombre_material}
         readOnly
         className="col-span-2"
         />
@@ -36,17 +37,11 @@ function MovementMaterialForm({material}){
   )
 }
 
-export default function MovementMaterialPopUp({material, onClickCancel}) {
-    //Mock data
-    const materiales = [
-        { id: 1, nombre: "Lámpara Globerite blanca" },
-        { id: 2, nombre: "Bomba de agua 1HP" },
-        { id: 3, nombre: "Filtro de arena 20kg" },
-    ];
-
-    const handleAdd = () => {
-        
-    };
+export default function MovementMaterialPopUp({onClickCancel, materiales}) {
+    
+  const handleAdd = () => {
+      
+  };
 
     return (
     <div className="bg-white rounded-lg shadow-lg w-[30%] h-[95%] mx-[25px] p-6 flex flex-col">
@@ -58,7 +53,9 @@ export default function MovementMaterialPopUp({material, onClickCancel}) {
       </div>
       <div className="flex-1 overflow-y-auto">
         {materiales.map((mat) => (
-        <MovementMaterialForm material={mat}/>
+        <MovementMaterialForm 
+          key={mat.id_material}
+          material={mat}/>
         ))}
       </div>
       <SaveOrCancelButtons onClick1={onClickCancel} onClick2={""}/>
