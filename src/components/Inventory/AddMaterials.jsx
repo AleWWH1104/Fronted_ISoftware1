@@ -3,8 +3,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { InputForm } from "../Input";
 import { SaveOrCancelButtons } from "../Button";
 import { crearMaterial, movimientoMaterial } from "../../services/inventory";
+import useEstadoMateriales from "../../hooks/useInventory";
 
-export default function AddMaterials({onClickCancel}) {
+export default function AddMaterials({onClickCancel, onClickSave}) {
   const [material, setMaterial] = useState("");
   const [codigo, setCodigo] = useState("");
   const [cantidad, setCantidad] = useState("");
@@ -64,6 +65,9 @@ export default function AddMaterials({onClickCancel}) {
 
       console.log("listo: materiales creados y registrados en bodega");
       setLista([]);
+
+      //Cerrar popup
+      onClickSave();
     } catch (err) {
       console.error("Error al crear materiales:", err.response?.data?.message || err.message);
     }

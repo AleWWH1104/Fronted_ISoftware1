@@ -36,7 +36,7 @@ function MovementMaterialForm({material}){
   )
 }
 
-export default function MovementMaterialPopUp({onClickCancel}) {
+export default function MovementMaterialPopUp({material, onClickCancel}) {
     //Mock data
     const materiales = [
         { id: 1, nombre: "Lámpara Globerite blanca" },

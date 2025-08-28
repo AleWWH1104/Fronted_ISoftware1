@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { PackagePlus, Trash2 } from 'lucide-react';
 import useEstadoMateriales from '../../hooks/useInventory';
+import { eliminarMaterial } from '../../services/inventory';
 
 // Helper para badge colorido
 const getStockBadge = (nivel) => {
@@ -18,9 +19,41 @@ const getStockBadge = (nivel) => {
   );
 };
 
-export default function InventoryView() {
-  
-  const {estadoMateriales} = useEstadoMateriales()
+const handleEliminar = async (id) => {
+  if (!confirm("¿Seguro que deseas eliminar este material?")) return;
+
+  try {
+    await eliminarMaterial(id);
+    alert("Material eliminado correctamente");
+    //reload(); // vuelve a cargar la lista después de eliminar
+  } catch (error) {
+    alert("Error eliminando el material");
+    console.error(error);
+  }
+};
+
+const handleAgregar = async (id) => {
+  try {
+    // Evitar duplicados en la lista
+    if (materialesEnMovimiento.some(mat => mat.id_material === id)) {
+      alert("Este material ya está en la lista.");
+      setIsPopupOpen(true); // Abrir el popup por si estaba cerrado
+      return;
+    }
+
+    const materialData = await getMaterialById(id);
+    // Añadimos el nuevo material a la lista existente
+    setMaterialesEnMovimiento(prevMateriales => [...prevMateriales, materialData]);
+    setIsPopupOpen(true); // Abrimos el popup
+  } catch (error) {
+    console.error("Error al obtener el material:", error);
+    alert("No se pudo agregar el material.");
+  }
+};
+
+export default function InventoryView({ onAgregarMaterial }) {
+  const {estadoMateriales} = useEstadoMateriales();
+  const [records,  setRecords] = useState([]);
 
   useEffect(() => {
     setRecords(estadoMateriales);
@@ -39,22 +72,26 @@ export default function InventoryView() {
       },
       {
         name: 'Acciones',
-        cell: () => (
+        cell: (row) => (
           <div style={{ display: 'flex', gap: 16 }}>
-            <button title="Agregar" className="">
+            <button 
+              title="Agregar"
+              onClick={() => onAgregarMaterial(row.id_material)} >
               <PackagePlus size={20} color='#046bb1'/>
             </button>
-            <button title="Eliminar" className="">
+            <button
+              title="Eliminar"
+              onClick={() => handleEliminar(row.id_material)}
+            >
               <Trash2 size={20} color='#6E6E71' />
             </button>
           </div>
         ),
-        ignoreRowClick: "true",
+        ignoreRowClick: true,
         button: "true",
-      },
-  ];
+      }
 
-  const [records,  setRecords] = useState([]);
+  ];
 
   function handleFilter(event){
       const value = event.target.value.toLowerCase();

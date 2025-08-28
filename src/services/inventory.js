@@ -39,3 +39,26 @@ export const movimientoMaterial = async (data) => {
     throw error;
   }
 };
+
+export const eliminarMaterial = async (id) => {
+  try {
+    const response = await axios.delete(`/materiales/${id}`, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error(`Error eliminando material:`, error);
+    throw error;
+  }
+};
+
+export const getMaterialById = async (id) => {
+  try {
+    const response = await axios.get(`/materiales/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching material by id:`, error);
+    throw error;
+  }
+};
+
+
+
