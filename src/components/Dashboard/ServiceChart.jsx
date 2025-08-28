@@ -15,11 +15,12 @@ export default function ServiceChart() {
  
   return (
     <div className="bg-white p-4 rounded-lg parrafo h-60 shadow-xs">
-        
+        <h2 className="subtitulo mb-2">Proyectos por servicio</h2>
         <ResponsiveContainer width="100%" height="100%">
             <BarChart
             layout="vertical" // barras horizontales
             data={projectsByService}
+            margin={{ bottom: 20 }}
             >
             
             <XAxis

@@ -19,3 +19,23 @@ export const getMovimientoMaterial = async () => {
     throw error;
   }
 };
+
+export const crearMaterial = async (data) => {
+  try {
+    const response = await axios.post(`/materiales`, data, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error('Error creando materiales:', error);
+    throw error;
+  }
+};
+
+export const movimientoMaterial = async (data) => {
+  try {
+    const response = await axios.post(`/bodega-materiales`, data, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error(`Error agregando a bodega material:`, error);
+    throw error;
+  }
+};

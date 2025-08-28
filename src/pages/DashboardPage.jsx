@@ -23,11 +23,11 @@ export default function DashboardPage() {
         <KPICard titulo="Proyectos finalizados" valor={finishedProjects} icono={<CircleCheckBig/>}/>
         <KPICard titulo="Total de clientes" valor={countCustomers} icono={<Users/>}/>
       </section> 
-      <section className='flex w-full gap-4'>
-        <div className='w-2/3'>
+      <section className='flex flex-col w-full gap-4 md:flex-row'>
+        <div className='md:w-2/3'>
           <MovementView/>
         </div>
-        <div className='w-1/3'>
+        <div className='md:w-1/3'>
           <ServiceChart/>
         </div>
       </section>
