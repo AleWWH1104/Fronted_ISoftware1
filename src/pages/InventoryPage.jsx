@@ -53,12 +53,12 @@ export default function InventoryPage() {
       <InventoryView onAgregarMaterial={handleAgregarMaterial}/>
       {isPopUp1 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
-          <AddMaterials onClickCancel={() => setPopUp1(false)} onClickSave={() => setPopUp1(false)} onUpdateInventory={handleRefreshInventory}/>
+          <AddMaterials onClickCancel={() => setPopUp1(false)} onClickSave={() => setPopUp1(false)}/>
         </div>
       )}
       {isPopUp2 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
-          <MovementMaterialPopUp materiales={materialesEnMovimiento} onClickCancel={() => setPopUp2(false)}/>
+          <MovementMaterialPopUp materiales={materialesEnMovimiento} onClickCancel={() => setPopUp2(false)} onClickSave={() => setPopUp2(false)}/>
         </div>
       )}
     </Layout>

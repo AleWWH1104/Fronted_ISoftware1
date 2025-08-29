@@ -5,7 +5,7 @@ import { SaveOrCancelButtons } from "../Button";
 import { crearMaterial, movimientoMaterial } from "../../services/inventory";
 import useEstadoMateriales from "../../hooks/useInventory";
 
-export default function AddMaterials({onClickCancel, onClickSave, onUpdateInventory}) {
+export default function AddMaterials({onClickCancel, onClickSave}) {
   const [material, setMaterial] = useState("");
   const [codigo, setCodigo] = useState("");
   const [cantidad, setCantidad] = useState("");
@@ -67,9 +67,9 @@ export default function AddMaterials({onClickCancel, onClickSave, onUpdateInvent
       setLista([]);
 
       //Refrescar inventario
-      if (onUpdateInventory) {
-        await onUpdateInventory(); // Usar await si es necesario
-      }
+      // if (onUpdateInventory) {
+      //   await onUpdateInventory(); // Usar await si es necesario
+      // }
 
       //Cerrar popup
       onClickSave();
