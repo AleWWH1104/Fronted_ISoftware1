@@ -16,6 +16,22 @@ export const AuthProvider = ({children}) => {
     const [errors, setErrors] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // Función para verificar si el usuario tiene todos los permisos requeridos
+    const hasAllPermissions = (requiredPermissions = []) => {
+        if (!user || !user.permisos) return false;
+        return requiredPermissions.every(permission => 
+            user.permisos.includes(permission)
+        );
+    };
+
+    // Función para verificar si el usuario tiene al menos uno de los permisos requeridos
+    const hasAnyPermission = (requiredPermissions = []) => {
+        if (!user || !user.permisos) return false;
+        return requiredPermissions.some(permission => 
+            user.permisos.includes(permission)
+        );
+    };
+
     const signUp = async (userData) => {
         try {
             const res = await registerRequest(userData);
@@ -78,13 +94,6 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const checkLogin = async () => {
-            const token = Cookies.get("token");
-            if (!token) {
-                setLoading(false);
-                setAuthenticated(false);
-                return;
-            }
-
             try {
                 const res = await verifyTokenRequest();
                 setUser(res.data.user || res.data);
@@ -92,7 +101,6 @@ export const AuthProvider = ({children}) => {
             } catch (error) {
                 setAuthenticated(false);
                 setUser(null);
-                Cookies.remove("token");
             } finally {
                 setLoading(false);
             }
@@ -121,6 +129,8 @@ export const AuthProvider = ({children}) => {
                 signUp,
                 signIn,
                 logout,
+                hasAllPermissions,
+                hasAnyPermission,
                 loading,
                 user,
                 isAuthenticated,

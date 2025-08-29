@@ -28,7 +28,7 @@ export default function Sidebar() {
   const getLinkClasses = (isActive) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
-        ? "bg-[#D1EBFB] text-[#046BB1] font-medium"
+        ? "bg-[#DDF0FC] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
     }`
   
