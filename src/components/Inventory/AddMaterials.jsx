@@ -3,7 +3,6 @@ import { Plus, Trash2 } from "lucide-react";
 import { InputForm } from "../Input";
 import { SaveOrCancelButtons } from "../Button";
 import { crearMaterial, movimientoMaterial } from "../../services/inventory";
-import useEstadoMateriales from "../../hooks/useInventory";
 
 export default function AddMaterials({onClickCancel, onClickSave}) {
   const [material, setMaterial] = useState("");

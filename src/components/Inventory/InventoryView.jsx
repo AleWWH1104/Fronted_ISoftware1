@@ -19,18 +19,7 @@ const getStockBadge = (nivel) => {
   );
 };
 
-const handleEliminar = async (id) => {
-  if (!confirm("¿Seguro que deseas eliminar este material?")) return;
 
-  try {
-    await eliminarMaterial(id);
-    alert("Material eliminado correctamente");
-    //reload(); // vuelve a cargar la lista después de eliminar
-  } catch (error) {
-    alert("Error eliminando el material");
-    console.error(error);
-  }
-};
 
 const handleAgregar = async (id) => {
   try {
@@ -51,18 +40,25 @@ const handleAgregar = async (id) => {
   }
 };
 
-export default function InventoryView({onAgregarMaterial}) {
-  const {estadoMateriales, refetch} = useEstadoMateriales();
+export default function InventoryView({data, refetch, onAgregarMaterial}) {
+  
   const [records,  setRecords] = useState([]);
 
   useEffect(() => {
-    setRecords(estadoMateriales);
-  }, [estadoMateriales]);
+    setRecords(data);
+  }, [data]);
 
-  const handleRefreshInventory = useCallback(() => {
-    refetch();
-  }, [refetch]);
+  const handleEliminar = async (id) => {
+    if (!confirm("¿Seguro que deseas eliminar este material?")) return;
 
+    try {
+      await eliminarMaterial(id);
+      alert("Material eliminado correctamente");
+      refetch();
+    } catch (error) {
+      console.error("Error detallado:", error.response?.data || error.message);
+    }
+  };
   
   const columns = [
       { name: 'Código', selector: row => row.codigo, sortable: "true" },
@@ -100,7 +96,7 @@ export default function InventoryView({onAgregarMaterial}) {
 
   function handleFilter(event){
       const value = event.target.value.toLowerCase();
-      const newData = estadoMateriales.filter(row =>
+      const newData = data.filter(row =>
           Object.values(row).some(
           field =>
               String(field).toLowerCase().includes(value)

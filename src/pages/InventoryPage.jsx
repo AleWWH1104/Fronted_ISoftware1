@@ -1,16 +1,25 @@
 import InventoryView from '../components/Inventory/InventoryView'
 import Layout from '../components/Layout'
 import { CreateButton } from '../components/Button'
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect} from "react";
 import AddMaterials from '../components/Inventory/AddMaterials';
 import MovementMaterialPopUp from '../components/Inventory/MovementPopUp';
 import usePermissions from '../hooks/usePermissions';
 import WithPermission from '../components/WithPermission';
+import useEstadoMateriales from '../hooks/useInventory';
 
 export default function InventoryPage() {
+  const { estadoMateriales, loading, error, refetch } = useEstadoMateriales();
+
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
   const [materialesEnMovimiento, setMaterialesEnMovimiento] = useState([]);
+
+  const handleSaveAndRefresh = () => {
+    refetch(); // 1. Llama a refetch para actualizar la lista de materiales
+    setPopUp1(false); // 2. Cierra el primer pop-up
+    setPopUp2(false); // 3. Cierra el segundo pop-up
+  };
   
   //Permisos
   const {canCreateMaterial} = usePermissions();
@@ -34,12 +43,6 @@ export default function InventoryPage() {
     }
   };
 
-  // Función para limpiar la lista al cerrar el popup
-  const handleClosePopup = () => {
-    setPopUp2(false);
-    setMaterialesEnMovimiento([]); // Limpiar la lista
-  };
-
   return (
     <Layout>
       <div className='flex justify-between items-center mb-8'>
@@ -50,15 +53,15 @@ export default function InventoryPage() {
         
         {/* <CreateButton label="Mov" onClick={() => setPopUp2(true)}/> */}
       </div>
-      <InventoryView onAgregarMaterial={handleAgregarMaterial}/>
+      <InventoryView data={estadoMateriales} refetch={refetch} onAgregarMaterial={handleAgregarMaterial}/>
       {isPopUp1 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
-          <AddMaterials onClickCancel={() => setPopUp1(false)} onClickSave={() => setPopUp1(false)}/>
+          <AddMaterials onClickCancel={() => setPopUp1(false)} onClickSave={handleSaveAndRefresh}/>
         </div>
       )}
       {isPopUp2 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
-          <MovementMaterialPopUp materiales={materialesEnMovimiento} onClickCancel={() => setPopUp2(false)} onClickSave={() => setPopUp2(false)}/>
+          <MovementMaterialPopUp materiales={materialesEnMovimiento} onClickCancel={() => setPopUp2(false)} onClickSave={handleSaveAndRefresh}/>
         </div>
       )}
     </Layout>
