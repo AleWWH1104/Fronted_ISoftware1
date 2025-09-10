@@ -128,7 +128,7 @@ export default function AddMaterials({onClickCancel, onClickSave}) {
       </button>
 
       {/* Lista de materiales */}
-      <div className="border-t border-gray-200 my-6 py-4 flex flex-col h-120">
+      <div className="border-t border-gray-200 my-6 py-4 flex flex-col h-100">
         <h4 className="subtitulo">Materiales agregados</h4>
         {listaMateriales.length === 0 && (
             <div className="border border-gray-400 border-dashed flex justify-center items-center py-2 w-full rounded-lg my-4">

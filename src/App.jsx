@@ -7,6 +7,8 @@ import ClientPage from './pages/Client/ClientPage'
 import DashboardPage from "./pages/DashboardPage"
 import InventoryPage from './pages/InventoryPage'
 import ProtectedRoutes from './ProtectedRoutes'
+import ProjectsPage from './pages/ProjectsPage'
+import ReportsPage from './pages/ReportsPage'
 
 function App () {
   return (
@@ -25,6 +27,8 @@ function App () {
           <Route element={<ProtectedRoutes />}>
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/inventory' element={<InventoryPage />} />
+            <Route path='/projects' element={<ProjectsPage />} />
+            <Route path='/reports' element={<ReportsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

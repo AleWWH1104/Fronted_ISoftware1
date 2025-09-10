@@ -6,8 +6,8 @@ import { useAuth } from '../context/AuthContext'
 const generalItems = [
   { title: "Dashboard", url: "/dashboard", icon: Home },
   { title: "Inventario", url: "/inventory", icon: Package },
-  { title: "Proyectos", url: "/proyectos", icon: FolderOpen },
-  { title: "Reportes", url: "/reportes", icon: FileChartColumn },
+  { title: "Proyectos", url: "/projects", icon: FolderOpen },
+  { title: "Reportes", url: "/reports", icon: FileChartColumn },
 ]
 
 const gestionItems = [
