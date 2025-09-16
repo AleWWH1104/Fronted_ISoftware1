@@ -20,6 +20,7 @@ function App () {
           <Route path='/equipment' element={<Equipos/>} />
           <Route path='/login' element={<LoginPage/>} />
           <Route path='/register' element={<RegisterPage/>} />
+          <Route path='/projects' element={<ProjectsPage />} />
           
             
 
@@ -27,7 +28,7 @@ function App () {
           <Route element={<ProtectedRoutes />}>
             <Route path='/dashboard' element={<DashboardPage />} />
             <Route path='/inventory' element={<InventoryPage />} />
-            <Route path='/projects' element={<ProjectsPage />} />
+            {/* <Route path='/projects' element={<ProjectsPage />} /> */}
             <Route path='/reports' element={<ReportsPage />} />
           </Route>
         </Routes>

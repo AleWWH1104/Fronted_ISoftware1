@@ -50,8 +50,6 @@ export default function InventoryPage() {
         <WithPermission permissions={['ver_inventario']}>
           <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>
         </WithPermission>
-        
-        {/* <CreateButton label="Mov" onClick={() => setPopUp2(true)}/> */}
       </div>
       <InventoryView data={estadoMateriales} refetch={refetch} onAgregarMaterial={handleAgregarMaterial}/>
       {isPopUp1 && (
