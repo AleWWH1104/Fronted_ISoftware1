@@ -3,6 +3,7 @@ import { useState, useEffect} from "react";
 import CreateProjectPopup from "../components/Projects/CreateProject";
 import { CreateButton } from "../components/Button";
 import EditProjectPopUp from "../components/Projects/EditProject";
+import ProjectsView from "../components/Projects/ProjectsView";
 
 export default function ProjectsPage() {
   const [isPopUp1, setPopUp1] = useState(false);
@@ -43,6 +44,8 @@ export default function ProjectsPage() {
   const handleSave = (updatedProject) => {
     console.log("Proyecto actualizado:", updatedProject);
     alert(`Guardado: ${updatedProject.name}`);
+    setPopUp1(false); 
+    setPopUp2(false);
   };
 
   return (
@@ -53,12 +56,17 @@ export default function ProjectsPage() {
           <CreateButton label="Crear proyecto" onClick={() => setPopUp1(true)}/>
         {/* </WithPermission> */}
       </div>
+      <ProjectsView onAsignMaterials={""} onEditProject={() => setPopUp2(true)}/>
       {isPopUp1 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
-          {/* <CreateProjectPopup onClickCancel={() => setPopUp1(false)} onClickSave={handleSaveAndRefresh}/> */}
+          <CreateProjectPopup onClickCancel={() => setPopUp1(false)} onClickSave={handleSaveAndRefresh}/>
+        </div>
+      )}
+      {isPopUp2 && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
           <EditProjectPopUp
             project={mockProject}
-            onClickCancel={handleCancel}
+            onClickCancel={() => setPopUp2(false)}
             onClickSave={handleSave}
           />
         </div>
