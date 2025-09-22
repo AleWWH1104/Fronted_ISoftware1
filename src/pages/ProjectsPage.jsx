@@ -4,8 +4,11 @@ import CreateProjectPopup from "../components/Projects/CreateProject";
 import { CreateButton } from "../components/Button";
 import EditProjectPopUp from "../components/Projects/EditProject";
 import ProjectsView from "../components/Projects/ProjectsView";
+import useEstadoProyectos from "../hooks/useProjects";
 
 export default function ProjectsPage() {
+  const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
+
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
 
@@ -56,7 +59,7 @@ export default function ProjectsPage() {
           <CreateButton label="Crear proyecto" onClick={() => setPopUp1(true)}/>
         {/* </WithPermission> */}
       </div>
-      <ProjectsView onAsignMaterials={""} onEditProject={() => setPopUp2(true)}/>
+      <ProjectsView data={estadoProyectos} refetch={refetch} onAsignMaterials={""} onEditProject={() => setPopUp2(true)}/>
       {isPopUp1 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
           <CreateProjectPopup onClickCancel={() => setPopUp1(false)} onClickSave={handleSaveAndRefresh}/>

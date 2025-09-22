@@ -22,6 +22,7 @@ export default function InventoryPage() {
   };
   
   //Permisos
+  
   const {canCreateMaterial} = usePermissions();
 
   useEffect(() => {
