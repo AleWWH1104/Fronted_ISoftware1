@@ -3,27 +3,30 @@ import { SaveOrCancelButtons } from "../Button";
 import { InputForm } from "../Input";
 import { useEffect, useState } from "react";
 
-/**
- * Espera props:
- * - project: {
- *     id: string|number,
- *     name: string,
- *     serviceType: string,
- *     location: string,
- *     status: string,
- *     budget: number,
- *     client: { id?: string|number, name: string, phone?: string }
- *   }
- * - onClickCancel: () => void
- * - onClickSave: (updatedProject) => void
- */
 export default function EditProjectPopUp({ project, onClickCancel, onClickSave }) {
+  const ESTADO_OPTS = [
+    { value: 'solicitado', label: 'Solicitado' },
+    { value: 'en progreso', label: 'En progreso' },
+    { value: 'finalizado', label: 'Finalizado' },
+    { value: 'cancelado', label: 'Cancelado' },
+  ];
+
+  const TIPO_OPTS = [
+    { value: 'regulares', label: 'Piscina Regular' },
+    { value: 'irregulares', label: 'Piscina Irregular' },
+    { value: 'mantenimiento', label: 'Mantenimiento' },
+    { value: 'paneles solares', label: 'Paneles Solares' },
+    { value: 'remodelaciones', label: 'Remodelación' },
+    { value: 'jacuzzis', label: 'Jacuzzi' },
+    { value: 'fuentes y cascadas', label: 'Fuentes y Cascadas' },
+  ];
+
   // Estado del formulario
-  const [name, setName] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [location, setLocation] = useState("");
-  const [status, setStatus] = useState("");
-  const [budget, setBudget] = useState(0);
+  const [nombre, setNombre] = useState("");
+  const [tipoServicio, setTipoServicio] = useState("");
+  const [ubicacion, setUbicacion] = useState("");
+  const [estado, setEstado] = useState("");
+  const [presupuesto, setPresupuesto] = useState(0);
 
   // Cliente: seleccionar existente o crear nuevo
   const [isCreateClient, setCreateClient] = useState(false);
@@ -34,11 +37,11 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
   // Precargar datos cuando llegue/ cambie el proyecto
   useEffect(() => {
     if (!project) return;
-    setName(project.name ?? "");
-    setServiceType(project.serviceType ?? "");
-    setLocation(project.location ?? "");
-    setStatus(project.status ?? "");
-    setBudget(Number(project.budget ?? 0));
+    setNombre(project.nombre ?? "");
+    setTipoServicio(project.tipo_servicio ?? "");
+    setUbicacion(project.ubicacion ?? "");
+    setEstado(project.estado ?? "");
+    setPresupuesto(Number(project.presupuesto ?? 0));
 
     const c = project.client ?? {};
     setClientName(c.name ?? "");
@@ -51,15 +54,16 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
 
   const handleSave = () => {
     const updated = {
-      ...project,
-      name: name.trim(),
-      serviceType: serviceType.trim(),
-      location: location.trim(),
-      status: status.trim(),
-      budget: Number.isFinite(Number(budget)) ? Number(budget) : 0,
-      client: isCreateClient
-        ? { name: clientName.trim(), phone: clientPhone.trim() }
-        : { id: clientId ?? null, name: clientName.trim(), phone: clientPhone.trim() },
+      id: project?.id ?? null,
+      nombre: nombre.trim(),
+      tipo_servicio: tipoServicio,
+      ubicacion: ubicacion.trim(),
+      estado,
+      presupuesto: Number(presupuesto),
+      // conserva lo demás que venga del backend si lo necesitas:
+      fecha_inicio: project?.fecha_inicio ?? null,
+      fecha_fin: project?.fecha_fin ?? null,
+      cliente_id: project?.cliente_id ?? null,
     };
     onClickSave?.(updated);
   };
@@ -84,50 +88,54 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             type="text"
             label="Nombre del proyecto"
             placeholder="Ingrese el nombre del proyecto"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
             required
             className="col-span-2"
           />
 
-          <InputForm
-            type="text"
-            label="Tipo de servicio"
-            placeholder="Elija una opción"
-            value={serviceType}
-            onChange={(e) => setServiceType(e.target.value)}
-            required
-            className="col-span-2 row-start-2"
-          />
+          <div className="col-span-2 md:row-start-2">
+            <label className="parrafo font-semibold mb-1">Tipo de servicio</label>
+            <select
+              className="w-full parrafo bg-white p-2 rounded-lg border border-gray-400"
+              value={tipoServicio}
+              onChange={(e) => setTipoServicio(e.target.value)}
+              required
+            >
+              {TIPO_OPTS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+            </select>
+          </div>
 
           <InputForm
             type="text"
             label="Ubicación"
             placeholder="Ingrese la ubicación"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={ubicacion}
+            onChange={(e) => setUbicacion(e.target.value)}
             required
-            className="col-span-2 row-start-3"
+            className="col-span-2 md:row-start-3"
           />
 
-          <InputForm
-            type="text"
-            label="Estado"
-            placeholder="Solicitado / En progreso / Completado"
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            required
-            className="row-start-4"
-          />
+          <div className="md:row-start-4">
+            <label className="parrafo font-semibold mb-1">Estado</label>
+            <select
+              className="w-full parrafo bg-white p-2 rounded-lg border border-gray-400"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+              required
+            >
+              {ESTADO_OPTS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+            </select>
+          </div>
 
           <InputForm
             type="number"
             label="Presupuesto"
             placeholder="0"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
+            value={presupuesto}
+            onChange={(e) => setPresupuesto(e.target.value)}
             required
-            className="row-start-4"
+            className="md:row-start-4"
           />
         </div>
 

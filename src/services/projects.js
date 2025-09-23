@@ -19,3 +19,13 @@ export const crearProyecto = async (data) => {
     throw error;
   }
 };
+
+export const getProyectoById = async (id) => {
+  try {
+    const response = await axios.get(`/projects/projectById/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching project by id:`, error);
+    throw error;
+  }
+};

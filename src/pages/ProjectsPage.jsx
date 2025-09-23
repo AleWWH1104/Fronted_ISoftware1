@@ -8,6 +8,7 @@ import useEstadoProyectos from "../hooks/useProjects";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
@@ -25,20 +26,6 @@ export default function ProjectsPage() {
       document.body.style.overflow = "auto";
     }
   }, [isPopUp1, isPopUp2]);
-
-  const mockProject = {
-    id: 1,
-    name: "Renovación de Piscina Principal",
-    serviceType: "Mantenimiento completo",
-    location: "Zona 10, Ciudad de Guatemala",
-    status: "En progreso",
-    budget: 15000,
-    client: {
-      id: 101,
-      name: "Juan Pérez",
-      phone: "5555-1234",
-    },
-  };
 
   const handleCancel = () => {
     alert("Cancelaste la edición");
@@ -59,18 +46,18 @@ export default function ProjectsPage() {
           <CreateButton label="Crear proyecto" onClick={() => setPopUp1(true)}/>
         {/* </WithPermission> */}
       </div>
-      <ProjectsView data={estadoProyectos} refetch={refetch} onAsignMaterials={""} onEditProject={() => setPopUp2(true)}/>
+      <ProjectsView data={estadoProyectos} refetch={refetch} onAsignMaterials={""} onEditProject={(row) => {setSelectedProject(row); setPopUp2(true);}}/>
       {isPopUp1 && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
           <CreateProjectPopup onClickCancel={() => setPopUp1(false)} onClickSave={handleSaveAndRefresh}/>
         </div>
       )}
-      {isPopUp2 && (
+      {isPopUp2 && selectedProject && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
           <EditProjectPopUp
-            project={mockProject}
+            project={selectedProject}
             onClickCancel={() => setPopUp2(false)}
-            onClickSave={handleSave}
+            onClickSave={handleSaveAndRefresh}
           />
         </div>
       )}
