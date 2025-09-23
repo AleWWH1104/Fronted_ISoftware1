@@ -9,3 +9,13 @@ export const getEstadoProyectos = async () => {
       throw error;
     }
 };
+
+export const crearProyecto = async (data) => {
+  try {
+    const response = await axios.post(`/projects/create`, data, { withCredentials: true });
+    return response.data;
+  } catch (error) {
+    console.error('Error creando proyecto:', error);
+    throw error;
+  }
+};

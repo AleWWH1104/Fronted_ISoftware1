@@ -27,6 +27,12 @@ body{
     font-size: 12px;
 }
 
+.errores {
+    font-weight: normal;
+    font-size: 10px;
+    color: red;
+}
+
 .boton {
     font-weight: bold;
     font-size: 12px;
