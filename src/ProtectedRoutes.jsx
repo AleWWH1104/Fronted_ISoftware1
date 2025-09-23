@@ -1,15 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import { useState, useEffect } from "react";
 
 function ProtectedRoutes() {
-    const { loading, isAuthenticated, initialCheckDone } = useAuth();
+    const { loading, isAuthenticated } = useAuth();
+    const [initialCheckDone, setInitialCheckDone] = useState(false);
     
-    console.log("ProtectedRoutes - loading:", loading);
-    console.log("ProtectedRoutes - isAuthenticated:", isAuthenticated);
-    console.log("ProtectedRoutes - initialCheckDone:", initialCheckDone);
+    useEffect(() => {
+        if (!loading) {
+            setInitialCheckDone(true);
+        }
+    }, [loading]);
     
     // Si está cargando y no se ha completado la verificación inicial, mostrar spinner
-    if (loading && !initialCheckDone) {
+    if (loading) {
         console.log("Mostrando spinner de carga (verificación inicial)...");
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -19,7 +23,7 @@ function ProtectedRoutes() {
     }
     
     // Si ya se completó la verificación inicial y no está autenticado, redirigir al login
-    if (initialCheckDone && !isAuthenticated) {
+    if (!isAuthenticated && initialCheckDone) {
         console.log("Redirigiendo a login...");
         return <Navigate to='/login' replace />;
     }

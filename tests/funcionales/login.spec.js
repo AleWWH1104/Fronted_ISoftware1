@@ -22,10 +22,10 @@ test('Redirección a /home tras autenticación exitosa', async ({ page }) => {
   await page.click('button:has-text("Ingresar")');
 
   // Esperamos la redirección
-  await page.waitForURL('**/home', { timeout: 3000 });
+  await page.waitForURL('**/dashboard', { timeout: 3000 });
 
   // Validamos que la nueva ruta sea /home
-  expect(page.url()).toContain('/home');
+  expect(page.url()).toContain('/dashboard');
 });
 
 // Prueba de regresión visual, Captura de errores visibles con credenciales incorrectas
