@@ -86,22 +86,22 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       {
         name: 'Acciones',
         cell: (row) => (
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
             <button 
-              title="Edit"
+              title="Editar"
               onClick={() => onEditProject(row)} >
-              <Pencil size={20} color='#046bb1'/>
+              <Pencil size={15} color='#046bb1'/>
             </button>
             <button 
-              title="Asign"
-              onClick={() => onAsignMaterials(row)} >
-              <Boxes size={20} color='#046bb1'/>
+              title="Ver materiales"
+              onClick={() => onAsignMaterials(row.id)} >
+              <Boxes size={15} color='#046bb1'/>
             </button>
             <button
-              title="Delete"
+              title="Eliminar"
               onClick={() => handleEliminar(row.id_material)}
             >
-              <Trash2 size={20} color='#6E6E71' />
+              <Trash2 size={15} color='#6E6E71' />
             </button>
           </div>
         ),
