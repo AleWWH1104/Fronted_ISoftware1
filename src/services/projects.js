@@ -29,3 +29,13 @@ export const getProyectoById = async (id) => {
     throw error;
   }
 };
+
+export const getProjectMaterials = async () => {
+  try {
+    const response = await axios.get(`/projects/materials`); // Ajusta URL correcta
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching detalles de materiales:', error);
+    throw error;
+  }
+};

@@ -1,17 +1,43 @@
 import MovementView from '../components/Dashboard/MovementView'
 import KPICard from "../components/Dashboard/KPI" 
 import Layout from '../components/Layout'
-import { Boxes, Users, ClockFading, CircleCheckBig } from "lucide-react"
+import { Boxes, Users, ClockFading, CircleCheckBig, RefreshCw } from "lucide-react" // Agregué RefreshCw para botón de reload
 import { useCountCustomers, useFinishedProjects, useInProgressProjects, useProductCount } from '../hooks/useKPIs'
 import ServiceChart from '../components/Dashboard/ServiceChart'
 import ProjectMaterialsView from '../components/Dashboard/ProjectMaterialsView'
+import { useProjectMaterials } from '../hooks/useProjects' // Named import: ¡asegúrate de que sea {} !
 
 export default function DashboardPage() {
+  const { countCustomers } = useCountCustomers();
+  const { finishedProjects } = useFinishedProjects();
+  const { inProgressProjects } = useInProgressProjects();
+  const { productCount } = useProductCount();
 
-  const {countCustomers} =useCountCustomers();
-  const {finishedProjects} =useFinishedProjects();
-  const {inProgressProjects} =useInProgressProjects();
-  const {productCount} = useProductCount();
+  // Hook para materiales: con fallback para evitar crash si el hook falla
+  let materials = [];
+  let loading = false;
+  let error = null;
+  let refetch = () => {}; // Fallback vacío
+
+  try {
+    const hookResult = useProjectMaterials();
+    materials = hookResult.materials || [];
+    loading = hookResult.loading || false;
+    error = hookResult.error || null;
+    refetch = hookResult.refetch || (() => {});
+  } catch (hookError) {
+    console.error('Error al usar useProjectMaterials:', hookError);
+    error = hookError;
+    materials = []; // Evita ReferenceError
+  }
+
+  // Debug: Log en consola para verificar
+  console.log('Dashboard - Materials loaded:', materials);
+  console.log('Dashboard - Loading:', loading, 'Error:', error);
+
+  const handleRefetchMaterials = () => {
+    refetch();
+  };
 
   return (
     <Layout>
@@ -34,11 +60,24 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      {/* Aquí añadimos la nueva tabla de materiales */}
+      {/* Nueva tabla de materiales con datos del backend */}
       <section className="mt-4">
-        <ProjectMaterialsView />
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-lg font-semibold">Detalle de materiales en proyectos activos</h3>
+          <button
+            onClick={handleRefetchMaterials}
+            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+            title="Recargar datos"
+          >
+            <RefreshCw size={16} className="animate-spin" /> Recargar
+          </button>
+        </div>
+        <ProjectMaterialsView 
+          data={materials} 
+          loading={loading} 
+          error={error} 
+        />
       </section>
-
     </Layout>
   )
 }
