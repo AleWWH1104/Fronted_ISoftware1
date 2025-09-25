@@ -7,6 +7,7 @@ import MovementMaterialPopUp from '../components/Inventory/MovementPopUp';
 import usePermissions from '../hooks/usePermissions';
 import WithPermission from '../components/WithPermission';
 import useEstadoMateriales from '../hooks/useInventory';
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function InventoryPage() {
   const { estadoMateriales, loading, error, refetch } = useEstadoMateriales();
@@ -14,6 +15,9 @@ export default function InventoryPage() {
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
   const [materialesEnMovimiento, setMaterialesEnMovimiento] = useState([]);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleSaveAndRefresh = () => {
     refetch(); // 1. Llama a refetch para actualizar la lista de materiales
@@ -26,12 +30,19 @@ export default function InventoryPage() {
   const {canCreateMaterial} = usePermissions();
 
   useEffect(() => {
-    if (isPopUp1 || isPopUp2) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    const el = document.body;                 // referencia local
+    const prev = el.style.overflow;           // guarda el valor previo
+    el.style.overflow = (isPopUp1 || isPopUp2) ? "hidden" : "auto";
+    return () => { el.style.overflow = prev; };
   }, [isPopUp1, isPopUp2]);
+
+  useEffect(() => {
+    if (location.state?.openCreate) {
+      setPopUp1(true);
+      // limpia el state para que no se vuelva a abrir al refrescar/volver
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   // Función para agregar material a la lista
   const handleAgregarMaterial = (material) => {

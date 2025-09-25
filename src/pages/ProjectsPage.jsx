@@ -7,6 +7,7 @@ import ProjectsView from "../components/Projects/ProjectsView";
 import useEstadoProyectos from "../hooks/useProjects";
 import MaterialsByProjectView from "../components/Projects/MaterialsByProject";
 import { updateProyecto } from "../services/projects";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
@@ -17,6 +18,9 @@ export default function ProjectsPage() {
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const handleSaveAndRefresh = () => {
     refetch(); // 1. Llama a refetch para actualizar la lista de proyectos
     setPopUp1(false); // 2. Cierra el primer pop-up --crear
@@ -24,12 +28,19 @@ export default function ProjectsPage() {
   };
 
   useEffect(() => {
-    if (isPopUp1 || isPopUp2) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    const el = document.body;                 // referencia local
+    const prev = el.style.overflow;           // guarda el valor previo
+    el.style.overflow = (isPopUp1 || isPopUp2) ? "hidden" : "auto";
+    return () => { el.style.overflow = prev; };
   }, [isPopUp1, isPopUp2]);
+
+  useEffect(() => {
+    if (location.state?.openCreate) {
+      setPopUp1(true);
+      // limpia el state para que no se vuelva a abrir al refrescar/volver
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const handleOpenMaterials = (projectId) => {
     setMaterialsProjectId(projectId);
