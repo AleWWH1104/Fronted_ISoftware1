@@ -1,5 +1,5 @@
 import { useEffect, useState,useCallback} from 'react';
-import { getEstadoProyectos } from '../services/projects';
+import { getEstadoProyectos, getProjectMaterials } from '../services/projects';  // ¡Agregado: getProjectMaterials!
 
 export default function useEstadoProyectos() {
     const [estadoProyectos, setEstadoProyectos] = useState([]);
@@ -29,8 +29,8 @@ export function useProjectMaterials() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Mock con datos reales de tu data.sql (solo proyectos activos: solicitado/en progreso)
-  // Simula el JOIN y cálculos: pendiente_compra = ofertada - en_obra - reservado, pendiente_entrega = reservado
+  // Mock con datos reales de tu data.sql (AHORA COMENTADO: Solo para fallback si backend falla)
+  /*
   const mockData = [
     // La Estacion (ID 1, solicitado)
     { proyecto: 'La Estacion', codigo: 'COD001', material: 'Codos 1/2', ofertado: 50, en_obra: 0, pendiente_compra: 40, pendiente_entrega: 10 },
@@ -41,26 +41,33 @@ export function useProjectMaterials() {
     { proyecto: 'Metroplaza', codigo: 'MAC001', material: 'Macho 2 1/2', ofertado: 40, en_obra: 20, pendiente_compra: 10, pendiente_entrega: 10 },
     { proyecto: 'Metroplaza', codigo: 'GLO001', material: 'Globerite Color', ofertado: 10, en_obra: 8, pendiente_compra: 0, pendiente_entrega: 2 }
   ];
+  */
 
   const fetchMaterials = useCallback(() => {
     setLoading(true);
     setError(null);
 
-    // ACTIVADO: Usa mock para que funcione ya (6 filas en tabla, evita error de backend inexistente)
+    // ACTIVADO: Llamada al backend real (usa el endpoint recién creado)
+    getProjectMaterials()
+      .then(data => {
+        console.log('✅ Hook: Backend data loaded:', data);  // Debug: Confirma datos reales
+        setMaterials(Array.isArray(data) ? data : []);
+      })
+      .catch(err => {
+        console.error('❌ Hook Error fetching materials:', err.response?.data || err.message);
+        setError(err);
+        setMaterials([]);  // Vacío si falla (descomenta abajo para fallback a mock)
+        // Opcional fallback: setMaterials(mockData);
+      })
+      .finally(() => setLoading(false));
+
+    // MODO MOCK (COMENTADO: No se usa ahora, ya que backend existe)
+    /*
     console.log('🔧 Using MOCK data based on your SQL (6 rows for active projects)');
     setMaterials(mockData);
     setLoading(false);
     return;
-
-    // PARA CUANDO BACKEND ESTÉ LISTO: Descomenta esto y comenta el mock arriba
-    // getProjectMaterials()
-    //   .then(data => setMaterials(data))
-    //   .catch(err => {
-    //     console.error('Error fetching materials:', err);
-    //     setError(err);
-    //     setMaterials(mockData); // Fallback a mock si backend falla
-    //   })
-    //   .finally(() => setLoading(false));
+    */
   }, []);
   useEffect(() => {
     fetchMaterials();

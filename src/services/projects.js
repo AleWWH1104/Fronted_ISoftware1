@@ -32,10 +32,11 @@ export const getProyectoById = async (id) => {
 
 export const getProjectMaterials = async () => {
   try {
-    const response = await axios.get(`/projects/materials`); // Ajusta URL correcta
+    const response = await axios.get(`/projects/materials`); // Ajusta a '/api/projects/materials' si usas prefijo /api
+    console.log('✅ Service: Materials loaded from backend:', response.data);  // Debug: Verás el array real aquí
     return response.data;
   } catch (error) {
-    console.error('Error fetching detalles de materiales:', error);
+    console.error('❌ Service Error in getProjectMaterials:', error.response?.data || error.message);
     throw error;
   }
 };
