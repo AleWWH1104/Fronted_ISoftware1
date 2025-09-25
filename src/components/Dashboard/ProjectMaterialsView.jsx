@@ -60,13 +60,16 @@ export default function ProjectMaterialsView({ data, loading: propLoading, error
     );
   }
 
-  // Si está cargando, mostrar spinner simple (puedes mejorar con un componente propio)
+  // Si está cargando, mostrar spinner simple (con color personalizado #046BB1)
   if (propLoading) {
     return (
       <section className="bg-white p-4 rounded-lg shadow-xs">
         <h2 className="text-black font-semibold mb-3">Detalle de materiales en proyectos activos</h2>
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div 
+            className="animate-spin rounded-full h-8 w-8 border-b-2" 
+            style={{ borderColor: '#046BB1' }} // Cambio aquí el azul
+          ></div>
           <span className="ml-2">Cargando materiales...</span>
         </div>
       </section>
