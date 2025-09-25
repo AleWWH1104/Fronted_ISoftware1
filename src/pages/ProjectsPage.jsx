@@ -6,6 +6,7 @@ import EditProjectPopUp from "../components/Projects/EditProject";
 import ProjectsView from "../components/Projects/ProjectsView";
 import useEstadoProyectos from "../hooks/useProjects";
 import MaterialsByProjectView from "../components/Projects/MaterialsByProject";
+import { updateProyecto } from "../services/projects";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
@@ -40,7 +41,28 @@ export default function ProjectsPage() {
     setMaterialsProjectId(null);
   };
 
-  
+  const handleUpdateProject = async (updated) => {
+    try {
+      
+      // arma el payload 
+      const payload = {
+        nombre: updated.nombre.trim(),
+        tipo_servicio: updated.tipo_servicio,
+        ubicacion: updated.ubicacion.trim(),
+        estado: updated.estado,
+        presupuesto: Number(updated.presupuesto),
+        cliente_id: updated.cliente_id ?? 1,
+        fecha_inicio: updated.fecha_inicio ?? null,
+        fecha_fin: updated.fecha_fin ?? null,
+      };
+
+      await updateProyecto(updated.id, payload);
+      await handleSaveAndRefresh();
+    } catch (e) {
+      console.error("PUT updateProyecto ERROR:", e.response?.data || e.message);
+      alert(e?.response?.data?.message ?? "No se pudo actualizar el proyecto.");
+    }
+  };
 
   return (
     <Layout>
@@ -75,7 +97,7 @@ export default function ProjectsPage() {
           <EditProjectPopUp
             project={selectedProject}
             onClickCancel={() => setPopUp2(false)}
-            onClickSave={handleSaveAndRefresh}
+            onClickSave={handleUpdateProject}
           />
         </div>
       )}

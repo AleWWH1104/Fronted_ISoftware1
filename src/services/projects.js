@@ -49,3 +49,8 @@ export const patchProyectoEstado = async (id, estado) => {
     throw error;
   }
 };
+
+export const updateProyecto = async (id, data) => {
+  const { data: res } = await axios.put(`/projects/${id}`, data, { withCredentials: true,});
+  return res;
+};
