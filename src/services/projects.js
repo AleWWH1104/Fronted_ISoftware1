@@ -29,3 +29,23 @@ export const getProyectoById = async (id) => {
     throw error;
   }
 };
+
+export const patchProyectoTipo = async (id, tipo_servicio) => {
+  try {
+    const {response} = await axios.patch(`/projects/${id}/tipo`, { tipo_servicio }, { withCredentials: true });
+    return response;
+  } catch (error) {
+    console.error(`Error patching tipo_servicio:`, error);
+    throw error;
+  }
+};
+
+export const patchProyectoEstado = async (id, estado) => {
+  try {
+    const {response} = await axios.patch(`/projects/${id}/estado`, { estado }, { withCredentials: true });
+    return response;
+  } catch (error) {
+    console.error(`Error patching estado:`, error);
+    throw error;
+  }
+};

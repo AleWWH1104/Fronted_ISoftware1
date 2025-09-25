@@ -1,10 +1,12 @@
 import DataTable from 'react-data-table-component';
 import { Pencil, Trash2, Boxes } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { patchProyectoEstado, patchProyectoTipo } from '../../services/projects';
 
 export default function ProjectsView({data, refetch, onEditProject, onAsignMaterials}) {
   
   const [records,  setRecords] = useState([]);
+  const [saving, setSaving] = useState({}); 
 
   const ESTADO_OPTS = [
     { value: 'solicitado', label: 'Solicitado' },
@@ -36,11 +38,38 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
     return new Date(iso).toISOString().slice(0, 10);
   };
 
-  const updateRecord = (id, field, value) => {
-    setRecords(prev =>
-      prev.map(r => (r.id === id ? { ...r, [field]: value } : r))
-    );
-    
+  const setSavingFlag = (id, field, v) => {
+    const key = `${id}_${field}`;
+    setSaving(prev => ({ ...prev, [key]: v }));
+  };
+  const isSaving = (id, field) => !!saving[`${id}_${field}`];
+
+  const updateRecordOptimistic = async (id, field, nextValue) => {
+    const prev = records.find(r => r.id === id);
+    if (!prev) return;
+
+    setSavingFlag(id, field, true);
+    setRecords(rs => rs.map(r => (r.id === id ? { ...r, [field]: nextValue } : r)));
+
+    try {
+      let res;
+      if (field === "tipo_servicio") {
+        res = await patchProyectoTipo(id, nextValue);
+        console.log("[PATCH tipo OK]", { id, send: { tipo_servicio: nextValue }, res });
+      } else if (field === "estado") {
+        res = await patchProyectoEstado(id, nextValue);
+        console.log("[PATCH estado OK]", { id, send: { estado: nextValue }, res });
+      }
+      await refetch?.();
+    } catch (err) {
+      console.error(err);
+      // rollback
+      console.error("[PATCH ERROR]", err);
+      setRecords(rs => rs.map(r => (r.id === id ? { ...r, [field]: prev[field] } : r)));
+      alert(`No se pudo guardar el cambio.\n${err.response?.data?.message ?? ""}`);
+    } finally {
+      setSavingFlag(id, field, false);
+    }
   };
   
   const columns = [
@@ -55,7 +84,8 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           <select
             className="border border-gray-300 rounded-lg px-2 py-1"
             value={row.tipo_servicio}
-            onChange={(e) => updateRecord(row.id, 'tipo_servicio', e.target.value)}
+            disabled={isSaving(row.id, 'tipo_servicio')}
+            onChange={(e) => updateRecordOptimistic(row.id, 'tipo_servicio', e.target.value)}
             onClick={(e) => e.stopPropagation()} // evita seleccionar fila
           >
             {TIPO_OPTS.map(opt => (
@@ -73,7 +103,8 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           <select
             className="border border-gray-300 rounded-lg px-2 py-1"
             value={row.estado}
-            onChange={(e) => updateRecord(row.id, "estado", e.target.value)}
+            disabled={isSaving(row.id, 'estado')}
+            onChange={(e) => updateRecordOptimistic(row.id, 'estado', e.target.value)}
             onClick={(e) => e.stopPropagation()}
           >
             {ESTADO_OPTS.map(opt => (
