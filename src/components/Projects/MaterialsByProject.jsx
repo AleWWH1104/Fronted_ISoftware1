@@ -1,25 +1,63 @@
 // components/Projects/MaterialsByProject.js
-
-import React, { useState, useEffect } from "react";
+import React from "react";
+import DataTable from "react-data-table-component";
+import { useProjectMaterials } from "../../hooks/useProjects";
 
 export default function MaterialsByProjectView({ projectId, onBack }) {
-  const [materials, setMaterials] = useState([]);
+  // ✅ CORREGIDO: Pasar projectId al hook
+  const { materials, loading, error } = useProjectMaterials(projectId);
 
-  useEffect(() => {
-    const fetchMaterials = async () => {
-      const data = [
-        { codigo: "01123", material: "Lámpara Globrite blanca", ofertado: 10, reservado: 10, pendienteCompra: 10, enObra: 10, pendienteEntrega: 10 },
-        { codigo: "01123", material: "Lámpara Globrite blanca", ofertado: 1, reservado: 1, pendienteCompra: 1, enObra: 1, pendienteEntrega: 1 },
-        { codigo: "01123", material: "Lámpara Globrite blanca", ofertado: 4, reservado: 4, pendienteCompra: 4, enObra: 4, pendienteEntrega: 4 },
-        { codigo: "01123", material: "Lámpara Globrite blanca", ofertado: 9, reservado: 9, pendienteCompra: 9, enObra: 9, pendienteEntrega: 9 },
-        { codigo: "01123", material: "Lámpara Globrite blanca", ofertado: 7, reservado: 7, pendienteCompra: 7, enObra: 7, pendienteEntrega: 7 },
-      ];
+  // ✅ Simplificamos - ya no necesitamos filtrar porque el hook lo hace
+  const projectMaterials = materials.map((mat, index) => {
+    const ofertada = Number(mat.ofertada) || 0;
+    const reservado = Number(mat.reservado) || 0;
+    const en_obra = Number(mat.en_obra) || 0;
 
-      setMaterials(data);
+    const pendiente_compra = ofertada - (reservado + en_obra);
+    const pendiente_entrega = reservado;
+
+    return {
+      id: `${mat.id_material}-${index}`,
+      ...mat,
+      ofertada,
+      reservado,
+      en_obra,
+      pendiente_compra,
+      pendiente_entrega,
     };
+  });
 
-    fetchMaterials();
-  }, [projectId]);
+  // ... el resto del código permanece igual
+  const columns = [
+    { name: "Código", selector: (row) => row.codigo, sortable: true },
+    { name: "Material", selector: (row) => row.material, sortable: true },
+    { name: "Ofertado", selector: (row) => row.ofertada, sortable: true, center: true },
+    { name: "Reservado", selector: (row) => row.reservado, sortable: true, center: true },
+    { name: "Pendiente de compra", selector: (row) => row.pendiente_compra, sortable: true, center: true },
+    { name: "En obra", selector: (row) => row.en_obra, sortable: true, center: true },
+    { name: "Pendiente de entrega", selector: (row) => row.pendiente_entrega, sortable: true, center: true },
+    {
+      name: "Acciones",
+      cell: (row) => (
+        <div className="flex gap-2">
+          <button
+            className="rounded px-2 py-1 text-xs"
+            style={{ border: "1px solid #046BB1", color: "#046BB1" }}
+            onClick={() => alert(`Reservar ${row.material}`)}
+          >
+            Reservar
+          </button>
+          <button
+            className="rounded px-2 py-1 text-xs text-white"
+            style={{ backgroundColor: "#046BB1" }}
+            onClick={() => alert(`Entregar ${row.material}`)}
+          >
+            Entregar
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto">
@@ -29,76 +67,38 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
         </h2>
         <button
           className="text-white rounded"
-          style={{ backgroundColor: "#046BB1", padding: "0.25rem 0.5rem", fontSize: "0.8rem" }}
+          style={{
+            backgroundColor: "#046BB1",
+            padding: "0.4rem 0.8rem",
+            fontSize: "0.9rem",
+          }}
           onClick={() => alert("Funcionalidad Asignar materiales aquí")}
         >
           + Asignar materiales
         </button>
       </div>
 
-      <input
-        type="search"
-        placeholder="Buscar..."
-        className="mb-3 border rounded p-1 max-w-[150px]"
-        style={{ fontSize: "0.85rem" }}
-      />
+      {error && <p className="text-red-500">❌ Error cargando materiales</p>}
 
-      <table className="min-w-full border-collapse border border-gray-200">
-        <thead>
-          <tr className="bg-gray-100 text-left">
-            <th className="border border-gray-300 p-2">Codigo</th>
-            <th className="border border-gray-300 p-2">Material</th>
-            <th className="border border-gray-300 p-2">Ofertado</th>
-            <th className="border border-gray-300 p-2">Reservado</th>
-            <th className="border border-gray-300 p-2">Pendiente de compra</th>
-            <th className="border border-gray-300 p-2">En obra</th>
-            <th className="border border-gray-300 p-2">Pendiente de entrega</th>
-            <th className="border border-gray-300 p-2">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {materials.map((mat, i) => (
-            <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-              <td className="border border-gray-300 p-2">{mat.codigo}</td>
-              <td className="border border-gray-300 p-2">{mat.material}</td>
-              <td className="border border-gray-300 p-2">{mat.ofertado}</td>
-              <td className="border border-gray-300 p-2">{mat.reservado}</td>
-              <td className="border border-gray-300 p-2">{mat.pendienteCompra}</td>
-              <td className="border border-gray-300 p-2">{mat.enObra}</td>
-              <td className="border border-gray-300 p-2">{mat.pendienteEntrega}</td>
-              <td className="border border-gray-300 p-2 flex gap-2">
-                <button
-                  className="rounded"
-                  style={{
-                    border: "1px solid #046BB1",
-                    color: "#046BB1",
-                    fontSize: "0.7rem",
-                    padding: "0.2rem 0.4rem"
-                  }}
-                >
-                  Reservar
-                </button>
-                <button
-                  className="rounded text-white"
-                  style={{
-                    backgroundColor: "#046BB1",
-                    fontSize: "0.7rem",
-                    padding: "0.2rem 0.4rem"
-                  }}
-                >
-                  Entregar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataTable
+        columns={columns}
+        data={projectMaterials}
+        progressPending={loading}
+        pagination
+        highlightOnHover
+        striped
+        noDataComponent="No hay materiales disponibles"
+      />
 
       <div className="mt-4">
         <button
           onClick={onBack}
           className="text-white rounded"
-          style={{ backgroundColor: "#046BB1", padding: "0.25rem 0.5rem", fontSize: "0.85rem" }}
+          style={{
+            backgroundColor: "#046BB1",
+            padding: "0.4rem 0.8rem",
+            fontSize: "0.9rem",
+          }}
         >
           Volver a proyectos
         </button>
