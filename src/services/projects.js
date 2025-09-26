@@ -35,10 +35,10 @@ export const getProyectoById = async (id) => {
 export const getProjectMaterialsForDashboard = async () => {
   try {
     const response = await axios.get(`/projects/materials`);
-    console.log('✅ Service: Dashboard materials loaded:', response.data);
+    console.log(' Service: Dashboard materials loaded:', response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Service Error in getProjectMaterialsForDashboard:', error.response?.data || error.message);
+    console.error(' Service Error in getProjectMaterialsForDashboard:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -48,10 +48,10 @@ export const getProjectMaterialsByProject = async (projectId) => {
   if (!projectId) throw new Error("Se requiere projectId");
   try {
     const response = await axios.get(`/proyecto-material/${projectId}`);
-    console.log('✅ Service: Materials for project', projectId, response.data);
+    console.log('Service: Materials for project', projectId, response.data);
     return response.data;
   } catch (error) {
-    console.error('❌ Error fetching project materials by projectId:', error.response?.data || error.message);
+    console.error('Error fetching project materials by projectId:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -65,7 +65,7 @@ export const assignMaterialToProject = async (projectId, materialData) => {
     });
     return response.data;
   } catch (error) {
-    console.error('❌ Error assigning material to project:', error.response?.data || error.message);
+    console.error(' Error assigning material to project:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -76,7 +76,7 @@ export const getMaterialsInProgress = async () => {
     const response = await axios.get(`/proyecto-material/en-progreso`);
     return response.data;
   } catch (error) {
-    console.error('❌ Error fetching materials in progress:', error.response?.data || error.message);
+    console.error('Error fetching materials in progress:', error.response?.data || error.message);
     throw error;
   }
 };
