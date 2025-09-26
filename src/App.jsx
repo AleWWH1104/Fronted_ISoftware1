@@ -21,13 +21,13 @@ function App () {
           <Route path='/login' element={<LoginPage/>} />
           <Route path='/register' element={<RegisterPage/>} />
           <Route path='/projects' element={<ProjectsPage />} />
-          <Route path= '/dashboard' element={<DashboardPage />} />
-          <Route path='/inventory' element={<InventoryPage />} />
           
             
 
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoutes />}>
+            <Route path='/dashboard' element={<DashboardPage />} />
+            <Route path='/inventory' element={<InventoryPage />} />
             {/* <Route path='/projects' element={<ProjectsPage />} /> */}
             <Route path='/reports' element={<ReportsPage />} />
           </Route>
