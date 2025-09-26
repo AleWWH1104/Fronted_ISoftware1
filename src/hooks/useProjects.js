@@ -40,7 +40,7 @@ export function useProjectMaterials(projectId) {
 
     getProjectMaterialsByProject(projectId)
       .then((data) => {
-        console.log('✅ Hook: Materials received for project', projectId, ':', data);
+        console.log('hook: Materials received for project', projectId, ':', data);
         
         // El backend ya nos devuelve solo los materiales del proyecto específico
         const projectMaterials = Array.isArray(data) ? data : [];
@@ -68,7 +68,7 @@ export function useProjectMaterials(projectId) {
         setMaterials(transformed);
       })
       .catch((err) => {
-        console.error('❌ Hook Error fetching materials:', err.response?.data || err.message);
+        console.error(' Hook Error fetching materials:', err.response?.data || err.message);
         setError(err);
         setMaterials([]);
       })
