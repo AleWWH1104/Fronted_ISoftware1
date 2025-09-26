@@ -1,1 +1,40 @@
 @import "tailwindcss";
+
+
+body{
+    font-family: 'Nunito', sans-serif;
+    font-weight: normal;
+}
+
+.titulo {
+    font-weight: medium;
+    font-size: 30px;
+}
+
+.titulo2 {
+    font-weight:bold;
+    font-size: 20px; 
+    color: #046BB1;
+}
+
+.subtitulo {
+    font-weight:bold;
+    font-size: 16px; 
+    color: #046BB1;
+}
+
+.parrafo {
+    font-weight: normal;
+    font-size: 12px;
+}
+
+.errores {
+    font-weight: normal;
+    font-size: 10px;
+    color: red;
+}
+
+.boton {
+    font-weight: bold;
+    font-size: 12px;
+}
