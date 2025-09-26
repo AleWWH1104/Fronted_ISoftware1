@@ -4,10 +4,10 @@ import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
 
 export default function MaterialsByProjectView({ projectId, onBack }) {
-  // ✅ CORREGIDO: Pasar projectId al hook
+
   const { materials, loading, error } = useProjectMaterials(projectId);
 
-  // ✅ Simplificamos - ya no necesitamos filtrar porque el hook lo hace
+
   const projectMaterials = materials.map((mat, index) => {
     const ofertada = Number(mat.ofertada) || 0;
     const reservado = Number(mat.reservado) || 0;
@@ -27,7 +27,7 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
     };
   });
 
-  // ... el resto del código permanece igual
+ 
   const columns = [
     { name: "Código", selector: (row) => row.codigo, sortable: true },
     { name: "Material", selector: (row) => row.material, sortable: true },
@@ -41,14 +41,14 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
       cell: (row) => (
         <div className="flex gap-2">
           <button
-            className="rounded px-2 py-1 text-xs"
+            className="rounded px-1 py-1 text-xs"
             style={{ border: "1px solid #046BB1", color: "#046BB1" }}
             onClick={() => alert(`Reservar ${row.material}`)}
           >
             Reservar
           </button>
           <button
-            className="rounded px-2 py-1 text-xs text-white"
+            className="rounded px-0 py-2 text-xs text-white"
             style={{ backgroundColor: "#046BB1" }}
             onClick={() => alert(`Entregar ${row.material}`)}
           >
