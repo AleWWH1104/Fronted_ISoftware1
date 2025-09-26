@@ -1,12 +1,12 @@
 // components/Projects/MaterialsByProject.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
 
 export default function MaterialsByProjectView({ projectId, onBack }) {
-
   const { materials, loading, error } = useProjectMaterials(projectId);
-
+  const [records, setRecords] = useState([]);
+  const [filterText, setFilterText] = useState("");
 
   const projectMaterials = materials.map((mat, index) => {
     const ofertada = Number(mat.ofertada) || 0;
@@ -27,7 +27,24 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
     };
   });
 
- 
+  // Efecto para inicializar los registros
+  useEffect(() => {
+    setRecords(projectMaterials);
+  }, [projectMaterials]);
+
+  // Función para filtrar los materiales
+  function handleFilter(event) {
+    const value = event.target.value.toLowerCase();
+    setFilterText(value);
+    
+    const filtered = projectMaterials.filter(row =>
+      Object.values(row).some(field =>
+        String(field).toLowerCase().includes(value)
+      )
+    );
+    setRecords(filtered);
+  }
+
   const columns = [
     { name: "Código", selector: (row) => row.codigo, sortable: true },
     { name: "Material", selector: (row) => row.material, sortable: true },
@@ -78,11 +95,22 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
         </button>
       </div>
 
-      {error && <p className="text-red-500">❌ Error cargando materiales</p>}
+      {error && <p className="text-red-500">Error cargando materiales</p>}
+
+      <div className='md:justify md:mt-8 mb-2 flex justify-start mt-2 items-center gap-1'>
+        <span className='parrafo'>Buscar: </span>
+        <input 
+          type="text" 
+          onChange={handleFilter} 
+          className='ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo'
+          placeholder="Buscar material..."
+          value={filterText}
+        />
+      </div>
 
       <DataTable
         columns={columns}
-        data={projectMaterials}
+        data={records}
         progressPending={loading}
         pagination
         highlightOnHover
