@@ -1,10 +1,13 @@
+// components/Dashboard/ProjectMaterialsView.jsx
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import { useProjectMaterialsForDashboard } from '../../hooks/useProjects';
 
-export default function ProjectMaterialsView({ data, loading: propLoading, error: propError }) {
+export default function ProjectMaterialsView() {
+  const { materials: data, loading: propLoading, error: propError } = useProjectMaterialsForDashboard();
   const [records, setRecords] = useState([]);
 
-  // Definición columnas para la tabla de materiales, coincidiendo con tu solicitud.
+  // Definición columnas para la tabla de materiales
   const columns = [
     { name: 'Proyecto', selector: row => row.proyecto, sortable: true },
     { name: 'Codigo', selector: row => row.codigo, sortable: true },
@@ -41,7 +44,6 @@ export default function ProjectMaterialsView({ data, loading: propLoading, error
     setRecords(Array.isArray(data) ? data : []);
   }, [data]);
 
-  // Filtro opcional para búsqueda interna (usa 'data' del prop, no 'records' para filtrar sobre el original)
   function handleFilter(event) {
     const value = event.target.value.toLowerCase();
     const filtered = (data || []).filter(row => 
@@ -50,25 +52,21 @@ export default function ProjectMaterialsView({ data, loading: propLoading, error
     setRecords(filtered);
   }
 
-  // Si hay error, mostrar mensaje simple
   if (propError) {
     return (
       <section className="bg-white p-4 rounded-lg shadow-xs">
-        <h2 className="text-black font-semibold mb-3">Detalle de materiales en proyectos activos</h2>
         <div className="text-red-500 p-4 border border-red-300 rounded">Error al cargar datos: {propError.message || propError}</div>
       </section>
     );
   }
 
-  // Si está cargando, mostrar spinner simple (con color personalizado #046BB1)
   if (propLoading) {
     return (
       <section className="bg-white p-4 rounded-lg shadow-xs">
-        <h2 className="text-black font-semibold mb-3">Detalle de materiales en proyectos activos</h2>
         <div className="flex justify-center items-center h-64">
           <div 
             className="animate-spin rounded-full h-8 w-8 border-b-2" 
-            style={{ borderColor: '#046BB1' }} // Cambio aquí el azul
+            style={{ borderColor: '#046BB1' }}
           ></div>
           <span className="ml-2">Cargando materiales...</span>
         </div>
@@ -80,12 +78,12 @@ export default function ProjectMaterialsView({ data, loading: propLoading, error
     <section className="bg-white p-4 rounded-lg shadow-xs">
       <h2 className="text-black font-semibold mb-3">Detalle de materiales en proyectos activos</h2>
 
-      <div className='flex mb-2 items-center gap-2'>
+      <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center gap-1'>
         <span className='parrafo'>Buscar: </span>
         <input 
           type="text" 
           onChange={handleFilter} 
-          className='border border-gray-300 rounded-sm px-2 py-1 parrafo' 
+          className='ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo'
           placeholder="Buscar en la tabla..."
         />
       </div>
