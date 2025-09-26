@@ -31,7 +31,7 @@ export const getProyectoById = async (id) => {
   }
 };
 
-// ✅ PARA DASHBOARD: Todos los materiales de proyectos activos
+//  PARA DASHBOARD: Todos los materiales de proyectos activos
 export const getProjectMaterialsForDashboard = async () => {
   try {
     const response = await axios.get(`/projects/materials`);
@@ -43,12 +43,12 @@ export const getProjectMaterialsForDashboard = async () => {
   }
 };
 
-// ✅ PARA VISTA DETALLE: Materiales de un proyecto específico
+//  PARA VISTA DETALLE: Materiales de un proyecto específico
 export const getProjectMaterialsByProject = async (projectId) => {
   if (!projectId) throw new Error("Se requiere projectId");
   try {
     const response = await axios.get(`/proyecto-material/${projectId}`);
-    console.log('Service: Materials for project', projectId, response.data);
+    console.log(' Service: Materials for project', projectId, response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching project materials by projectId:', error.response?.data || error.message);
@@ -56,16 +56,31 @@ export const getProjectMaterialsByProject = async (projectId) => {
   }
 };
 
-// Función adicional para asignar materiales a un proyecto
+//  NUEVO: Obtener todos los materiales (código y nombre)
+export const getMateriales = async () => {
+  try {
+    const response = await axios.get(`/materiales`);
+    console.log('Service: Materiales loaded:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(' Service Error in getMateriales:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+//  NUEVO: Asignar material a proyecto
 export const assignMaterialToProject = async (projectId, materialData) => {
   try {
     const response = await axios.post(`/proyecto-material`, {
       id_proyecto: projectId,
-      ...materialData
+      id_material: materialData.id_material,
+      ofertada: materialData.cantidad,
+      reservado: 0,
+      en_obra: 0
     });
     return response.data;
   } catch (error) {
-    console.error(' Error assigning material to project:', error.response?.data || error.message);
+    console.error('Error assigning material to project:', error.response?.data || error.message);
     throw error;
   }
 };
@@ -76,7 +91,7 @@ export const getMaterialsInProgress = async () => {
     const response = await axios.get(`/proyecto-material/en-progreso`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching materials in progress:', error.response?.data || error.message);
+    console.error(' Error fetching materials in progress:', error.response?.data || error.message);
     throw error;
   }
 };

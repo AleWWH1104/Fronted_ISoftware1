@@ -3,7 +3,9 @@ import { useEffect, useState, useCallback } from 'react';
 import { 
   getEstadoProyectos, 
   getProjectMaterialsByProject, 
-  getProjectMaterialsForDashboard 
+  getProjectMaterialsForDashboard,
+  getMateriales,
+  assignMaterialToProject 
 } from '../services/projects';
 
 // Hook para obtener todos los proyectos
@@ -44,7 +46,7 @@ export function useProjectMaterials(projectId) {
 
     getProjectMaterialsByProject(projectId)
       .then((data) => {
-        console.log('✅ Hook: Materials received for project', projectId, ':', data);
+        console.log(' Hook: Materials received for project', projectId, ':', data);
         
         // El backend ya nos devuelve solo los materiales del proyecto específico
         const projectMaterials = Array.isArray(data) ? data : [];
@@ -72,7 +74,7 @@ export function useProjectMaterials(projectId) {
         setMaterials(transformed);
       })
       .catch((err) => {
-        console.error('❌ Hook Error fetching materials:', err.response?.data || err.message);
+        console.error(' Hook Error fetching materials:', err.response?.data || err.message);
         setError(err);
         setMaterials([]);
       })
@@ -98,11 +100,11 @@ export function useProjectMaterialsForDashboard() {
 
     getProjectMaterialsForDashboard()
       .then((data) => {
-        console.log('✅ Dashboard Hook: All project materials received:', data);
+        console.log(' Dashboard Hook: All project materials received:', data);
         setMaterials(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error('❌ Dashboard Hook Error:', err.response?.data || err.message);
+        console.error(' Dashboard Hook Error:', err.response?.data || err.message);
         setError(err);
         setMaterials([]);
       })
@@ -114,4 +116,57 @@ export function useProjectMaterialsForDashboard() {
   }, [fetchMaterials]);
 
   return { materials, loading, error, refetch: fetchMaterials };
+}
+
+// NUEVO: Hook para obtener todos los materiales
+export function useMateriales() {
+  const [materiales, setMateriales] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMateriales = useCallback(() => {
+    setLoading(true);
+    setError(null);
+
+    getMateriales()
+      .then((data) => {
+        console.log(' Materiales Hook: Materials received:', data);
+        setMateriales(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error('Materiales Hook Error:', err.response?.data || err.message);
+        setError(err);
+        setMateriales([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    fetchMateriales();
+  }, [fetchMateriales]);
+
+  return { materiales, loading, error, refetch: fetchMateriales };
+}
+
+//  NUEVO: Hook para asignar material a proyecto
+export function useAssignMaterial() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const assignMaterial = useCallback(async (projectId, materialData) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await assignMaterialToProject(projectId, materialData);
+      setLoading(false);
+      return result;
+    } catch (err) {
+      setError(err);
+      setLoading(false);
+      throw err;
+    }
+  }, []);
+
+  return { assignMaterial, loading, error };
 }
