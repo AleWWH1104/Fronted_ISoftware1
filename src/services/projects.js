@@ -61,11 +61,11 @@ export const patchProyectoEstado = async (id, estado) => {
 };
 
 export const updateProyecto = async (id, data) => {
-  const { data: res } = await axios.put(`/projects/${id}`, data, { withCredentials: true,});
+  const { data: res } = await axios.put(`/projects/${id}`, data, { withCredentials: true, headers: { 'Content-Type': 'application/json' }});
   return res;
 };
 
-// ✅ PARA DASHBOARD: Todos los materiales de proyectos activos
+// PARA DASHBOARD: Todos los materiales de proyectos activos
 export const getProjectMaterialsForDashboard = async () => {
   try {
     const response = await axios.get(`/projects/materials`);
@@ -77,7 +77,7 @@ export const getProjectMaterialsForDashboard = async () => {
   }
 };
 
-// ✅ PARA VISTA DETALLE: Materiales de un proyecto específico
+// PARA VISTA DETALLE: Materiales de un proyecto específico
 export const getProjectMaterialsByProject = async (projectId) => {
   if (!projectId) throw new Error("Se requiere projectId");
   try {

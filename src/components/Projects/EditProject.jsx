@@ -4,22 +4,15 @@ import { InputForm } from "../Input";
 import { useEffect, useState } from "react";
 
 export default function EditProjectPopUp({ project, onClickCancel, onClickSave }) {
-  const ESTADO_OPTS = [
-    { value: 'solicitado', label: 'Solicitado' },
-    { value: 'en progreso', label: 'En progreso' },
-    { value: 'finalizado', label: 'Finalizado' },
-    { value: 'cancelado', label: 'Cancelado' },
-  ];
+  // 1) Enum del backend (exactamente iguales)
+  const ESTADO_VALUES = ['Solicitado', 'En Progreso', 'Finalizado', 'Cancelado'];
+  const TIPO_VALUES = ['Piscina Regular', 'Piscina Irregular', 'Remodelacion', 'Jacuzzi', 'Paneles Solares', 'Fuentes y Cascadas'];
 
-  const TIPO_OPTS = [
-    { value: 'regulares', label: 'Piscina Regular' },
-    { value: 'irregulares', label: 'Piscina Irregular' },
-    { value: 'mantenimiento', label: 'Mantenimiento' },
-    { value: 'paneles solares', label: 'Paneles Solares' },
-    { value: 'remodelaciones', label: 'Remodelación' },
-    { value: 'jacuzzis', label: 'Jacuzzi' },
-    { value: 'fuentes y cascadas', label: 'Fuentes y Cascadas' },
-  ];
+  // 2) Helper para armar {value,label} con el mismo texto
+  const makeOpts = (arr) => arr.map(v => ({ value: v, label: v }));
+
+  const ESTADO_OPTS = makeOpts(ESTADO_VALUES);
+  const TIPO_OPTS   = makeOpts(TIPO_VALUES);
 
   // Estado del formulario
   const [nombre, setNombre] = useState("");
@@ -60,9 +53,7 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
       ubicacion: ubicacion.trim(),
       estado,
       presupuesto: Number(presupuesto),
-      // conserva lo demás que venga del backend si lo necesitas:
       fecha_inicio: project?.fecha_inicio ?? null,
-      fecha_fin: project?.fecha_fin ?? null,
       cliente_id: project?.cliente_id ?? null,
     };
     onClickSave?.(updated);
