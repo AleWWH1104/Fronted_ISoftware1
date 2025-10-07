@@ -43,10 +43,19 @@ export const patchProyectoTipo = async (id, tipo_servicio) => {
 
 export const patchProyectoEstado = async (id, estado) => {
   try {
-    const {response} = await axios.patch(`/projects/${id}/estado`, { estado }, { withCredentials: true });
-    return response;
+    const { data } = await axios.patch(
+      `/projects/${id}/estado`,
+      { estado },
+      { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+    );
+    return data; // ← devuelve el body ya parseado
   } catch (error) {
-    console.error(`Error patching estado:`, error);
+    // Muestra detalle útil del backend si existe
+    console.error(
+      'Error patching estado:',
+      error.response?.status,
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
