@@ -62,9 +62,7 @@ export default function ProjectsPage() {
         ubicacion: updated.ubicacion.trim(),
         estado: updated.estado,
         presupuesto: Number(updated.presupuesto),
-        cliente_id: updated.cliente_id ?? 1,
-        fecha_inicio: updated.fecha_inicio ?? null,
-        fecha_fin: updated.fecha_fin ?? null,
+        cliente_id: Number(updated.cliente_id),
       };
 
       await updateProyecto(updated.id, payload);

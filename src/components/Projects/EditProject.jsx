@@ -1,51 +1,66 @@
-// src/components/popups/EditProject.jsx
+// src/components/Projects/EditProject.jsx
 import { SaveOrCancelButtons } from "../Button";
 import { InputForm } from "../Input";
 import { useEffect, useState } from "react";
+import useClients from "../../hooks/useClients";
 
 export default function EditProjectPopUp({ project, onClickCancel, onClickSave }) {
-  // 1) Enum del backend (exactamente iguales)
   const ESTADO_VALUES = ['Solicitado', 'En Progreso', 'Finalizado', 'Cancelado'];
-  const TIPO_VALUES = ['Piscina Regular', 'Piscina Irregular', 'Remodelacion', 'Jacuzzi', 'Paneles Solares', 'Fuentes y Cascadas'];
-
-  // 2) Helper para armar {value,label} con el mismo texto
+  const TIPO_VALUES   = ['Piscina Regular', 'Piscina Irregular', 'Remodelacion', 'Jacuzzi', 'Paneles Solares', 'Fuentes y Cascadas'];
   const makeOpts = (arr) => arr.map(v => ({ value: v, label: v }));
-
   const ESTADO_OPTS = makeOpts(ESTADO_VALUES);
   const TIPO_OPTS   = makeOpts(TIPO_VALUES);
 
-  // Estado del formulario
+  // Form proyecto
   const [nombre, setNombre] = useState("");
-  const [tipoServicio, setTipoServicio] = useState("");
+  const [tipoServicio, setTipoServicio] = useState(TIPO_VALUES[0]);
   const [ubicacion, setUbicacion] = useState("");
-  const [estado, setEstado] = useState("");
+  const [estado, setEstado] = useState(ESTADO_VALUES[0]);
   const [presupuesto, setPresupuesto] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Cliente: seleccionar existente o crear nuevo
-  const [isCreateClient, setCreateClient] = useState(false);
-  const [clientName, setClientName] = useState("");
-  const [clientPhone, setClientPhone] = useState("");
-  const [clientId, setClientId] = useState(null); // por si usas id de cliente
+  // Clientes (igual que Create)
+  const {
+    clients, clientsLoading, clientsError,
+    selectedClientId, setSelectedClientId,
+    isCreateClient, setCreateClient,
+    newClientName, setNewClientName,
+    newClientPhone, setNewClientPhone,
+    error, setError,
+    handleCreateClient,
+  } = useClients();
 
-  // Precargar datos cuando llegue/ cambie el proyecto
+  // Precargar datos del proyecto
   useEffect(() => {
     if (!project) return;
     setNombre(project.nombre ?? "");
-    setTipoServicio(project.tipo_servicio ?? "");
+    setTipoServicio(project.tipo_servicio ?? TIPO_VALUES[0]);
     setUbicacion(project.ubicacion ?? "");
-    setEstado(project.estado ?? "");
+    setEstado(project.estado ?? ESTADO_VALUES[0]);
     setPresupuesto(Number(project.presupuesto ?? 0));
 
-    const c = project.client ?? {};
-    setClientName(c.name ?? "");
-    setClientPhone(c.phone ?? "");
-    setClientId(c.id ?? null);
-
-    // Si ya hay cliente con id, asumimos "elegir cliente"; si no, "nuevo cliente"
-    setCreateClient(!c.id && !!c.name);
+    // cliente actual (acepta cliente_id o client.id según venga)
+    const currentClientId = project?.cliente_id ?? project?.client?.id ?? null;
+    setSelectedClientId(currentClientId != null ? String(currentClientId) : "");
+    setCreateClient(false);
+    setError("");
   }, [project]);
 
   const handleSave = () => {
+    setSubmitting(true);
+    setError("");
+
+    if (!selectedClientId) {
+      setError("Debes seleccionar un cliente.");
+      setSubmitting(false);
+      return;
+    }
+    if (!Number.isInteger(Number(selectedClientId))) {
+      setError("El cliente seleccionado no es válido. Intenta seleccionarlo de nuevo.");
+      setSubmitting(false);
+      return;
+    }
+
     const updated = {
       id: project?.id ?? null,
       nombre: nombre.trim(),
@@ -53,22 +68,23 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
       ubicacion: ubicacion.trim(),
       estado,
       presupuesto: Number(presupuesto),
-      fecha_inicio: project?.fecha_inicio ?? null,
-      cliente_id: project?.cliente_id ?? null,
+      cliente_id: Number(selectedClientId), // ⬅ igual que en Create
+      // fechas las maneja el backend según estado
     };
+
     onClickSave?.(updated);
+    setSubmitting(false);
   };
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-[30%] h-[95%] mx-[25px] p-6 flex flex-col">
       <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Editar proyecto</h2>
-        <p className="text-[#709DBB] text-sm">
-          Actualiza la información del proyecto de Pool Center
-        </p>
+        <p className="text-[#709DBB] text-sm">Actualiza la información del proyecto de Pool Center</p>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto">
+        {/* Sección 1: Proyecto */}
         <div className="flex gap-2 items-center my-3">
           <span className="bg-[#DBE6EE] px-1.5 py-0.5 rounded-full text-xs">1</span>
           <p className="text-sm">Información del proyecto</p>
@@ -84,7 +100,6 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             required
             className="col-span-2"
           />
-
           <div className="col-span-2 md:row-start-2">
             <label className="parrafo font-semibold mb-1">Tipo de servicio</label>
             <select
@@ -96,7 +111,6 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
               {TIPO_OPTS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
             </select>
           </div>
-
           <InputForm
             type="text"
             label="Ubicación"
@@ -106,7 +120,6 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             required
             className="col-span-2 md:row-start-3"
           />
-
           <div className="md:row-start-4">
             <label className="parrafo font-semibold mb-1">Estado</label>
             <select
@@ -118,7 +131,6 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
               {ESTADO_OPTS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
             </select>
           </div>
-
           <InputForm
             type="number"
             label="Presupuesto"
@@ -130,68 +142,80 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
           />
         </div>
 
+        {/* Sección 2: Cliente */}
         <div className="flex gap-2 items-center my-4 border-t border-gray-200 pt-3">
           <span className="bg-[#DBE6EE] px-1.5 py-0.5 rounded-full text-xs">2</span>
           <p className="text-sm">Información del cliente</p>
         </div>
 
+        {(error || clientsError) && <p className="errores mb-2">{error || clientsError}</p>}
+
         {!isCreateClient ? (
           <div className="flex flex-col gap-3">
-            <InputForm
-              type="text"
-              label="Nombre del cliente"
-              placeholder="Elija un cliente"
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
+            <label className="parrafo font-semibold">Cliente</label>
+            <select
+              className="w-full parrafo bg-white p-2 rounded-lg border border-gray-400"
+              value={selectedClientId}
+              onChange={(e) => setSelectedClientId(e.target.value)}
               required
-            />
-
-            {/* Si manejas un selector real de clientes, aquí podrías abrir un modal/lista */}
+              disabled={clientsLoading}
+            >
+              <option value="">{clientsLoading ? "Cargando clientes..." : "Selecciona un cliente"}</option>
+              {clients.map(c => (
+                <option key={c.id} value={String(c.id)}>{c.nombre}</option>
+              ))}
+            </select>
             <button
               type="button"
               className="parrafo bg-gray-100 rounded-lg px-2 py-1 w-fit"
-              onClick={() => {
-                // Al cambiar a "nuevo cliente", limpiamos id
-                setClientId(null);
-                setCreateClient(true);
-              }}
+              onClick={() => setCreateClient(true)}
             >
               + Nuevo cliente
             </button>
           </div>
         ) : (
-          <div>
-            <div className="flex flex-col gap-3">
-              <InputForm
-                type="text"
-                label="Nombre del cliente"
-                placeholder="Ingrese el nombre del cliente"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                required
-              />
-              <InputForm
-                type="text"
-                label="Teléfono"
-                placeholder="Ingrese el número telefónico"
-                value={clientPhone}
-                onChange={(e) => setClientPhone(e.target.value)}
-                required
-              />
+          <div className="flex flex-col gap-3">
+            <InputForm
+              type="text"
+              label="Nombre del cliente"
+              placeholder="Ingrese el nombre del cliente"
+              value={newClientName}
+              onChange={(e) => setNewClientName(e.target.value)}
+              required
+            />
+            <InputForm
+              type="text"
+              label="Teléfono"
+              placeholder="Ingrese el número telefónico"
+              value={newClientPhone}
+              onChange={(e) => setNewClientPhone(e.target.value)}
+              required
+            />
+            <div className="flex justify-between items-center gap-3">
+              <button
+                type="button"
+                className="w-1/4 parrafo bg-gray-100 rounded-lg px-2 py-1"
+                onClick={() => { setCreateClient(false); setError(""); }}
+              >
+                ← Volver
+              </button>
+              <button
+                type="button"
+                className="w-3/4 parrafo bg-[#DBE6EE] rounded-lg px-2 py-1"
+                onClick={handleCreateClient}
+              >
+                Guardar cliente
+              </button>
             </div>
-
-            <button
-              type="button"
-              className="parrafo bg-gray-100 rounded-lg px-2 py-1 w-fit my-3"
-              onClick={() => setCreateClient(false)}
-            >
-              ← Volver a elegir cliente
-            </button>
           </div>
         )}
       </div>
 
-      <SaveOrCancelButtons onClick1={onClickCancel} onClick2={handleSave} />
+      <SaveOrCancelButtons
+        onClick1={onClickCancel}
+        onClick2={handleSave}
+        disabled2={submitting || clientsLoading}
+      />
     </div>
   );
 }

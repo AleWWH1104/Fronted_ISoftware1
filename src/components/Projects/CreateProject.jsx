@@ -3,11 +3,22 @@ import { useForm} from "react-hook-form";
 import { InputForm } from "../Input"
 import { useEffect, useState } from "react";
 import { crearProyecto } from "../../services/projects";
+import { getClients, createClient } from "../../services/clients";
 
 export default function CreateProjectPopup({onClickCancel, onClickSave}) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [isCreateClient, setCreateClient] = useState(false);
+
+  // clientes
+  const [clients, setClients] = useState([]);
+  const [clientsLoading, setClientsLoading] = useState(true);
+  const [clientsError, setClientsError] = useState(null);
+  const [selectedClientId, setSelectedClientId] = useState(""); // string para <select>
+
+  // crear cliente inline
+  const [newClientName, setNewClientName] = useState("");
+  const [newClientPhone, setNewClientPhone] = useState("");
 
   const { register, handleSubmit, formState: { errors }} = useForm({
     defaultValues: {
@@ -31,22 +42,98 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
 
   const hoy = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
 
+  // Cargar clientes al montar
+  useEffect(() => {
+    let mounted = true;
+    setClientsLoading(true);
+    getClients()
+      .then(data => {
+        if (!mounted) return;
+        setClients(Array.isArray(data) ? data : []);
+      })
+      .catch(err => {
+        console.error(err);
+        setClientsError("No se pudieron cargar los clientes.");
+      })
+      .finally(() => setClientsLoading(false));
+    return () => { mounted = false; };
+  }, []);
+
+  const pickId = (obj) => obj?.cliente?.id;
+
+  const handleCreateClient = async () => {
+    const cleanedPhone = newClientPhone.trim().replace(/-/g, "");
+
+    if (!newClientName.trim() || !newClientPhone.trim()) {
+      setError("El nombre y telefono del cliente son requeridos.");
+      return;
+    }
+
+    if (!/^\d{8}$/.test(cleanedPhone)) {
+      setError("El número de teléfono debe tener exactamente 8 dígitos.");
+      return;
+    }
+
+    setError("");
+    try {
+      const payload = {
+        nombre: newClientName.trim(),
+        telefono: cleanedPhone,
+      };
+      const created = await createClient(payload); 
+      // Actualiza la lista y selecciona
+      const newId = pickId(created);
+   if (!Number.isInteger(Number(newId))) {
+     console.error("Respuesta de createClient sin ID usable:", created);
+     setError("No se pudo obtener el ID del cliente creado.");
+     return;
+   }
+
+   //re-cargar la lista 
+   const refreshed = await getClients().catch(() => []);
+   setClients(Array.isArray(refreshed) ? refreshed : []);
+
+   setSelectedClientId(String(newId));
+      // limpia y vuelve a seleccionar cliente existente
+      setNewClientName("");
+      setNewClientPhone("");
+      setCreateClient(false);
+    } catch (e) {
+      console.error(e);
+      setError("No se pudo crear el cliente. Intenta de nuevo.");
+    }
+  };
+
   const onSubmit = async (form) => {
     setSubmitting(true);
     setError("");
 
     try {
+      // Validar cliente
+      if (!selectedClientId) {
+        setError("Debes seleccionar un cliente.");
+        setSubmitting(false);
+        return;
+      }
+      if (!Number.isInteger(Number(selectedClientId))) {
+        setError("El cliente seleccionado no es válido. Intenta seleccionarlo de nuevo.");
+        setSubmitting(false);
+        return;
+      }
+
       const payload = {
         nombre: form.nombre.trim(),
         estado: form.estado,
         presupuesto: Number(form.presupuesto),
-        cliente_id: 1,         // temporal
+        cliente_id:  Number(selectedClientId),         // temporal
         fecha_inicio: hoy,
         fecha_fin: null,       // siempre null al crear
         ubicacion: form.ubicacion.trim(),
         tipo_servicio: form.tipo_servicio,
       };
 
+      
+      console.log("➡️ Payload proyecto:", payload);
       await crearProyecto(payload);
       onClickSave();
     } catch (e) {
@@ -65,7 +152,7 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
           Registrar un nuevo proyecto de Pool Center
         </p>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         <div className="flex gap-2 items-center my-3">
           <span className="bg-[#DBE6EE] px-1.5 py-0.5 rounded-full text-xs">1</span>
           <p className="text-sm">Registrar informacion del proyecto</p>
@@ -139,15 +226,19 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
           </div>
           {!isCreateClient ? (
             <div>
-              <InputForm
-                type="texto"
-                label="Nombre del cliente"
-                placeholder="Elija un cliente"
-                value="1"
-                onChange={''}
-                required
-                className=""
-              />
+              <select
+                  className="w-full parrafo bg-white p-2 rounded-lg border border-gray-400"
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                  required
+                >
+                  <option value="">Selecciona un cliente</option>
+                  {clients.map(c => (
+                    <option key={c.id} value={String(c.id)}>
+                      {c.nombre}
+                    </option>
+                  ))}
+              </select>
               <button
                 type="button"
                 className="parrafo bg-gray-100 rounded-lg px-2"
@@ -159,35 +250,48 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
           ) : (
             // div para crear nuevo cliente
             <div>
+              {error && <p className="errores">{error}</p>}
               <div className="flex flex-col gap-3">
                 <InputForm
-                  type="texto"
+                  type="text"
                   label="Nombre del cliente"
                   placeholder="Ingrese el nombre del cliente"
-                  value={''}
-                  onChange={''}
+                  value={newClientName}
+                  onChange={(e) => setNewClientName(e.target.value)}
                   required
                   className=""
                 />
+                
                 <InputForm
                   type="text"
                   label="Teléfono"
                   placeholder="Ingrese el número telefónico"
-                  value={''}
-                  onChange={''}
+                  value={newClientPhone}
+                  onChange={(e) => setNewClientPhone(e.target.value)}
                   required
                   className=""
                 />
-
+                <div className="flex justify-between items-center gap-3">
+                  <button
+                    type="button"
+                    className="w-1/4 parrafo bg-gray-100 rounded-lg px-2 py-1 "
+                    onClick={() => setCreateClient(false)}
+                  >
+                      ← Volver
+                  </button>
+                  <button
+                    type="button"
+                    className="w-3/4 parrafo bg-[#DBE6EE] rounded-lg px-2 py-1"
+                    onClick={handleCreateClient}
+                  >
+                    Guardar cliente
+                  </button>
+                </div>
+                
                 
               </div>
-              <button
-                  type="button"
-                  className="parrafo bg-gray-100 rounded-lg px-2 my-3"
-                  onClick={() => setCreateClient(false)}
-                >
-                  ← Volver a elegir cliente
-              </button>
+
+              
             </div>
           )}
         </form>

@@ -1,20 +1,21 @@
 import { useEffect, useState } from 'react';
 import { getCountCustomers, getFinishedProjects, getInProgressProjects, getCountProducts, getProjectsByService } from '../services/kpis';
 
-export function useCountCustomers(){
-    const [countCustomers, setcountCustomers] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-        getCountCustomers()
-            .then(data => setcountCustomers(data.total_clientes))
-            .catch(setError)
-            .finally(() => setLoading(false));
-    }, []);
-  
-    return { countCustomers, loading, error };
+export function useCountCustomers() {
+  const [countCustomers, setCountCustomers] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    getCountCustomers()
+      .then(data => setCountCustomers(Number(data[0]?.total_clientes) || 0))
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return { countCustomers, loading, error };
 }
+
 
 export function useFinishedProjects(){
     const [finishedProjects, setfinishedProjects] = useState(0);
