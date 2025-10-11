@@ -77,7 +77,7 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-[30%] h-[95%] mx-[25px] p-6 flex flex-col">
+    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
       <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Editar proyecto</h2>
         <p className="text-[#709DBB] text-sm">Actualiza la información del proyecto de Pool Center</p>
@@ -120,7 +120,7 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             required
             className="col-span-2 md:row-start-3"
           />
-          <div className="md:row-start-4">
+          <div className="md:row-start-4 col-span-2 sm:col-span-1">
             <label className="parrafo font-semibold mb-1">Estado</label>
             <select
               className="w-full parrafo bg-white p-2 rounded-lg border border-gray-400"
@@ -138,7 +138,7 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             value={presupuesto}
             onChange={(e) => setPresupuesto(e.target.value)}
             required
-            className="md:row-start-4"
+            className="row-start-5 col-span-2 sm:col-span-1 md:row-start-4"
           />
         </div>
 

@@ -145,7 +145,7 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-[30%] h-[95%] mx-[25px] p-6 flex flex-col">
+    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6">
       <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Crear nuevo proyecto</h2>
         <p className="text-[#709DBB] text-sm">
@@ -192,7 +192,7 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
               />
               {errors.ubicacion && <p className="errores">{errors.ubicacion.message}</p>}
             </div>
-            <div className="md:row-start-4">
+            <div className=" md:row-start-4 col-span-2 sm:col-span-1">
               <label className="parrafo font-semibold mb-1">Estado</label>
               <select
                 className="w-full parrafo bg-white p-2 rounded-lg  border border-gray-400"
@@ -205,7 +205,7 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
                 ))}
               </select>
             </div>
-            <div className="md:row-start-4">
+            <div className="row-start-5 col-span-2 sm:col-span-1 md:row-start-4">
               <label className="parrafo font-semibold mb-1">Presupuesto</label>
               <input
                 type="number"
@@ -261,7 +261,6 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
                   required
                   className=""
                 />
-                
                 <InputForm
                   type="text"
                   label="Teléfono"
