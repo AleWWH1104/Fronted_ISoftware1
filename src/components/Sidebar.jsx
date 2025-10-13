@@ -15,7 +15,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [openMenu, setOpenMenu] = useState(null) // controla qué menú está abierto
+  const [openMenu, setOpenMenu] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
   const { logout } = useAuth()
@@ -30,12 +30,14 @@ export default function Sidebar() {
     if (isOpen) setIsOpen(false)
   }
 
-  const toggleSubMenu = (menu) => {
+  const toggleSubMenu = (menu, e) => {
+    e.preventDefault()
+    e.stopPropagation()
     setOpenMenu(openMenu === menu ? null : menu)
   }
 
   const getLinkClasses = (isActive) =>
-    `w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
+    `w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
         ? "bg-[#DDF0FC] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -89,6 +91,7 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 style={{ color: '#046BB1' }} className="parrafo mb-2 px-2">GENERAL</h3>
             <nav className="space-y-1">
+              {/* Dashboard */}
               {generalItems.map(({ title, url, icon: Icon }) => {
                 const isActive = location.pathname === url
                 return (
@@ -106,61 +109,81 @@ export default function Sidebar() {
                 )
               })}
 
-              {/* Inventario con submenú */}
-              <button
-                onClick={() => toggleSubMenu("inventory")}
-                className={getLinkClasses(location.pathname.startsWith("/inventory"))}
-              >
-                <div className="flex items-center gap-3">
-                  <Package className="h-4 w-4" />
-                  <span>Inventario</span>
-                </div>
-                {openMenu === "inventory" ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </button>
-              {openMenu === "inventory" && (
-                <div className="ml-4 mt-1 space-y-1">
+              {/* INVENTARIO */}
+              <div>
+                <div className="flex items-center justify-between">
                   <Link
-                    to="/inventory/movements"
-                    className={getSubLinkClasses(location.pathname === "/inventory/movements")}
+                    to="/inventory"
                     onClick={handleLinkClick}
+                    className={getLinkClasses(location.pathname.startsWith("/inventory"))}
                   >
-                    Movimiento de inventario
+                    <div className="flex items-center gap-3">
+                      <Package className="h-4 w-4" />
+                      <span>Inventario</span>
+                    </div>
                   </Link>
+                  <button
+                    onClick={(e) => toggleSubMenu("inventory", e)}
+                    className="p-1 text-gray-600 hover:text-gray-900"
+                  >
+                    {openMenu === "inventory" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
-              )}
-
-              {/* Proyectos con submenú */}
-              <button
-                onClick={() => toggleSubMenu("projects")}
-                className={getLinkClasses(location.pathname.startsWith("/projects"))}
-              >
-                <div className="flex items-center gap-3">
-                  <FolderOpen className="h-4 w-4" />
-                  <span>Proyectos</span>
-                </div>
-                {openMenu === "projects" ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
+                {openMenu === "inventory" && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    <Link
+                      to="/inventory/movements"
+                      className={getSubLinkClasses(location.pathname === "/inventory/movements")}
+                      onClick={handleLinkClick}
+                    >
+                      Movimiento de inventario
+                    </Link>
+                  </div>
                 )}
-              </button>
-              {openMenu === "projects" && (
-                <div className="ml-4 mt-1 space-y-1">
-                  <Link
-                    to="/projects/details"
-                    className={getSubLinkClasses(location.pathname === "/projects/details")}
-                    onClick={handleLinkClick}
-                  >
-                    Detalles de material
-                  </Link>
-                </div>
-              )}
+              </div>
 
-              {/* Reportes */}
+              {/* PROYECTOS */}
+              <div>
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/projects"
+                    onClick={handleLinkClick}
+                    className={getLinkClasses(location.pathname.startsWith("/projects"))}
+                  >
+                    <div className="flex items-center gap-3">
+                      <FolderOpen className="h-4 w-4" />
+                      <span>Proyectos</span>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={(e) => toggleSubMenu("projects", e)}
+                    className="p-1 text-gray-600 hover:text-gray-900"
+                  >
+                    {openMenu === "projects" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {openMenu === "projects" && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    <Link
+                      to="/projects/details"
+                      className={getSubLinkClasses(location.pathname === "/projects/details")}
+                      onClick={handleLinkClick}
+                    >
+                      Detalles de material
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* REPORTES */}
               <Link
                 to="/reports"
                 onClick={handleLinkClick}
