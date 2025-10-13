@@ -63,14 +63,6 @@ export default function DashboardPage() {
       {/* Nueva tabla de materiales con datos del backend */}
       <section className="mt-4">
         <div className="flex justify-between items-center mb-2">
-          <h3 className="text-lg font-semibold">Detalle de materiales en proyectos activos</h3>
-          <button
-            onClick={handleRefetchMaterials}
-            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
-            title="Recargar datos"
-          >
-            <RefreshCw size={16} className="animate-spin" /> Recargar
-          </button>
         </div>
         <ProjectMaterialsView 
           data={materials} 

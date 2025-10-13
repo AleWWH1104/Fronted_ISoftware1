@@ -19,26 +19,19 @@ export default function ProjectMaterialsView() {
   ];
 
   const customStyles = {
-    rows: { style: { minHeight: '35px', fontSize: '14px', color: '#4B5563' } },
-    headCells: {
+    rows: {
       style: {
-        fontWeight: '600',
-        fontSize: '14px',
-        color: '#000000',
-        borderBottom: '1px solid #e5e7eb',
-        paddingLeft: '10px',
-        paddingRight: '10px',
+        minHeight: '40px',
       },
     },
-    cells: { style: { paddingLeft: '10px', paddingRight: '10px' } },
-    pagination: {
-      style: {
-        fontSize: '14px',
-        color: '#4B5563',
-        borderTop: '1px solid #e5e7eb',
+    headCells: {
+      style:{
+        fontWeight: 'bold',
+        fontSize: '12px',
       }
-    }
+    },
   };
+
 
   useEffect(() => {
     setRecords(Array.isArray(data) ? data : []);
@@ -76,7 +69,7 @@ export default function ProjectMaterialsView() {
 
   return (
     <section className="bg-white p-4 rounded-lg shadow-xs">
-      <h2 className="text-black font-semibold mb-3">Detalle de materiales en proyectos activos</h2>
+      <h2 className="subtitulo">Detalle de materiales en proyectos activos</h2>
 
       <div className='md:justify-end md:mt-0 mb-2 flex justify-start mt-2 items-center gap-1'>
         <span className='parrafo'>Buscar: </span>
@@ -84,7 +77,6 @@ export default function ProjectMaterialsView() {
           type="text" 
           onChange={handleFilter} 
           className='ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo'
-          placeholder="Buscar en la tabla..."
         />
       </div>
 

@@ -10,14 +10,12 @@ export const getEstadoMateriales = async () => {
     }
 };
 
-export const getMovimientoMaterial = async () => {
-  try {
-    const response = await axios.get(`/bodega-materiales`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching movimiento de material:', error);
-    throw error;
-  }
+export const getMovimientoMaterial = async (params = {}) => {
+  const { data } = await axios.get('/bodega-materiales', {
+    params,
+    withCredentials: true,
+  });
+  return data;
 };
 
 export const crearMaterial = async (data) => {
@@ -30,12 +28,14 @@ export const crearMaterial = async (data) => {
   }
 };
 
-export const movimientoMaterial = async (data) => {
+export const postMovimientoMaterial = async (payload) => {
   try {
-    const response = await axios.post(`/bodega-materiales`, data, { withCredentials: true });
-    return response.data;
+    const { data } = await axios.post('/bodega-materiales', payload, {
+      withCredentials: true,
+    });
+    return data;
   } catch (error) {
-    console.error(`Error agregando a bodega material:`, error);
+    console.error('Error agregando a bodega material:', error);
     throw error;
   }
 };

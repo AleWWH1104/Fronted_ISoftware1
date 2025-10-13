@@ -31,7 +31,41 @@ export const getProyectoById = async (id) => {
   }
 };
 
-//  PARA DASHBOARD: Todos los materiales de proyectos activos
+export const patchProyectoTipo = async (id, tipo_servicio) => {
+  try {
+    const {response} = await axios.patch(`/projects/${id}/tipo`, { tipo_servicio }, { withCredentials: true });
+    return response;
+  } catch (error) {
+    console.error(`Error patching tipo_servicio:`, error);
+    throw error;
+  }
+};
+
+export const patchProyectoEstado = async (id, estado) => {
+  try {
+    const { data } = await axios.patch(
+      `/projects/${id}/estado`,
+      { estado },
+      { withCredentials: true, headers: { 'Content-Type': 'application/json' } }
+    );
+    return data; // ← devuelve el body ya parseado
+  } catch (error) {
+    // Muestra detalle útil del backend si existe
+    console.error(
+      'Error patching estado:',
+      error.response?.status,
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+export const updateProyecto = async (id, data) => {
+  const { data: res } = await axios.put(`/projects/${id}`, data, { withCredentials: true, headers: { 'Content-Type': 'application/json' }});
+  return res;
+};
+
+// PARA DASHBOARD: Todos los materiales de proyectos activos
 export const getProjectMaterialsForDashboard = async () => {
   try {
     const response = await axios.get(`/projects/materials`);
@@ -43,7 +77,7 @@ export const getProjectMaterialsForDashboard = async () => {
   }
 };
 
-//  PARA VISTA DETALLE: Materiales de un proyecto específico
+// PARA VISTA DETALLE: Materiales de un proyecto específico
 export const getProjectMaterialsByProject = async (projectId) => {
   if (!projectId) throw new Error("Se requiere projectId");
   try {

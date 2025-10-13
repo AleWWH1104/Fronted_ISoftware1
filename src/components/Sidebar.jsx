@@ -11,8 +11,8 @@ const generalItems = [
 ]
 
 const gestionItems = [
-  { title: "Nuevo proyecto", url: "/nuevo-proyecto", icon: PlusCircle },
-  { title: "Agregar materiales", url: "/agregar-materiales", icon: PlusCircle },
+  { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
+  { title: "Agregar materiales", url: "/inventory", icon: PlusCircle, state: { openCreate: true } },
 ]
 
 export default function Sidebar() {
@@ -24,9 +24,8 @@ export default function Sidebar() {
     if (isOpen) setIsOpen(false)
   }
 
-
   const getLinkClasses = (isActive) =>
-    `flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
+    `w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
         ? "bg-[#DDF0FC] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -92,8 +91,28 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 className="parrafo text-[#046BB1] mb-2">GESTIÓN</h3>
             <nav className="space-y-1">
-              {gestionItems.map(({ title, url, icon: Icon }) => {
-                const isActive = location.pathname === url
+              {gestionItems.map(({ title, url, icon: Icon, state }) => {
+                const isActive = location.pathname === url;
+
+                // Caso especial: "Nuevo proyecto"
+                if (state?.openCreate) {
+                  return (
+                    <button
+                      key={title}
+                      type="button"
+                      onClick={() => { 
+                        navigate(url, { state }); 
+                        handleLinkClick(); 
+                      }}
+                      className={getLinkClasses(false)} // << no marcar activo
+                    >
+                      <Icon className="h-4 w-4" />
+                      <span>{title}</span>
+                    </button>
+                  );
+                }
+
+                // Los demás como Link normal
                 return (
                   <Link
                     key={title}
@@ -104,7 +123,7 @@ export default function Sidebar() {
                     <Icon className="h-4 w-4" />
                     <span>{title}</span>
                   </Link>
-                )
+                );
               })}
             </nav>
           </div>

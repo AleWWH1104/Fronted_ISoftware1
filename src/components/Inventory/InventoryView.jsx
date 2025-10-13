@@ -65,6 +65,7 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
       { name: 'Material', selector: row => row.nombre_material, sortable: "true" },
       { name: 'En bodega', selector: row => row.en_bodega, sortable: "true", center: "true" },
       { name: 'Reservado', selector: row => row.reservado, sortable: "true", center: "true" },
+      { name: 'Disponible', selector: row => row.disponible, sortable: "true", center: "true" },
       {
         name: 'Nivel de stock',
         selector: row => row.nivel_stock,
@@ -130,7 +131,7 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
     <DataTable
       columns={columns}
       data={records}
-      selectableRows
+      // selectableRows
       fixedHeader
       pagination
       responsive
