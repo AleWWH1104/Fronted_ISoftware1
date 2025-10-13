@@ -1,42 +1,61 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home, Package, FolderOpen, FileChartColumn, PlusCircle, LogOut, Menu } from "lucide-react"
+import {
+  Home,
+  Package,
+  FolderOpen,
+  FileChartColumn,
+  PlusCircle,
+  LogOut,
+  Menu,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react"
 import { useAuth } from '../context/AuthContext'
-
-const generalItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Inventario", url: "/inventory", icon: Package },
-  { title: "Proyectos", url: "/projects", icon: FolderOpen },
-  { title: "Reportes", url: "/reports", icon: FileChartColumn },
-]
-
-const gestionItems = [
-  { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
-  { title: "Agregar materiales", url: "/inventory", icon: PlusCircle, state: { openCreate: true } },
-]
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [openMenu, setOpenMenu] = useState(null) // controla qué menú está abierto
   const location = useLocation()
   const navigate = useNavigate()
+  const { logout } = useAuth()
+
+  const handleLogout = async () => {
+    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      await logout();
+    }
+  }
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
   }
 
+  const toggleSubMenu = (menu) => {
+    setOpenMenu(openMenu === menu ? null : menu)
+  }
+
   const getLinkClasses = (isActive) =>
-    `w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
+    `w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
         ? "bg-[#DDF0FC] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
     }`
-  
-  const { logout} = useAuth();
-  const handleLogout = async () => {
-    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-      await logout();
-    }
-  };
+
+  const getSubLinkClasses = (isActive) =>
+    `block pl-10 pr-3 py-2 rounded-md text-sm transition-colors ${
+      isActive
+        ? "bg-[#E9F6FE] text-[#046BB1] font-medium"
+        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+    }`
+
+  const generalItems = [
+    { title: "Dashboard", url: "/dashboard", icon: Home },
+  ]
+
+  const gestionItems = [
+    { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
+    { title: "Agregar materiales", url: "/inventory", icon: PlusCircle, state: { openCreate: true } },
+  ]
 
   return (
     <>
@@ -79,11 +98,79 @@ export default function Sidebar() {
                     onClick={handleLinkClick}
                     className={getLinkClasses(isActive)}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{title}</span>
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-4 w-4" />
+                      <span>{title}</span>
+                    </div>
                   </Link>
                 )
               })}
+
+              {/* Inventario con submenú */}
+              <button
+                onClick={() => toggleSubMenu("inventory")}
+                className={getLinkClasses(location.pathname.startsWith("/inventory"))}
+              >
+                <div className="flex items-center gap-3">
+                  <Package className="h-4 w-4" />
+                  <span>Inventario</span>
+                </div>
+                {openMenu === "inventory" ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+              {openMenu === "inventory" && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/inventory/movements"
+                    className={getSubLinkClasses(location.pathname === "/inventory/movements")}
+                    onClick={handleLinkClick}
+                  >
+                    Movimiento de inventario
+                  </Link>
+                </div>
+              )}
+
+              {/* Proyectos con submenú */}
+              <button
+                onClick={() => toggleSubMenu("projects")}
+                className={getLinkClasses(location.pathname.startsWith("/projects"))}
+              >
+                <div className="flex items-center gap-3">
+                  <FolderOpen className="h-4 w-4" />
+                  <span>Proyectos</span>
+                </div>
+                {openMenu === "projects" ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+              {openMenu === "projects" && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/projects/details"
+                    className={getSubLinkClasses(location.pathname === "/projects/details")}
+                    onClick={handleLinkClick}
+                  >
+                    Detalles de material
+                  </Link>
+                </div>
+              )}
+
+              {/* Reportes */}
+              <Link
+                to="/reports"
+                onClick={handleLinkClick}
+                className={getLinkClasses(location.pathname === "/reports")}
+              >
+                <div className="flex items-center gap-3">
+                  <FileChartColumn className="h-4 w-4" />
+                  <span>Reportes</span>
+                </div>
+              </Link>
             </nav>
           </div>
 
@@ -91,46 +178,25 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 className="parrafo text-[#046BB1] mb-2">GESTIÓN</h3>
             <nav className="space-y-1">
-              {gestionItems.map(({ title, url, icon: Icon, state }) => {
-                const isActive = location.pathname === url;
-
-                // Caso especial: "Nuevo proyecto"
-                if (state?.openCreate) {
-                  return (
-                    <button
-                      key={title}
-                      type="button"
-                      onClick={() => { 
-                        navigate(url, { state }); 
-                        handleLinkClick(); 
-                      }}
-                      className={getLinkClasses(false)} // << no marcar activo
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{title}</span>
-                    </button>
-                  );
-                }
-
-                // Los demás como Link normal
-                return (
-                  <Link
-                    key={title}
-                    to={url}
-                    onClick={handleLinkClick}
-                    className={getLinkClasses(isActive)}
-                  >
+              {gestionItems.map(({ title, url, icon: Icon, state }) => (
+                <button
+                  key={title}
+                  type="button"
+                  onClick={() => { navigate(url, { state }); handleLinkClick(); }}
+                  className={getLinkClasses(false)}
+                >
+                  <div className="flex items-center gap-3">
                     <Icon className="h-4 w-4" />
                     <span>{title}</span>
-                  </Link>
-                );
-              })}
+                  </div>
+                </button>
+              ))}
             </nav>
           </div>
         </div>
 
         {/* Cerrar Sesión */}
-        <div className=" border-t border-gray-200 p-4">
+        <div className="border-t border-gray-200 p-4">
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors w-full"
@@ -141,7 +207,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Fondo oscuro para móvil cuando sidebar abierto */}
+      {/* Fondo oscuro para móvil */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
