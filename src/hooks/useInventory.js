@@ -1,4 +1,4 @@
-import { getEstadoMateriales, getMovimientoMaterial } from "../services/inventory";
+import { getEstadoMateriales, getMovimientoMaterial, postMovimientoMaterial } from "../services/inventory";
 import { useEffect, useState,useCallback} from 'react';
 
 export default function useEstadoMateriales() {
@@ -24,17 +24,43 @@ export default function useEstadoMateriales() {
     return { estadoMateriales, loading, error, refetch: fetchEstadoMateriales };
 }
 
-export function useMaterialMovement(){
-    const [movimientoMaterial, setMovimientoMaterial] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-        getMovimientoMaterial()
-            .then(setMovimientoMaterial)
-            .catch(setError)
-            .finally(() => setLoading(false));
-    }, []);
-  
-    return { movimientoMaterial, loading, error };
+export function useMaterialMovement(initialFilters = {}) {
+  const [movimientoMaterial, setMovimientoMaterial] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState(initialFilters);
+
+  const refetch = useCallback(async (nextFilters) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getMovimientoMaterial(nextFilters ?? filters);
+      setMovimientoMaterial(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+      setError(e?.response?.data?.message || 'Error al cargar movimientos');
+    } finally {
+      setLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  const createMovimiento = useCallback(async (payload) => {
+    // payload: { material_id, tipo: 'Entrada'|'Salida', cantidad, fecha?, observaciones?, proyecto_id? }
+    const res = await postMovimientoMaterial(payload);
+    await refetch(); // refresca la tabla
+    return res;
+  }, [refetch]);
+
+  return {
+    movimientoMaterial, // array para tu DataTable
+    loading,
+    error,
+    refetch,
+    setFilters,
+    createMovimiento,   // por si luego agregas formulario de creación
+  };
 }

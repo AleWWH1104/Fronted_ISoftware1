@@ -4,23 +4,39 @@ import { useMaterialMovement } from '../../hooks/useInventory';
 
 export default function MovementView() {
 
-  const {movimientoMaterial} = useMaterialMovement()
+  const {movimientoMaterial, loading, error, refetch} = useMaterialMovement();
+  const [records,  setRecords] = useState([]);
+
+  const fmtDate = (iso) => {
+    if (!iso) return '';
+    // mostrar solo YYYY-MM-DD
+    return new Date(iso).toISOString().slice(0, 10);
+  };
     
   const columns = [
-      { name: 'Fecha', selector: row => row.fecha, sortable: "true" },
+      { name: 'Fecha', selector: row => fmtDate(row.fecha), sortable: "true" },
       { name: 'Codigo', selector: row => row.material_codigo, sortable: "true" },
       { name: 'Material', selector: row => row.material_nombre, sortable: "true" },
       { name: 'Cantidad', selector: row => row.cantidad, sortable: "true", right: "true" },
-      { name: 'Tipo de movimiento', selector: row => row.tipo, sortable: "true" },
-      { name: 'Observaciones', selector: row => row.observaciones, sortable: "true" }
+      {
+      name: 'Tipo',
+      selector: row => row.tipo,
+      sortable: true,
+      cell: row => (
+        <span className={`px-2 py-1 rounded-md font-semibold
+          ${row.tipo === 'Entrada' ? 'bg-[#d1fae5] text-[#065f46]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
+          {row.tipo}
+        </span>
+      ),
+    },
+      { name: 'Proyecto', selector: row => row.proyecto_nombre ?? '-', sortable: "true" },
+      { name: 'Observaciones', selector: row => row.observaciones ?? '-', sortable: "true" },
   ];
 
   useEffect(() => {
       setRecords(movimientoMaterial);
   }, [movimientoMaterial]);
 
-  const [records,  setRecords] = useState([]);
-  
   function handleFilter(event){
       const value = event.target.value.toLowerCase();
       const newData = movimientoMaterial.filter(row =>

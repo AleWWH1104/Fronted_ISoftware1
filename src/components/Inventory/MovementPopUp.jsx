@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { InputForm } from "../Input";
 import { SaveOrCancelButtons } from "../Button";
-import { movimientoMaterial } from "../../services/inventory";
+import { postMovimientoMaterial } from "../../services/inventory";
 
 function MovementMaterialForm({material, onChange, showErrors}){
   if (!material) {
@@ -70,6 +70,14 @@ export default function MovementMaterialPopUp({onClickCancel, onClickSave, mater
     setMovimiento(data);
   };
 
+  const todayLocal = (() => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  })();
+
   const handleSubmit = async () => {
     try {
       const cantidadNum = Number(movimiento.cantidad);
@@ -84,12 +92,12 @@ export default function MovementMaterialPopUp({onClickCancel, onClickSave, mater
         material_id: materialId,
         tipo: "Entrada",
         cantidad: cantidadNum,
-        fecha: new Date().toISOString(),
+        fecha: todayLocal,
         observaciones: movimiento.observaciones || null,
       };
 
       console.log("Enviando movimiento:", payload);
-      await movimientoMaterial(payload);
+      await postMovimientoMaterial(payload);
 
       console.log("Listo: movimiento registrado en bodega");
       onClickSave();

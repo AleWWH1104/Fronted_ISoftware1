@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { InputForm } from "../Input";
 import { SaveOrCancelButtons } from "../Button";
-import { crearMaterial, movimientoMaterial } from "../../services/inventory";
+import { crearMaterial, postMovimientoMaterial } from "../../services/inventory";
 
 export default function AddMaterials({onClickCancel, onClickSave}) {
   const [material, setMaterial] = useState("");
@@ -49,26 +49,29 @@ export default function AddMaterials({onClickCancel, onClickSave}) {
       const cantidadesByCodigo = new Map(
         listaMateriales.map(({ codigo, cantidad }) => [codigo, Number(cantidad)])
       );
+
+      const todayLocal = (() => {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${y}-${m}-${day}`;
+      })();
       
       // 4) insertar movimientos de bodega uno por uno (tipo 'entrada', fecha hoy, obs null)
       for (const mat of materialesCreados) {
         const cant = cantidadesByCodigo.get(mat.codigo) ?? 0;
-        await movimientoMaterial({
+        await postMovimientoMaterial({
           material_id: mat.id,
-          tipo: "entrada",
+          tipo: "Entrada",
           cantidad: cant,
-          fecha: new Date().toISOString(), // YYYY-MM-DD
+          fecha: todayLocal, // YYYY-MM-DD
           observaciones: null,
         });
       }
 
       console.log("listo: materiales creados y registrados en bodega");
       setLista([]);
-
-      //Refrescar inventario
-      // if (onUpdateInventory) {
-      //   await onUpdateInventory(); // Usar await si es necesario
-      // }
 
       //Cerrar popup
       onClickSave();
