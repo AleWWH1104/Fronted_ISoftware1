@@ -2,11 +2,15 @@ import DataTable from 'react-data-table-component';
 import { Pencil, Trash2, Boxes } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { patchProyectoEstado, patchProyectoTipo } from '../../services/projects';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ProjectsView({data, refetch, onEditProject, onAsignMaterials}) {
   
   const [records,  setRecords] = useState([]);
   const [saving, setSaving] = useState({}); 
+  const { hasAnyPermission } = useAuth();
+  const canEdit = hasAnyPermission(['editar_proyecto']);
+  const canDelete = hasAnyPermission(['eliminar_proyecto']);
 
   // 1) Enum del backend (exactamente iguales)
   const ESTADO_VALUES = ['Solicitado', 'En Progreso', 'Finalizado', 'Cancelado'];
@@ -68,7 +72,7 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
   
   const columns = [
       { name: "Fecha inicio", selector: r => r.fecha_inicio, sortable: 'true', format: r => fmtDate(r.fecha_inicio) },
-      { name: "Fecha fin", selector: r => r.fecha_fin, sortable: 'true', format: r => fmtDate(r.fecha_fin) },
+      { name: "Fecha fin", selector: r => r.fecha_fin , sortable: 'true', format: r => fmtDate(r.fecha_fin) },
       { name: "Proyecto", selector: r => r.nombre, sortable: 'true' },
       {
         name: "Tipo",
@@ -109,10 +113,13 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
         ),
       },
       { name: 'Ubicacion', selector: row => row.ubicacion, sortable: "true"},
-      {
+  ];
+
+  if (canEdit) {
+      columns.push({
         name: 'Acciones',
         cell: (row) => (
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 12 }}>
             <button 
               title="Editar"
               onClick={() => onEditProject(row)} >
@@ -123,19 +130,21 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
               onClick={() => onAsignMaterials(row.id)} >
               <Boxes size={15} color='#046bb1'/>
             </button>
-            <button
-              title="Eliminar"
-              onClick={() => handleEliminar(row.id_material)}
-            >
-              <Trash2 size={15} color='#6E6E71' />
-            </button>
+            {/* Botón eliminar */}
+            {canDelete && (
+              <button
+                title="Eliminar"
+                onClick={() => handleEliminar(row.id_material)}
+              >
+                <Trash2 size={15} color="#6E6E71" />
+              </button>
+            )}
           </div>
         ),
         ignoreRowClick: true,
         button: "true",
-      }
-
-  ];
+      });
+    }
 
   function handleFilter(event){
       const value = event.target.value.toLowerCase();

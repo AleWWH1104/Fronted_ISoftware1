@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DataTable from 'react-data-table-component';
-import { PackagePlus, Trash2 } from 'lucide-react';
-import useEstadoMateriales from '../../hooks/useInventory';
+import { CirclePlus, Trash2 } from 'lucide-react';
+import WithPermission from '../WithPermission';
 import { eliminarMaterial } from '../../services/inventory';
+import { useAuth } from '../../context/AuthContext';
 
 // Helper para badge colorido
 const getStockBadge = (nivel) => {
@@ -43,6 +44,9 @@ const handleAgregar = async (id) => {
 export default function InventoryView({data, refetch, onAgregarMaterial}) {
   
   const [records,  setRecords] = useState([]);
+  const { hasAnyPermission } = useAuth(); // o tu usePermissions()
+  const canEdit = hasAnyPermission(['editar_inventario']);
+  const canDelete = hasAnyPermission(['eliminar_material']);
 
   useEffect(() => {
     setRecords(data);
@@ -71,29 +75,34 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
         selector: row => row.nivel_stock,
         cell: row => getStockBadge(row.nivel_stock),
         sortable: true,
-      },
-      {
-        name: 'Acciones',
-        cell: (row) => (
-          <div style={{ display: 'flex', gap: 16 }}>
-            <button 
-              title="Agregar"
-              onClick={() => onAgregarMaterial(row)} >
-              <PackagePlus size={20} color='#046bb1'/>
-            </button>
+      }
+  ];
+
+  if (canEdit) {
+    columns.push({
+      name: 'Acciones',
+      cell: (row) => (
+        <div style={{ display: 'flex', gap: 12 }}>
+          {/* Botón agregar (requiere editar_inventario) */}
+          <button title="Agregar" onClick={() => onAgregarMaterial(row)}>
+            <CirclePlus size={20} color="#046bb1" />
+          </button>
+
+          {/* Botón eliminar (requiere eliminar_material) */}
+          {canDelete && (
             <button
               title="Eliminar"
               onClick={() => handleEliminar(row.id_material)}
             >
-              <Trash2 size={20} color='#6E6E71' />
+              <Trash2 size={20} color="#6E6E71" />
             </button>
-          </div>
-        ),
-        ignoreRowClick: true,
-        button: "true",
-      }
-
-  ];
+          )}
+        </div>
+      ),
+      ignoreRowClick: true,
+      button: true,
+    });
+  }
 
   function handleFilter(event){
       const value = event.target.value.toLowerCase();

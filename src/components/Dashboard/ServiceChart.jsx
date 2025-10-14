@@ -36,7 +36,7 @@ export default function ServiceChart() {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart layout="vertical" data={data}>
             <XAxis type="number" allowDecimals={false} />
-            <YAxis type="category" dataKey="servicio"/>
+            <YAxis type="category" dataKey="servicio" width={100}/>
             <Tooltip
               formatter={(value) => [value, 'Proyectos']}
             />

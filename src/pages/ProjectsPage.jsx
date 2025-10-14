@@ -8,6 +8,7 @@ import useEstadoProyectos from "../hooks/useProjects";
 import MaterialsByProjectView from "../components/Projects/MaterialsByProject";
 import { updateProyecto } from "../services/projects";
 import { useLocation, useNavigate } from "react-router-dom";
+import WithPermission from "../components/WithPermission";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
@@ -77,11 +78,11 @@ export default function ProjectsPage() {
     <Layout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Proyectos</h1>
-        {/* <WithPermission permissions={['crear_proyecto']}> */}
+        <WithPermission permissions="crear_proyecto">
         {mode === 'projects' && (
           <CreateButton label="Crear proyecto" onClick={() => setPopUp1(true)}/>
         )}
-        {/* </WithPermission> */}
+        </WithPermission>
       </div>
       {mode === 'projects' ? (
         <ProjectsView

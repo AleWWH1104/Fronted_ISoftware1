@@ -4,7 +4,6 @@ import { CreateButton } from '../components/Button'
 import { useState, useEffect} from "react";
 import AddMaterials from '../components/Inventory/AddMaterials';
 import MovementMaterialPopUp from '../components/Inventory/MovementPopUp';
-import usePermissions from '../hooks/usePermissions';
 import WithPermission from '../components/WithPermission';
 import useEstadoMateriales from '../hooks/useInventory';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,10 +25,6 @@ export default function InventoryPage() {
     setMaterialEnMovimiento(null);
   };
   
-  //Permisos
-  
-  const {canCreateMaterial} = usePermissions();
-
   useEffect(() => {
     const el = document.body;                 // referencia local
     const prev = el.style.overflow;           // guarda el valor previo
@@ -59,9 +54,9 @@ export default function InventoryPage() {
     <Layout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Inventario</h1>
-        <WithPermission permissions={['ver_inventario']}>
+        <WithPermission permissions='crear_material'>
           <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>
-        </WithPermission>
+        </WithPermission> 
       </div>
       <InventoryView data={estadoMateriales} refetch={refetch} onAgregarMaterial={handleAgregarMaterial}/>
       {isPopUp1 && (
