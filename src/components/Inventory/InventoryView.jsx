@@ -20,27 +20,6 @@ const getStockBadge = (nivel) => {
   );
 };
 
-
-
-const handleAgregar = async (id) => {
-  try {
-    // Evitar duplicados en la lista
-    if (materialesEnMovimiento.some(mat => mat.id_material === id)) {
-      alert("Este material ya está en la lista.");
-      setIsPopupOpen(true); // Abrir el popup por si estaba cerrado
-      return;
-    }
-
-    const materialData = await getMaterialById(id);
-    // Añadimos el nuevo material a la lista existente
-    setMaterialesEnMovimiento(prevMateriales => [...prevMateriales, materialData]);
-    setIsPopupOpen(true); // Abrimos el popup
-  } catch (error) {
-    console.error("Error al obtener el material:", error);
-    alert("No se pudo agregar el material.");
-  }
-};
-
 export default function InventoryView({data, refetch, onAgregarMaterial}) {
   
   const [records,  setRecords] = useState([]);
@@ -100,7 +79,7 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
         </div>
       ),
       ignoreRowClick: true,
-      button: true,
+      button: "true",
     });
   }
 
@@ -140,7 +119,6 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
     <DataTable
       columns={columns}
       data={records}
-      // selectableRows
       fixedHeader
       pagination
       responsive

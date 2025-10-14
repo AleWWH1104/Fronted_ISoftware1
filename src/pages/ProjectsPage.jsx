@@ -6,9 +6,10 @@ import EditProjectPopUp from "../components/Projects/EditProject";
 import ProjectsView from "../components/Projects/ProjectsView";
 import useEstadoProyectos from "../hooks/useProjects";
 import MaterialsByProjectView from "../components/Projects/MaterialsByProject";
-import { updateProyecto } from "../services/projects";
+import { updateProyecto, postOfertaProyecto } from "../services/projects";
 import { useLocation, useNavigate } from "react-router-dom";
 import WithPermission from "../components/WithPermission";
+import AsignMaterials from "../components/Projects/AsignMaterials";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
@@ -18,6 +19,7 @@ export default function ProjectsPage() {
 
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
+  const [isPopUp3, setPopUp3] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -74,6 +76,12 @@ export default function ProjectsPage() {
     }
   };
 
+  const handleAsignMaterials = (projectId) => {
+    setSelectedProject({ id: projectId });
+    setPopUp3(true);
+  };
+
+
   return (
     <Layout>
       <div className='flex justify-between items-center mb-8'>
@@ -95,6 +103,7 @@ export default function ProjectsPage() {
         <MaterialsByProjectView
           projectId={materialsProjectId}
           onBack={handleBackToProjectView}
+          onAsignMaterials={handleAsignMaterials}
         />
       )}
       {isPopUp1 && (
@@ -108,6 +117,18 @@ export default function ProjectsPage() {
             project={selectedProject}
             onClickCancel={() => setPopUp2(false)}
             onClickSave={handleUpdateProject}
+          />
+        </div>
+      )}
+      {isPopUp3 && selectedProject && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-end z-50">
+          <AsignMaterials
+            project={selectedProject}
+            onClickCancel={() => setPopUp3(false)}
+            onClickSave={() => {
+              setPopUp3(false);
+              // opcional: refrescar materiales si tienes un hook que lo haga
+            }}
           />
         </div>
       )}
