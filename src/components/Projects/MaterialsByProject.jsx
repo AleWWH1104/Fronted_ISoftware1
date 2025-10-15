@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
 
-export default function MaterialsByProjectView({ projectId, onBack }) {
+export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials }) {
   const { materials, loading, error } = useProjectMaterials(projectId);
   const [records, setRecords] = useState([]);
   const [filterText, setFilterText] = useState("");
@@ -89,9 +89,9 @@ export default function MaterialsByProjectView({ projectId, onBack }) {
             padding: "0.4rem 0.8rem",
             fontSize: "0.9rem",
           }}
-          onClick={() => alert("Funcionalidad Asignar materiales aquí")}
+          onClick={() => onAsignMaterials(projectId)}
         >
-          + Asignar materiales
+          + Ofertar materiales
         </button>
       </div>
 

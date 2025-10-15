@@ -60,5 +60,14 @@ export const getMaterialById = async (id) => {
   }
 };
 
+export const getMateriales = async () => {
+    try {
+      const response = await axios.get(`/materiales`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching materiales:', error);
+      throw error;
+    }
+};
 
 

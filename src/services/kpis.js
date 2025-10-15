@@ -40,12 +40,18 @@ export const getCountProducts = async () => {
     }
 };
 
-export const getProjectsByService = async () => {
-    try {
-      const response = await axios.get(`/projects/Total-Projects-ByService`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching projects by service:', error);
-      throw error;
-    }
+export const getProjectsByService = async (estado) => {
+  try {
+    // codifica espacios u otros caracteres: "En Progreso" → "En%20Progreso"
+    const encodedEstado = encodeURIComponent(estado);
+
+    const response = await axios.get(`/projects/${encodedEstado}/count`, {
+      withCredentials: true, // si tu backend usa cookies o auth por sesión
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching projects by service:', error);
+    throw error;
+  }
 };

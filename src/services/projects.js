@@ -129,3 +129,27 @@ export const getMaterialsInProgress = async () => {
     throw error;
   }
 };
+
+export const postOfertaProyecto = async (idProyecto, materiales) => {
+  const payload = [
+    {
+      id_proyecto: Number(idProyecto),
+      materiales: materiales
+        .filter(it => Number(it.ofertada) > 0)
+        .map(it => ({
+          id_material: Number(it.id_material),
+          ofertada: Number(it.ofertada),
+        })),
+    },
+  ];
+
+  const { data } = await axios.post(
+    "/proyecto-material/",
+    payload,
+    {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    }
+  );
+  return data;
+};
