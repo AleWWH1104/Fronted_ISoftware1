@@ -133,9 +133,9 @@ export default function Sidebar() {
                 {openMenu === "inventory" && (
                   <div className="ml-4 mt-1 space-y-1">
                     <Link
-                      to="/dashboard/movements"
+                      to="/movements"
                       onClick={handleLinkClick}
-                      className={getSubLinkClasses(location.pathname === "/dashboard/movements")}
+                      className={getSubLinkClasses(location.pathname === "/movements")}
                     >
                       Movimiento de inventario
                     </Link>
@@ -171,9 +171,9 @@ export default function Sidebar() {
                 {openMenu === "projects" && (
                   <div className="ml-4 mt-1 space-y-1">
                     <Link
-                      to="/dashboard/project-materials"
+                      to="/projects/details"
                       onClick={handleLinkClick}
-                      className={getSubLinkClasses(location.pathname === "/dashboard/project-materials")}
+                      className={getSubLinkClasses(location.pathname === "/projects/details")}
                     >
                       Detalles de material
                     </Link>

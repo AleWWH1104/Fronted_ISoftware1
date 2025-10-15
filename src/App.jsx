@@ -9,6 +9,8 @@ import InventoryPage from './pages/InventoryPage'
 import ProtectedRoutes from './ProtectedRoutes'
 import ProjectsPage from './pages/ProjectsPage'
 import ReportsPage from './pages/ReportsPage'
+import MovementPage from './pages/MovementPage'
+import DetallesMaterialPage from './pages/DetallesMaterialPage'
 
 function App () {
   return (
@@ -19,17 +21,19 @@ function App () {
           <Route path='/' element={<ClientPage/>} />
           <Route path='/equipment' element={<Equipos/>} />
           <Route path='/login' element={<LoginPage/>} />
-          <Route path='/register' element={<RegisterPage/>} />
-          <Route path= '/dashboard' element={<DashboardPage />} />
-          <Route path='/inventory' element={<InventoryPage />} />
-          <Route path='/projects' element={<ProjectsPage />} />
+          <Route path='/movements' element={<MovementPage />} />
+
           {/* <Route path='/projects' element={<ProjectsPage />} /> */}
           
             
 
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoutes />}>
-          
+          <Route path= '/dashboard' element={<DashboardPage />} />
+          <Route path='/inventory' element={<InventoryPage />} />
+          <Route path='/projects' element={<ProjectsPage />} />
+          <Route path='/movements' element={<MovementPage />} />
+          <Route path='/projects/details' element={<DetallesMaterialPage />} />
            
             <Route path='/reports' element={<ReportsPage />} />
           </Route>

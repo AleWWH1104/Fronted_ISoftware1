@@ -27,12 +27,10 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     };
   });
 
-  // Efecto para inicializar los registros
   useEffect(() => {
     setRecords(projectMaterials);
   }, [projectMaterials]);
 
-  // Función para filtrar los materiales
   function handleFilter(event) {
     const value = event.target.value.toLowerCase();
     setFilterText(value);
@@ -65,7 +63,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
             Reservar
           </button>
           <button
-            className="rounded px-0 py-2 text-xs text-white"
+            className="rounded px-1 py-2 text-xs text-white"
             style={{ backgroundColor: "#046BB1" }}
             onClick={() => alert(`Entregar ${row.material}`)}
           >
@@ -76,14 +74,28 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     },
   ];
 
+  const customStyles = {
+    rows: {
+      style: {
+        minHeight: '40px',
+      },
+    },
+    headCells: {
+      style:{
+        fontWeight: 'bold',
+        fontSize: '12px',
+      }
+    },
+  };
+
   return (
     <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold" style={{ color: "#046BB1" }}>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold mb-2 md:mb-0" style={{ color: "#046BB1" }}>
           Detalle general de materiales - Proyecto {projectId}
         </h2>
         <button
-          className="text-white rounded"
+          className="text-white rounded w-full md:w-auto"
           style={{
             backgroundColor: "#046BB1",
             padding: "0.4rem 0.8rem",
@@ -97,31 +109,34 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
 
       {error && <p className="text-red-500">Error cargando materiales</p>}
 
-      <div className='md:justify md:mt-8 mb-2 flex justify-start mt-2 items-center gap-1'>
-        <span className='parrafo'>Buscar: </span>
+      <div className="flex flex-wrap justify-start items-center gap-1 mt-2 md:mt-8 mb-2">
+        <span className="parrafo">Buscar: </span>
         <input 
           type="text" 
           onChange={handleFilter} 
-          className='ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo'
+          className="ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo w-full md:w-auto"
           placeholder="Buscar material..."
           value={filterText}
         />
       </div>
 
-      <DataTable
-        columns={columns}
-        data={records}
-        progressPending={loading}
-        pagination
-        highlightOnHover
-        striped
-        noDataComponent="No hay materiales disponibles"
-      />
+      <div className="overflow-x-auto">
+        <DataTable
+          columns={columns}
+          data={records}
+          progressPending={loading}
+          pagination
+          highlightOnHover
+          striped
+          noDataComponent="No hay materiales disponibles"
+          customStyles={customStyles}
+        />
+      </div>
 
-      <div className="mt-4">
+      <div className="mt-4 flex justify-center md:justify-start">
         <button
           onClick={onBack}
-          className="text-white rounded"
+          className="text-white rounded w-full md:w-auto"
           style={{
             backgroundColor: "#046BB1",
             padding: "0.4rem 0.8rem",
