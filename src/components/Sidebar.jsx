@@ -13,27 +13,24 @@ import {
 } from "lucide-react"
 import { useAuth } from '../context/AuthContext'
 
+const gestionItems = [
+  { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
+  { title: "Agregar materiales", url: "/inventory", icon: PlusCircle, state: { openCreate: true } },
+]
+
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
   const [openMenu, setOpenMenu] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
-  const { logout } = useAuth()
-
-  const handleLogout = async () => {
-    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-      await logout();
-    }
-  }
 
   const handleLinkClick = () => {
     if (isOpen) setIsOpen(false)
   }
 
-  const toggleSubMenu = (menu, e) => {
+  const toggleSubMenu = (menuName, e) => {
     e.preventDefault()
-    e.stopPropagation()
-    setOpenMenu(openMenu === menu ? null : menu)
+    setOpenMenu(openMenu === menuName ? null : menuName)
   }
 
   const getLinkClasses = (isActive) =>
@@ -44,20 +41,18 @@ export default function Sidebar() {
     }`
 
   const getSubLinkClasses = (isActive) =>
-    `block pl-10 pr-3 py-2 rounded-md text-sm transition-colors ${
+    `block w-full text-sm px-3 py-1.5 rounded-md transition-colors ${
       isActive
-        ? "bg-[#E9F6FE] text-[#046BB1] font-medium"
+        ? "bg-[#E7F5FE] text-[#046BB1] font-medium"
         : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
     }`
 
-  const generalItems = [
-    { title: "Dashboard", url: "/dashboard", icon: Home },
-  ]
-
-  const gestionItems = [
-    { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
-    { title: "Agregar materiales", url: "/inventory", icon: PlusCircle, state: { openCreate: true } },
-  ]
+  const { logout } = useAuth()
+  const handleLogout = async () => {
+    if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
+      await logout()
+    }
+  }
 
   return (
     <>
@@ -82,7 +77,13 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="py-3 flex justify-center mb-8">
-          <img src="/logo.png" alt="PoolCenter" width={160} height={60} className="object-contain" />
+          <img
+            src="/logo.png"
+            alt="PoolCenter"
+            width={160}
+            height={60}
+            className="object-contain"
+          />
         </div>
 
         {/* Navigation */}
@@ -91,23 +92,18 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 style={{ color: '#046BB1' }} className="parrafo mb-2 px-2">GENERAL</h3>
             <nav className="space-y-1">
+
               {/* Dashboard */}
-              {generalItems.map(({ title, url, icon: Icon }) => {
-                const isActive = location.pathname === url
-                return (
-                  <Link
-                    key={title}
-                    to={url}
-                    onClick={handleLinkClick}
-                    className={getLinkClasses(isActive)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon className="h-4 w-4" />
-                      <span>{title}</span>
-                    </div>
-                  </Link>
-                )
-              })}
+              <Link
+                to="/dashboard"
+                onClick={handleLinkClick}
+                className={getLinkClasses(location.pathname === "/dashboard")}
+              >
+                <div className="flex items-center gap-3">
+                  <Home className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </div>
+              </Link>
 
               {/* INVENTARIO */}
               <div>
@@ -133,12 +129,13 @@ export default function Sidebar() {
                     )}
                   </button>
                 </div>
+
                 {openMenu === "inventory" && (
                   <div className="ml-4 mt-1 space-y-1">
                     <Link
-                      to="/inventory/movements"
-                      className={getSubLinkClasses(location.pathname === "/inventory/movements")}
+                      to="/dashboard/movements"
                       onClick={handleLinkClick}
+                      className={getSubLinkClasses(location.pathname === "/dashboard/movements")}
                     >
                       Movimiento de inventario
                     </Link>
@@ -170,12 +167,13 @@ export default function Sidebar() {
                     )}
                   </button>
                 </div>
+
                 {openMenu === "projects" && (
                   <div className="ml-4 mt-1 space-y-1">
                     <Link
-                      to="/projects/details"
-                      className={getSubLinkClasses(location.pathname === "/projects/details")}
+                      to="/dashboard/project-materials"
                       onClick={handleLinkClick}
+                      className={getSubLinkClasses(location.pathname === "/dashboard/project-materials")}
                     >
                       Detalles de material
                     </Link>
@@ -201,19 +199,40 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 className="parrafo text-[#046BB1] mb-2">GESTIÓN</h3>
             <nav className="space-y-1">
-              {gestionItems.map(({ title, url, icon: Icon, state }) => (
-                <button
-                  key={title}
-                  type="button"
-                  onClick={() => { navigate(url, { state }); handleLinkClick(); }}
-                  className={getLinkClasses(false)}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className="h-4 w-4" />
-                    <span>{title}</span>
-                  </div>
-                </button>
-              ))}
+              {gestionItems.map(({ title, url, icon: Icon, state }) => {
+                if (state?.openCreate) {
+                  return (
+                    <button
+                      key={title}
+                      type="button"
+                      onClick={() => {
+                        navigate(url, { state })
+                        handleLinkClick()
+                      }}
+                      className={getLinkClasses(false)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-4 w-4" />
+                        <span>{title}</span>
+                      </div>
+                    </button>
+                  )
+                }
+
+                return (
+                  <Link
+                    key={title}
+                    to={url}
+                    onClick={handleLinkClick}
+                    className={getLinkClasses(location.pathname === url)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-4 w-4" />
+                      <span>{title}</span>
+                    </div>
+                  </Link>
+                )
+              })}
             </nav>
           </div>
         </div>
@@ -230,7 +249,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Fondo oscuro para móvil */}
+      {/* Fondo oscuro para móvil cuando sidebar abierto */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
