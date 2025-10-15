@@ -1,11 +1,11 @@
 import MovementView from '../components/Dashboard/MovementView'
 import KPICard from "../components/Dashboard/KPI" 
 import Layout from '../components/Layout'
-import { Boxes, Users, ClockFading, CircleCheckBig, RefreshCw } from "lucide-react" // Agregué RefreshCw para botón de reload
+import { Boxes, Users, ClockFading, CircleCheckBig, RefreshCw } from "lucide-react" 
 import { useCountCustomers, useFinishedProjects, useInProgressProjects, useProductCount } from '../hooks/useKPIs'
 import ServiceChart from '../components/Dashboard/ServiceChart'
 import ProjectMaterialsView from '../components/Dashboard/ProjectMaterialsView'
-import { useProjectMaterials } from '../hooks/useProjects' // Named import: ¡asegúrate de que sea {} !
+import { useProjectMaterials } from '../hooks/useProjects' 
 
 export default function DashboardPage() {
   const { countCustomers } = useCountCustomers();
@@ -53,7 +53,7 @@ export default function DashboardPage() {
 
       <section className='flex flex-col w-full gap-4 md:flex-row'>
         <div className='md:w-2/3'>
-          <MovementView/>
+        
         </div>
         <div className='md:w-1/3'>
           <ServiceChart/>
@@ -64,11 +64,6 @@ export default function DashboardPage() {
       <section className="mt-4">
         <div className="flex justify-between items-center mb-2">
         </div>
-        <ProjectMaterialsView 
-          data={materials} 
-          loading={loading} 
-          error={error} 
-        />
       </section>
     </Layout>
   )
