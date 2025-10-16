@@ -3,11 +3,14 @@ import { Pencil, Trash2, Boxes } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { patchProyectoEstado, patchProyectoTipo } from '../../services/projects';
 import { useAuth } from '../../context/AuthContext';
+import { deleteProjects } from '../../services/projects';
+import Modal from '../Modal';
 
 export default function ProjectsView({data, refetch, onEditProject, onAsignMaterials}) {
   
   const [records,  setRecords] = useState([]);
   const [saving, setSaving] = useState({}); 
+  const [modalData, setModalData] = useState(null);
   const { hasAnyPermission } = useAuth();
   const canEdit = hasAnyPermission(['editar_proyecto']);
   const canDelete = hasAnyPermission(['eliminar_proyecto']);
@@ -28,6 +31,31 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
   }, [data]);
 
   const handleEliminar = async (id) => {
+    setModalData({
+      type: "confirm",
+      title: "Eliminar proyecto",
+      message: "¿Estás seguro de eliminar este proyecto?",
+      onConfirm: async () => {
+        try {
+          await deleteProjects(id);
+          await refetch?.();
+          setModalData({
+            type: "message",
+            title: "Proyecto eliminado",
+            message: "El proyecto fue eliminado correctamente.",
+            onCancel: () => setModalData(null),
+          });
+        } catch (error) {
+          setModalData({
+            type: "message",
+            title: "Error",
+            message: error.response?.data?.message || "No se pudo eliminar el proyecto.",
+            onCancel: () => setModalData(null),
+          });
+        }
+      },
+      onCancel: () => setModalData(null),
+    });
   };
 
   const fmtDate = (iso) => {
@@ -134,7 +162,7 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
             {canDelete && (
               <button
                 title="Eliminar"
-                onClick={() => handleEliminar(row.id_material)}
+                onClick={() => handleEliminar(row.id)}
               >
                 <Trash2 size={15} color="#6E6E71" />
               </button>
@@ -189,6 +217,16 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       pointerOnHover
       customStyles={customStyles}
     />
+
+    {modalData && (
+        <Modal
+          title={modalData.title}
+          message={modalData.message}
+          onConfirm={modalData.onConfirm}
+          onCancel={modalData.onCancel}
+          type={modalData.type}
+        />
+      )}
   </section>
   );
 }

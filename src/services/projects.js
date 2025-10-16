@@ -138,3 +138,13 @@ export const postOfertaProyecto = async (idProyecto, materiales) => {
   );
   return data;
 };
+
+export const deleteProjects = async (id) => {
+  try {
+    const response = await axios.delete(`projects/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error eliminando proyecto:', error.response?.data || error.message);
+    throw error;
+  }
+};
