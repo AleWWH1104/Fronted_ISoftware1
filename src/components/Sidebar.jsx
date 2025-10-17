@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Home, Package, FolderOpen, FileChartColumn, PlusCircle, LogOut, Menu } from "lucide-react"
+import {
+  Home,
+  Package,
+  FolderOpen,
+  FileChartColumn,
+  PlusCircle,
+  LogOut,
+  Menu,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react"
 import { useAuth } from '../context/AuthContext'
-
-const generalItems = [
-  { title: "Dashboard", url: "/dashboard", icon: Home },
-  { title: "Inventario", url: "/inventory", icon: Package },
-  { title: "Proyectos", url: "/projects", icon: FolderOpen },
-  { title: "Reportes", url: "/reports", icon: FileChartColumn },
-]
 
 const gestionItems = [
   { title: "Nuevo proyecto", url: "/projects", icon: PlusCircle, state: { openCreate: true } },
@@ -17,6 +20,7 @@ const gestionItems = [
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [openMenu, setOpenMenu] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -24,19 +28,31 @@ export default function Sidebar() {
     if (isOpen) setIsOpen(false)
   }
 
+  const toggleSubMenu = (menuName, e) => {
+    e.preventDefault()
+    setOpenMenu(openMenu === menuName ? null : menuName)
+  }
+
   const getLinkClasses = (isActive) =>
-    `w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors ${
+    `w-full flex items-center justify-between px-3 py-2.5 rounded-md text-sm transition-colors ${
       isActive
         ? "bg-[#DDF0FC] text-[#046BB1] font-medium"
         : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
     }`
-  
-  const { logout} = useAuth();
+
+  const getSubLinkClasses = (isActive) =>
+    `block w-full text-sm px-3 py-1.5 rounded-md transition-colors ${
+      isActive
+        ? "bg-[#E7F5FE] text-[#046BB1] font-medium"
+        : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+    }`
+
+  const { logout } = useAuth()
   const handleLogout = async () => {
     if (window.confirm("¿Estás seguro de que quieres cerrar sesión?")) {
-      await logout();
+      await logout()
     }
-  };
+  }
 
   return (
     <>
@@ -61,7 +77,13 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="py-3 flex justify-center mb-8">
-          <img src="/logo.png" alt="PoolCenter" width={160} height={60} className="object-contain" />
+          <img
+            src="/logo.png"
+            alt="PoolCenter"
+            width={160}
+            height={60}
+            className="object-contain"
+          />
         </div>
 
         {/* Navigation */}
@@ -70,20 +92,106 @@ export default function Sidebar() {
           <div className="mb-8">
             <h3 style={{ color: '#046BB1' }} className="parrafo mb-2 px-2">GENERAL</h3>
             <nav className="space-y-1">
-              {generalItems.map(({ title, url, icon: Icon }) => {
-                const isActive = location.pathname === url
-                return (
+
+              {/* Dashboard */}
+              <Link
+                to="/dashboard"
+                onClick={handleLinkClick}
+                className={getLinkClasses(location.pathname === "/dashboard")}
+              >
+                <div className="flex items-center gap-3">
+                  <Home className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </div>
+              </Link>
+
+              {/* INVENTARIO */}
+              <div>
+                <div className="flex items-center justify-between">
                   <Link
-                    key={title}
-                    to={url}
+                    to="/inventory"
                     onClick={handleLinkClick}
-                    className={getLinkClasses(isActive)}
+                    className={getLinkClasses(location.pathname.startsWith("/inventory"))}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{title}</span>
+                    <div className="flex items-center gap-3">
+                      <Package className="h-4 w-4" />
+                      <span>Inventario</span>
+                    </div>
                   </Link>
-                )
-              })}
+                  <button
+                    onClick={(e) => toggleSubMenu("inventory", e)}
+                    className="p-1 text-gray-600 hover:text-gray-900"
+                  >
+                    {openMenu === "inventory" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+
+                {openMenu === "inventory" && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    <Link
+                      to="/movements"
+                      onClick={handleLinkClick}
+                      className={getSubLinkClasses(location.pathname === "/movements")}
+                    >
+                      Movimiento de inventario
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* PROYECTOS */}
+              <div>
+                <div className="flex items-center justify-between">
+                  <Link
+                    to="/projects"
+                    onClick={handleLinkClick}
+                    className={getLinkClasses(location.pathname.startsWith("/projects"))}
+                  >
+                    <div className="flex items-center gap-3">
+                      <FolderOpen className="h-4 w-4" />
+                      <span>Proyectos</span>
+                    </div>
+                  </Link>
+                  <button
+                    onClick={(e) => toggleSubMenu("projects", e)}
+                    className="p-1 text-gray-600 hover:text-gray-900"
+                  >
+                    {openMenu === "projects" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+
+                {openMenu === "projects" && (
+                  <div className="ml-4 mt-1 space-y-1">
+                    <Link
+                      to="/projects/details"
+                      onClick={handleLinkClick}
+                      className={getSubLinkClasses(location.pathname === "/projects/details")}
+                    >
+                      Detalles de material
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* REPORTES */}
+              <Link
+                to="/reports"
+                onClick={handleLinkClick}
+                className={getLinkClasses(location.pathname === "/reports")}
+              >
+                <div className="flex items-center gap-3">
+                  <FileChartColumn className="h-4 w-4" />
+                  <span>Reportes</span>
+                </div>
+              </Link>
             </nav>
           </div>
 
@@ -92,45 +200,45 @@ export default function Sidebar() {
             <h3 className="parrafo text-[#046BB1] mb-2">GESTIÓN</h3>
             <nav className="space-y-1">
               {gestionItems.map(({ title, url, icon: Icon, state }) => {
-                const isActive = location.pathname === url;
-
-                // Caso especial: "Nuevo proyecto"
                 if (state?.openCreate) {
                   return (
                     <button
                       key={title}
                       type="button"
-                      onClick={() => { 
-                        navigate(url, { state }); 
-                        handleLinkClick(); 
+                      onClick={() => {
+                        navigate(url, { state })
+                        handleLinkClick()
                       }}
-                      className={getLinkClasses(false)} // << no marcar activo
+                      className={getLinkClasses(false)}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span>{title}</span>
+                      <div className="flex items-center gap-3">
+                        <Icon className="h-4 w-4" />
+                        <span>{title}</span>
+                      </div>
                     </button>
-                  );
+                  )
                 }
 
-                // Los demás como Link normal
                 return (
                   <Link
                     key={title}
                     to={url}
                     onClick={handleLinkClick}
-                    className={getLinkClasses(isActive)}
+                    className={getLinkClasses(location.pathname === url)}
                   >
-                    <Icon className="h-4 w-4" />
-                    <span>{title}</span>
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-4 w-4" />
+                      <span>{title}</span>
+                    </div>
                   </Link>
-                );
+                )
               })}
             </nav>
           </div>
         </div>
 
         {/* Cerrar Sesión */}
-        <div className=" border-t border-gray-200 p-4">
+        <div className="border-t border-gray-200 p-4">
           <button
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors w-full"

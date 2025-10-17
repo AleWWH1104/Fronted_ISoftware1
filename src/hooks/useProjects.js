@@ -40,11 +40,11 @@ export function useProjectMaterialsForDashboard() {
 
     getProjectMaterialsForDashboard()
       .then((data) => {
-        console.log('✅ Dashboard Hook: All project materials received:', data);
+        console.log(' Dashboard Hook: All project materials received:', data);
         setMaterials(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
-        console.error('❌ Dashboard Hook Error:', err.response?.data || err.message);
+        console.error(' Dashboard Hook Error:', err.response?.data || err.message);
         setError(err);
         setMaterials([]);
       })
