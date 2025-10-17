@@ -16,6 +16,7 @@ export default function ProjectsPage() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [mode, setMode] = useState('projects'); // 'projects' | 'materials'
   const [materialsProjectId, setMaterialsProjectId] = useState(null);
+  const [materialsRefreshKey, setMaterialsRefreshKey] = useState(0);
 
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
@@ -102,6 +103,7 @@ export default function ProjectsPage() {
       ) : (
         <MaterialsByProjectView
           projectId={materialsProjectId}
+          refreshKey={materialsRefreshKey} 
           onBack={handleBackToProjectView}
           onAsignMaterials={handleAsignMaterials}
         />
@@ -127,6 +129,7 @@ export default function ProjectsPage() {
             onClickCancel={() => setPopUp3(false)}
             onClickSave={() => {
               setPopUp3(false);
+              setMaterialsRefreshKey(k => k + 1);
               // opcional: refrescar materiales si tienes un hook que lo haga
             }}
           />

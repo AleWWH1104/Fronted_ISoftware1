@@ -148,3 +148,23 @@ export const deleteProjects = async (id) => {
     throw error;
   }
 };
+
+export const getDetalleMaterialByProject = async (projectId) => {
+  try {
+    const { data } = await axios.get(`/proyecto-material/${projectId}`);
+
+    const rows = Array.isArray(data)
+      ? data
+      : (Array.isArray(data?.data) ? data.data : []);
+
+    // Log amigable si viene mensaje y está vacío
+    if (rows.length === 0 && data?.message) {
+      console.warn(data.message);
+    }
+
+    return rows;
+  } catch (error) {
+    console.error("Error fetching estado de materiales de proyecto:", error);
+    throw error;
+  }
+};
