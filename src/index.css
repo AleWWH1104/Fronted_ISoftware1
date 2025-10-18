@@ -28,6 +28,7 @@ body{
     font-size: 12px;
 }
 
+
 .errores {
     font-weight: normal;
     font-size: 10px;
@@ -37,4 +38,9 @@ body{
 .boton {
     font-weight: bold;
     font-size: 12px;
+}
+
+.boton_accion {
+    font-weight: normal;
+    font-size: 10px;
 }

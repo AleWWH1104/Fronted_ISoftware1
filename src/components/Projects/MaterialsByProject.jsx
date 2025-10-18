@@ -65,9 +65,9 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     {
       name: "Acciones",
       cell: (row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-col lg:flex-row lg:gap-2 w-full my-2 gap-1">
           <button
-            className="rounded px-1 py-1 text-xs"
+            className="rounded p-1 boton_accion cursor-pointer"
             style={{ border: "1px solid #046BB1", color: "#046BB1" }}
             onClick={() => alert(`Reservar ${row.material}`)}
             disabled={row.disponible_global <= 0 || (row.ofertada - row.reservado - row.en_obra) <= 0}
@@ -75,7 +75,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
             Reservar
           </button>
           <button
-            className="rounded px-1 py-2 text-xs text-white"
+            className="rounded px-1 py-1 boton_accion text-white cursor-pointer"
             style={{ backgroundColor: "#046BB1" }}
             onClick={() => alert(`Entregar ${row.material}`)}
             disabled={row.reservado <= 0}
@@ -110,7 +110,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
         </p>
         <button
           onClick={onBack}
-          className="mt-4 text-white rounded px-4 py-2"
+          className="mt-4 text-white rounded px-4 py-2 cursor-pointer parrafo"
           style={{ backgroundColor: "#046BB1" }}
         >
           Volver a proyectos
@@ -122,14 +122,14 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
   if (!loading && projectMaterials.length === 0) {
     return (
       <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto text-center">
-        <h2 className="text-xl font-semibold mb-4" style={{ color: "#046BB1" }}>
+        <h2 className="text-xl subtitulo mb-4">
           Detalle general de materiales - Proyecto {projectId}
         </h2>
-        <p className="text-gray-600 text-lg mb-4">
+        <p className="text-gray-600 parrafo mb-4">
           Este proyecto no tiene materiales asignados.
         </p>
         <button
-          className="text-white rounded"
+          className="text-white rounded cursor-pointer parrafo"
           style={{ backgroundColor: "#046BB1", padding: "0.5rem 1rem" }}
           onClick={() => onAsignMaterials(projectId)}
         >
@@ -138,7 +138,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
         <div className="mt-4">
           <button
             onClick={onBack}
-            className="text-white rounded px-4 py-2"
+            className="text-white rounded px-4 py-2 cursor-pointer parrafo"
             style={{ backgroundColor: "#046BB1" }}
           >
             Volver a proyectos
@@ -152,15 +152,14 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
   return (
     <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold mb-2 md:mb-0" style={{ color: "#046BB1" }}>
+        <h2 className="text-xl subtitulo mb-2 md:mb-0">
           Detalle general de materiales - Proyecto {projectId}
         </h2>
         <button
-          className="text-white rounded w-full md:w-auto"
+          className="text-white rounded w-full md:w-auto cursor-pointer parrafo"
           style={{
             backgroundColor: "#046BB1",
             padding: "0.4rem 0.8rem",
-            fontSize: "0.9rem",
           }}
           onClick={() => onAsignMaterials(projectId)}
         >
@@ -186,9 +185,10 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           columns={columns}
           data={records}
           progressPending={loading}
+          fixedHeader
           pagination
+          responsive
           highlightOnHover
-          striped
           noDataComponent="No hay materiales disponibles"
           customStyles={customStyles}
         />

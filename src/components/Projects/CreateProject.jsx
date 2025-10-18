@@ -145,7 +145,7 @@ export default function CreateProjectPopup({onClickCancel, onClickSave}) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6">
+    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
       <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Crear nuevo proyecto</h2>
         <p className="text-[#709DBB] text-sm">

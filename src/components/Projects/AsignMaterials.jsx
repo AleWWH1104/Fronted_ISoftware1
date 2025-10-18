@@ -71,32 +71,37 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
   };
 
   const handleSubmit = async () => {
-    setError("");
-    if (!project?.id) {
-      setError("Proyecto no válido.");
-      return;
-    }
-    if (listaMateriales.length === 0) {
-      setError("Agrega al menos un material a la lista.");
-      return;
-    }
+  setError("");
+  if (!project?.id) {
+    setError("Proyecto no válido.");
+    return;
+  }
+  if (listaMateriales.length === 0) {
+    setError("Agrega al menos un material a la lista.");
+    return;
+  }
 
-    setSubmitting(true);
-    try {
-      await postOfertaProyecto(
-        project.id,
-        listaMateriales.map(i => ({
-          id_material: i.id_material,
-          ofertada: i.ofertada,
-        }))
-      );
-      onClickSave?.(); // cierra popup / refresca arriba
-    } catch (e) {
-      setError(e?.response?.data?.message || "No se pudo registrar la oferta");
-    } finally {
-      setSubmitting(false);
-    }
-  };
+  setSubmitting(true);
+  try {
+    console.log("Datos a enviar:", {
+      id_proyecto: project.id,
+      materiales: listaMateriales
+    });
+
+    await postOfertaProyecto(project.id, listaMateriales.map(i => ({
+      id_material: i.id_material,
+      ofertada: i.ofertada,
+    })));
+
+    onClickSave?.(); // cierra popup / refresca arriba
+  } catch (e) {
+    console.error("Error al registrar oferta:", e.response?.data || e.message);
+    setError(e?.response?.data?.message || "No se pudo registrar la oferta");
+  } finally {
+    setSubmitting(false);
+  }
+};
+
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">

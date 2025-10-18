@@ -85,7 +85,7 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
       cell: (row) => (
         <div style={{ display: 'flex', gap: 12 }}>
           {/* Botón agregar (requiere editar_inventario) */}
-          <button title="Agregar" onClick={() => onAgregarMaterial(row)}>
+          <button title="Agregar" onClick={() => onAgregarMaterial(row)} className='cursor-pointer'>
             <CirclePlus size={20} color="#046bb1" />
           </button>
 
@@ -94,8 +94,9 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
             <button
               title="Eliminar"
               onClick={() => handleEliminar(row.id_material)}
+              className='cursor-pointer'
             >
-              <Trash2 size={20} color="#6E6E71" />
+              <Trash2 size={20} color="#6E6E71"  />
             </button>
           )}
         </div>
@@ -145,7 +146,6 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
       pagination
       responsive
       highlightOnHover
-      pointerOnHover
       customStyles={customStyles}
     />
   

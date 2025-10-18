@@ -124,7 +124,7 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       { name: 'Cliente', selector: row => row.cliente_id, sortable: "true", center: "true"},
       {
         name: "Estado",
-        sortable: true,
+        sortable:"true",
         selector: r => r.estado,
         cell: (row) => (
           <select
@@ -150,19 +150,19 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           <div style={{ display: 'flex', gap: 12 }}>
             <button 
               title="Editar"
-              onClick={() => onEditProject(row)} >
+              onClick={() => onEditProject(row)} className='cursor-pointer'>
               <Pencil size={15} color='#046bb1'/>
             </button>
             <button 
               title="Ver materiales"
-              onClick={() => onAsignMaterials(row.id)} >
+              onClick={() => onAsignMaterials(row.id)} className='cursor-pointer' >
               <Boxes size={15} color='#046bb1'/>
             </button>
             {/* Botón eliminar */}
             {canDelete && (
               <button
                 title="Eliminar"
-                onClick={() => handleEliminar(row.id)}
+                onClick={() => handleEliminar(row.id) } className='cursor-pointer'
               >
                 <Trash2 size={15} color="#6E6E71" />
               </button>
@@ -214,7 +214,6 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       pagination
       responsive
       highlightOnHover
-      pointerOnHover
       customStyles={customStyles}
     />
 
