@@ -127,7 +127,7 @@ export default function ProjectsPage() {
             onClickCancel={() => setPopUp3(false)}
             onClickSave={() => {
               setPopUp3(false);
-              // opcional: refrescar materiales si tienes un hook que lo haga
+              
             }}
           />
         </div>

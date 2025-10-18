@@ -8,7 +8,7 @@ export default function MovementPage() {
         <h1 className='titulo'>Movimiento de materiales</h1>
       </div>
       
-      {/* Aquí agregamos el componente MovementView */}
+      
       <MovementView />
     </Layout>
   );
