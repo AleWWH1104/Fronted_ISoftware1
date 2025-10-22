@@ -47,34 +47,62 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
   }, [project]);
 
   const handleSave = () => {
-    setSubmitting(true);
-    setError("");
+  setSubmitting(true);
+  setError("");
 
-    if (!selectedClientId) {
-      setError("Debes seleccionar un cliente.");
-      setSubmitting(false);
-      return;
-    }
-    if (!Number.isInteger(Number(selectedClientId))) {
-      setError("El cliente seleccionado no es válido. Intenta seleccionarlo de nuevo.");
-      setSubmitting(false);
-      return;
-    }
-
-    const updated = {
-      id: project?.id ?? null,
-      nombre: nombre.trim(),
-      tipo_servicio: tipoServicio,
-      ubicacion: ubicacion.trim(),
-      estado,
-      presupuesto: Number(presupuesto),
-      cliente_id: Number(selectedClientId), // ⬅ igual que en Create
-      // fechas las maneja el backend según estado
-    };
-
-    onClickSave?.(updated);
+  if (!selectedClientId) {
+    setError("Debes seleccionar un cliente.");
     setSubmitting(false);
+    return;
+  }
+  if (!Number.isInteger(Number(selectedClientId))) {
+    setError("El cliente seleccionado no es válido. Intenta seleccionarlo de nuevo.");
+    setSubmitting(false);
+    return;
+  }
+
+  // 🔹 Validación de presupuesto
+  const presupuestoNum = Number(presupuesto);
+  if (isNaN(presupuestoNum) || presupuestoNum < 0) {
+    setError("El presupuesto debe ser mayor o igual a 0.");
+    setSubmitting(false);
+    return;
+  }
+  if (presupuestoNum > 9999999.99) {
+    setError("El presupuesto no puede exceder Q9,999,999.99.");
+    setSubmitting(false);
+    return;
+  }
+  // Validar máximo 2 decimales
+  if (!/^\d+(\.\d{1,2})?$/.test(presupuesto)) {
+    setError("El presupuesto solo puede tener hasta 2 decimales.");
+    setSubmitting(false);
+    return;
+  }
+
+
+  // validar máximo 2 decimales
+  const twoDecimals = /^\d+(\.\d{1,2})?$/;
+  if (!twoDecimals.test(presupuesto)) {
+    setError("El presupuesto solo puede tener hasta 2 decimales.");
+    setSubmitting(false);
+    return;
+  }
+
+  const updated = {
+    id: project?.id ?? null,
+    nombre: nombre.trim(),
+    tipo_servicio: tipoServicio,
+    ubicacion: ubicacion.trim(),
+    estado,
+    presupuesto: parseFloat(presupuestoNum.toFixed(2)),
+    cliente_id: Number(selectedClientId),
   };
+
+  onClickSave?.(updated);
+  setSubmitting(false);
+};
+
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
@@ -140,6 +168,9 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
             required
             className="row-start-5 col-span-2 sm:col-span-1 md:row-start-4"
           />
+          {error && error.includes("presupuesto") && (
+            <p className="errores mt-1 col-span-2">{error}</p>
+          )}
         </div>
 
         {/* Sección 2: Cliente */}
@@ -148,7 +179,7 @@ export default function EditProjectPopUp({ project, onClickCancel, onClickSave }
           <p className="text-sm">Información del cliente</p>
         </div>
 
-        {(error || clientsError) && <p className="errores mb-2">{error || clientsError}</p>}
+        {(clientsError) && <p className="errores mb-2">{clientsError}</p>}
 
         {!isCreateClient ? (
           <div className="flex flex-col gap-3">

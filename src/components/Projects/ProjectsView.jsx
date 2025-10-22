@@ -109,7 +109,7 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
         cell: (row) => (
           
           <select
-            className="border border-gray-300 rounded-lg px-2 py-1"
+            className="border border-gray-300 rounded-lg py-1"
             value={row.tipo_servicio}
             disabled={isSaving(row.id, 'tipo_servicio')}
             onChange={(e) => updateRecordOptimistic(row.id, 'tipo_servicio', e.target.value)}
@@ -121,14 +121,14 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           </select>
         ),
       },
-      { name: 'Cliente', selector: row => row.cliente_id, sortable: "true", center: "true"},
+      { name: 'Cliente', selector: row => row.nombre_cliente, sortable: "true",},
       {
         name: "Estado",
         sortable:"true",
         selector: r => r.estado,
         cell: (row) => (
           <select
-            className="border border-gray-300 rounded-lg px-2 py-1"
+            className="border border-gray-300 rounded-lg py-1"
             value={row.estado}
             disabled={isSaving(row.id, 'estado')}
             onChange={(e) => updateRecordOptimistic(row.id, 'estado', e.target.value)}
@@ -143,6 +143,22 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       { name: 'Ubicacion', selector: row => row.ubicacion, sortable: "true"},
   ];
 
+  const handleAsignarMateriales = (row) => {
+    if (row.estado === 'Finalizado' || row.estado === 'Cancelado') {
+      setModalData({
+        type: "message",
+        title: "Acción no permitida",
+        message: `No se pueden asignar materiales a un proyecto en estado "${row.estado}".`,
+        onCancel: () => setModalData(null),
+      });
+      return;
+    }
+
+    // Si el estado sí permite asignar
+    onAsignMaterials(row.id);
+  };
+
+
   if (canEdit) {
       columns.push({
         name: 'Acciones',
@@ -153,11 +169,17 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
               onClick={() => onEditProject(row)} className='cursor-pointer'>
               <Pencil size={15} color='#046bb1'/>
             </button>
+            
+            {/* Mostrar el icono solo si el estado no es Finalizado ni Cancelado */}
             <button 
-              title="Ver materiales"
-              onClick={() => onAsignMaterials(row.id)} className='cursor-pointer' >
+              title="Asignar materiales"
+              onClick={() => handleAsignarMateriales(row)} 
+              className='cursor-pointer'
+            >
               <Boxes size={15} color='#046bb1'/>
             </button>
+
+
             {/* Botón eliminar */}
             {canDelete && (
               <button

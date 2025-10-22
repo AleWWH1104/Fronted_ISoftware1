@@ -55,10 +55,10 @@ export default function InventoryPage() {
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Inventario</h1>
         <div className='flex gap-4'>
+          <RedirectButton label="Ver historial de movimientos" onClick={() => navigate("/movements")}/>
           <WithPermission permissions='crear_material'>
             <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>
           </WithPermission> 
-          <RedirectButton label="Ver historial de movimientos" onClick={() => navigate("/movements")}/>
         </div>
         
       </div>

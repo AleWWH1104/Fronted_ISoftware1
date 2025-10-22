@@ -138,8 +138,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
         <div className="mt-4">
           <button
             onClick={onBack}
-            className="text-white rounded px-4 py-2 cursor-pointer parrafo"
-            style={{ backgroundColor: "#046BB1" }}
+            className="rounded w-full md:w-auto bg-gray-200 parrafo p-2 cursor-pointer"
           >
             Volver a proyectos
           </button>
@@ -175,7 +174,6 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           type="text" 
           onChange={handleFilter} 
           className="ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo w-full md:w-auto"
-          placeholder="Buscar material..."
           value={filterText}
         />
       </div>
@@ -197,12 +195,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
       <div className="mt-4 flex justify-center md:justify-start">
         <button
           onClick={onBack}
-          className="text-white rounded w-full md:w-auto"
-          style={{
-            backgroundColor: "#046BB1",
-            padding: "0.4rem 0.8rem",
-            fontSize: "0.9rem",
-          }}
+          className="rounded w-full md:w-auto bg-gray-200 parrafo p-2 cursor-pointer"
         >
           Volver a proyectos
         </button>
