@@ -70,4 +70,13 @@ export const getMateriales = async () => {
     }
 };
 
+export const getAlertMateriales = async () => {
+    try {
+      const response = await axios.get(`/materiales/alertas`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching alerta de materiales:', error);
+      throw error;
+    }
+};
 

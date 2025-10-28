@@ -10,6 +10,8 @@ import { updateProyecto, postOfertaProyecto } from "../services/projects";
 import { useLocation, useNavigate } from "react-router-dom";
 import WithPermission from "../components/WithPermission";
 import AsignMaterials from "../components/Projects/AsignMaterials";
+import ReserveMaterial from "../components/Projects/ReserveMaterial";
+import DeliverMaterial from "../components/Projects/DeliverMaterial";
 
 export default function ProjectsPage() {
   const { estadoProyectos, loading, error, refetch } = useEstadoProyectos();
@@ -21,6 +23,8 @@ export default function ProjectsPage() {
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
   const [isPopUp3, setPopUp3] = useState(false);
+  const [isPopUp4, setPopUp4] = useState(false);
+  const [isPopUp5, setPopUp5] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -106,6 +110,8 @@ export default function ProjectsPage() {
           refreshKey={materialsRefreshKey} 
           onBack={handleBackToProjectView}
           onAsignMaterials={handleAsignMaterials}
+          reserve = {() => setPopUp4(true)}
+          deliver = {() => setPopUp5(true)}
         />
       )}
       {isPopUp1 && (
@@ -133,6 +139,16 @@ export default function ProjectsPage() {
               // opcional: refrescar materiales si tienes un hook que lo haga
             }}
           />
+        </div>
+      )}
+      {isPopUp4 && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <ReserveMaterial onClickCancel={() => setPopUp4(false)}/>
+        </div>
+      )}
+      {isPopUp5 && (
+        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+          <DeliverMaterial onClickCancel={() => setPopUp5(false)}/>
         </div>
       )}
     </Layout>

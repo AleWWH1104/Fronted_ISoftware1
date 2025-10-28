@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
+import ReserveMaterial from "./ReserveMaterial";
 
-export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials, refreshKey }) {
+export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials, refreshKey, reserve, deliver }) {
   const { materials, loading, error, refetch } = useProjectMaterials(projectId);
   const [records, setRecords] = useState([]);
   const [filterText, setFilterText] = useState("");
@@ -69,16 +70,14 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           <button
             className="rounded p-1 boton_accion cursor-pointer"
             style={{ border: "1px solid #046BB1", color: "#046BB1" }}
-            onClick={() => alert(`Reservar ${row.material}`)}
-            disabled={row.disponible_global <= 0 || (row.ofertada - row.reservado - row.en_obra) <= 0}
+            onClick={reserve}
           >
             Reservar
           </button>
           <button
             className="rounded px-1 py-1 boton_accion text-white cursor-pointer"
             style={{ backgroundColor: "#046BB1" }}
-            onClick={() => alert(`Entregar ${row.material}`)}
-            disabled={row.reservado <= 0}
+            onClick={deliver}
           >
             Entregar
           </button>
