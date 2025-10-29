@@ -19,6 +19,7 @@ export default function ProjectsPage() {
   const [mode, setMode] = useState('projects'); // 'projects' | 'materials'
   const [materialsProjectId, setMaterialsProjectId] = useState(null);
   const [materialsRefreshKey, setMaterialsRefreshKey] = useState(0);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   const [isPopUp1, setPopUp1] = useState(false);
   const [isPopUp2, setPopUp2] = useState(false);
@@ -110,8 +111,14 @@ export default function ProjectsPage() {
           refreshKey={materialsRefreshKey} 
           onBack={handleBackToProjectView}
           onAsignMaterials={handleAsignMaterials}
-          reserve = {() => setPopUp4(true)}
-          deliver = {() => setPopUp5(true)}
+          reserve={(mat) => {
+            setSelectedMaterial(mat);
+            setPopUp4(true);
+          }}
+          deliver={(mat) => {
+            setSelectedMaterial(mat);
+            setPopUp5(true);
+          }}
         />
       )}
       {isPopUp1 && (
@@ -141,9 +148,17 @@ export default function ProjectsPage() {
           />
         </div>
       )}
-      {isPopUp4 && (
+      {isPopUp4 && selectedMaterial && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <ReserveMaterial onClickCancel={() => setPopUp4(false)}/>
+            <ReserveMaterial
+              onClickCancel={() => setPopUp4(false)}
+              materialSelected={selectedMaterial}
+              projectId={materialsProjectId}
+              onReserved={() => {
+                setPopUp4(false);
+                setMaterialsRefreshKey((k) => k + 1);
+              }}
+            /> 
         </div>
       )}
       {isPopUp5 && (

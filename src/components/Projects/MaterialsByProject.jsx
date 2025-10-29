@@ -7,36 +7,55 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
   const { materials, loading, error, refetch } = useProjectMaterials(projectId);
   const [records, setRecords] = useState([]);
   const [filterText, setFilterText] = useState("");
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   const projectMaterials = useMemo(() => {
-    return (materials || []).map((mat, index) => {
-      const ofertada = Number(mat.ofertado ?? mat.ofertada ?? 0);
-      const reservado = Number(mat.reservado ?? 0);
-      const en_obra   = Number(mat.en_obra ?? 0);
+  // Aseguramos que items sea siempre un array con los elementos correctos
+  const items = Array.isArray(materials)
+    ? materials
+    : Array.isArray(materials?.data)
+    ? materials.data
+    : [];
 
-      const pendiente_entrega = Number(mat.pendiente_entrega ?? (ofertada - en_obra));
-      const disponible_global = Number(
-        mat.disponible_global ?? ((Number(mat.en_bodega ?? 0)) - (Number(mat.reservado_total ?? 0)))
-      );
-      const pendiente_compra = Number(
-        mat.pendiente_compra ?? Math.max(0, (ofertada - en_obra) - disponible_global)
-      );
+  return (items || []).map((mat, index) => {
+    const ofertada = Number(mat.ofertado ?? mat.ofertada ?? 0);
+    const reservado = Number(mat.reservado ?? 0);
+    const en_obra   = Number(mat.en_obra ?? 0);
 
-      return {
-        id: `${mat.material_id ?? mat.id_material ?? index}`,
-        codigo: mat.codigo,
-        material: mat.material,
-        ofertada,
-        reservado,
-        en_obra,
-        pendiente_entrega,
-        pendiente_compra,
-        en_bodega: Number(mat.en_bodega ?? 0),
-        reservado_total: Number(mat.reservado_total ?? 0),
-        disponible_global,
-      };
-    });
-  }, [materials]);
+    const pendiente_entrega = Number(
+      mat.pendiente_entrega ?? Math.max(0, ofertada - en_obra)
+    );
+
+    const en_bodega = Number(mat.en_bodega ?? 0);
+    const reservado_total = Number(mat.reservado_total ?? 0);
+
+    const disponible_global = Number(
+      mat.disponible_global ?? (en_bodega - reservado_total)
+    );
+
+    const pendiente_compra = Number(
+      mat.pendiente_compra ?? Math.max(0, ofertada - reservado - en_obra)
+    );
+
+    return {
+      // usa número o string consistente para id, pero guarda el material_id original también
+      id: String(mat.material_id ?? mat.id_material ?? index),
+      material_id: mat.material_id ?? mat.id_material ?? null,
+      codigo: mat.codigo,
+      material: mat.material,
+      ofertada,
+      reservado,
+      en_obra,
+      pendiente_entrega,
+      pendiente_compra,
+      en_bodega,
+      reservado_total,
+      disponible_global,
+    };
+  });
+}, [materials]);
+
+
 
   useEffect(() => {
     setRecords(projectMaterials);
@@ -55,6 +74,11 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     setRecords(filtered);
   }
 
+   const handleReserveClick = (row) => {
+    setSelectedMaterial(row);
+    reserve(row);
+  };
+
   const columns = [
     { name: "Código", selector: (row) => row.codigo, sortable: true },
     { name: "Material", selector: (row) => row.material, sortable: true },
@@ -70,14 +94,14 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           <button
             className="rounded p-1 boton_accion cursor-pointer"
             style={{ border: "1px solid #046BB1", color: "#046BB1" }}
-            onClick={reserve}
+            onClick={() => handleReserveClick(row)}
           >
             Reservar
           </button>
           <button
             className="rounded px-1 py-1 boton_accion text-white cursor-pointer"
             style={{ backgroundColor: "#046BB1" }}
-            onClick={deliver}
+            onClick={() => deliver(row)}
           >
             Entregar
           </button>
