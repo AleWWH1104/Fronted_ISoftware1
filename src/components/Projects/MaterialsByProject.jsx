@@ -2,12 +2,15 @@ import React, { useState, useEffect, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
 import ReserveMaterial from "./ReserveMaterial";
+import Modal from "../Modal";
 
 export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials, refreshKey, reserve, deliver }) {
   const { materials, loading, error, refetch } = useProjectMaterials(projectId);
   const [records, setRecords] = useState([]);
   const [filterText, setFilterText] = useState("");
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [modalData, setModalData] = useState(null);
+
 
   const projectMaterials = useMemo(() => {
   // Aseguramos que items sea siempre un array con los elementos correctos
@@ -74,10 +77,38 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     setRecords(filtered);
   }
 
-   const handleReserveClick = (row) => {
-    setSelectedMaterial(row);
-    reserve(row);
+  const handleReserveClick = (row) => {
+  // Verificamos si ya llegó a lo ofertado
+  if (row.en_obra >= row.ofertada) {
+    setModalData({
+      title: "Material completado",
+      message: "El material ofertado ya ha sido entregado completamente a obra. No es necesario reservar más.",
+      type: "alert",
+      onCancel: () => setModalData(null),
+    });
+    return;
+  }
+
+  // Si aún no llega al ofertado, procede normalmente
+  setSelectedMaterial(row);
+  reserve(row);
   };
+
+  const handleDeliverClick = (row) => {
+  if (row.en_obra >= row.ofertada) {
+    setModalData({
+      title: "Material completado",
+      message: "El material ofertado ya ha sido entregado completamente a obra. No es necesario entregar más.",
+      type: "alert",
+      onCancel: () => setModalData(null),
+    });
+    return;
+  }
+
+  setSelectedMaterial(row);
+  deliver(row);
+  };
+
 
   const columns = [
     { name: "Código", selector: (row) => row.codigo, sortable: true },
@@ -101,7 +132,7 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           <button
             className="rounded px-1 py-1 boton_accion text-white cursor-pointer"
             style={{ backgroundColor: "#046BB1" }}
-            onClick={() => deliver(row)}
+            onClick={() => handleDeliverClick(row)}
           >
             Entregar
           </button>
@@ -223,6 +254,16 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           Volver a proyectos
         </button>
       </div>
+    
+    {modalData && (
+      <Modal
+        title={modalData.title}
+        message={modalData.message}
+        type={modalData.type}
+        onCancel={modalData.onCancel}
+      />
+    )}
+
     </div>
   );
 }

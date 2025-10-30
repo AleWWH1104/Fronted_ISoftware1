@@ -182,3 +182,17 @@ export const patchReservarMaterial = async (id_proyecto, id_material, cantidad) 
     throw error.response?.data || error;
   }
 };
+
+export const patchEntregarMaterial = async (id_proyecto, id_material, cantidad) => {
+  try {
+    const response = await axios.patch(
+      `/proyecto-material/entregar-obra`,
+      { id_proyecto, id_material, cantidad },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al reservar material:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};

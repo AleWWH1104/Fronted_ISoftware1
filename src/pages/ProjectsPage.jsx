@@ -161,9 +161,19 @@ export default function ProjectsPage() {
             /> 
         </div>
       )}
-      {isPopUp5 && (
+      {isPopUp5 && selectedMaterial &&(
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <DeliverMaterial onClickCancel={() => setPopUp5(false)}/>
+          <DeliverMaterial 
+            onClickCancel={() => setPopUp5(false)}
+            materialSelected={selectedMaterial}
+            projectId={materialsProjectId}
+            onDelivered={
+              () => {
+                setPopUp5(false);
+                setMaterialsRefreshKey((k) => k + 1);
+              }
+            }
+          />
         </div>
       )}
     </Layout>

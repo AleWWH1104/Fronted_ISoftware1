@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InputForm } from "../Input";
 import { SaveOrCancelButtons } from "../Button";
 import { patchReservarMaterial } from "../../services/projects";
 import { useNavigate } from "react-router-dom";
+
 
 export default function ReserveMaterial({
   onClickCancel,
@@ -26,7 +27,6 @@ export default function ReserveMaterial({
     setError("");
     const cant = Number(cantidad);
 
-    // 🔸 Validaciones
     if (!cant || cant <= 0) {
       setError("Debe ingresar una cantidad válida mayor a 0.");
       return;
@@ -41,7 +41,7 @@ export default function ReserveMaterial({
 
     try {
       await patchReservarMaterial(projectId, materialSelected.id, cant);
-      onReserved(); // 🔹 Cierra el popup y refresca
+      onReserved();
     } catch (err) {
       console.error("Error al reservar material:", err);
       setError("Ocurrió un error al procesar la reserva.");
@@ -54,61 +54,66 @@ export default function ReserveMaterial({
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-[80%] sm:w-[50%] lg:w-[35%] p-6 flex flex-col">
-      <div id="encabezado" className="border-b border-gray-200 pb-4">
+    <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Reservar material</h2>
         <p className="text-[#709DBB] text-sm">
-          Reservar materiales disponibles desde bodega
+        Reservar materiales disponibles desde bodega
         </p>
-      </div>
+    </div>
 
-      {/* Banner si no hay inventario suficiente */}
-      {disponible_global <= ofertada && (
+    {/* Banner si hay inventario insuficiente */}
+    {disponible_global < maxPorOferta && (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 my-4 rounded-md">
-          <p className="parrafo">
-            ⚠ No hay suficiente material disponible para reservar.{" "}
+        <p className="parrafo">
+            ⚠ La cantidad disponible en bodega ({disponible_global}) es menor
+            a la cantidad requerida ({maxPorOferta}). Puedes reservar lo
+            disponible o{" "}
             <button
-              className="text-[#046BB1] underline parrafo"
-              onClick={handleGoToInventory}
+            className="text-[#046BB1] underline parrafo"
+            onClick={handleGoToInventory}
             >
-              Reponer inventario
+            reponer inventario
             </button>
-          </p>
+            .
+        </p>
         </div>
-      )}
+    )}
 
-      <div className="flex-1 overflow-y-auto py-4">
+    <div className="flex-1 overflow-y-auto py-4">
         <div className="parrafo flex flex-col gap-2 mb-8">
-          <p>
+        <p>
             Disponible global: <b>{disponible_global}</b>
-          </p>
-          <p>
+        </p>
+        <p>
             Ofertado total: <b>{ofertada}</b>
-          </p>
-          <p>
+        </p>
+        <p>
             Ya reservado: <b>{reservado}</b>
-          </p>
-          <p>
+        </p>
+        <p>
             En obra: <b>{en_obra}</b>
-          </p>
-          <p className="text-[#046BB1] mt-2">
+        </p>
+        <p className="text-[#046BB1] mt-2">
             Máximo que puedes reservar: <b>{maxReservable}</b>
-          </p>
+        </p>
         </div>
 
         <InputForm
-          type="number"
-          label="Cantidad a reservar"
-          placeholder="0"
-          value={cantidad}
-          onChange={(e) => setCantidad(e.target.value)}
-          required
+        type="number"
+        label="Cantidad a reservar"
+        placeholder="0"
+        value={cantidad}
+        onChange={(e) => setCantidad(e.target.value)}
+        required
         />
 
-        {/* Mensaje de error */}
         {error && <p className="errores mt-2">{error}</p>}
-      </div>
+    </div>
 
-      <SaveOrCancelButtons onClick1={onClickCancel} onClick2={handleSubmit} />
+    <SaveOrCancelButtons
+        onClick1={onClickCancel}
+        onClick2={handleSubmit}
+    />
     </div>
   );
 }
