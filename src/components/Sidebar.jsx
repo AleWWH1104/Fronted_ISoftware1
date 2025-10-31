@@ -10,6 +10,7 @@ import {
   Menu,
   ChevronDown,
   ChevronUp,
+  History,
 } from "lucide-react"
 import { useAuth } from '../context/AuthContext'
 
@@ -111,7 +112,10 @@ export default function Sidebar() {
                   <Link
                     to="/inventory"
                     onClick={handleLinkClick}
-                    className={getLinkClasses(location.pathname.startsWith("/inventory"))}
+                    className={getLinkClasses(
+                      location.pathname.startsWith("/inventory") ||
+                      location.pathname === "/movements"
+                    )}
                   >
                     <div className="flex items-center gap-3">
                       <Package className="h-4 w-4" />
@@ -130,56 +134,36 @@ export default function Sidebar() {
                   </button>
                 </div>
 
-                {openMenu === "inventory" && (
+                {(openMenu === "inventory" || location.pathname === "/movements") && (
                   <div className="ml-4 mt-1 space-y-1">
                     <Link
                       to="/movements"
                       onClick={handleLinkClick}
                       className={getSubLinkClasses(location.pathname === "/movements")}
                     >
-                      Movimiento de inventario
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              {/* PROYECTOS */}
-              <div>
-                <div className="flex items-center justify-between">
-                  <Link
-                    to="/projects"
-                    onClick={handleLinkClick}
-                    className={getLinkClasses(location.pathname.startsWith("/projects"))}
-                  >
-                    <div className="flex items-center gap-3">
-                      <FolderOpen className="h-4 w-4" />
-                      <span>Proyectos</span>
+                    <div className="flex items-center gap-2">
+                      {/* 👇 nuevo icono */}
+                      <div className="flex items-center gap-2">
+                        <History className="h-4 w-4" />
+                        <span>Movimiento de inventario</span>
+                      </div>
                     </div>
-                  </Link>
-                  <button
-                    onClick={(e) => toggleSubMenu("projects", e)}
-                    className="p-1 text-gray-600 hover:text-gray-900"
-                  >
-                    {openMenu === "projects" ? (
-                      <ChevronUp className="h-4 w-4" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-
-                {openMenu === "projects" && (
-                  <div className="ml-4 mt-1 space-y-1">
-                    <Link
-                      to="/projects/details"
-                      onClick={handleLinkClick}
-                      className={getSubLinkClasses(location.pathname === "/projects/details")}
-                    >
-                      Detalles de material
                     </Link>
                   </div>
                 )}
               </div>
+
+              {/* PROYECTOS (sin submenu) */}
+              <Link
+                to="/projects"
+                onClick={handleLinkClick}
+                className={getLinkClasses(location.pathname.startsWith("/projects"))}
+              >
+                <div className="flex items-center gap-3">
+                  <FolderOpen className="h-4 w-4" />
+                  <span>Proyectos</span>
+                </div>
+              </Link>
 
               {/* REPORTES */}
               <Link
@@ -249,7 +233,7 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Fondo oscuro para móvil cuando sidebar abierto */}
+      {/* Fondo oscuro para móvil */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
