@@ -1,6 +1,6 @@
 import InventoryView from '../components/Inventory/InventoryView'
 import Layout from '../components/Layout'
-import { CreateButton } from '../components/Button'
+import { CreateButton, RedirectButton } from '../components/Button'
 import { useState, useEffect} from "react";
 import AddMaterials from '../components/Inventory/AddMaterials';
 import MovementMaterialPopUp from '../components/Inventory/MovementPopUp';
@@ -54,9 +54,13 @@ export default function InventoryPage() {
     <Layout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Inventario</h1>
-        <WithPermission permissions='crear_material'>
-          <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>
-        </WithPermission> 
+        <div className='flex gap-4'>
+          <RedirectButton label="Ver historial de movimientos" onClick={() => navigate("/movements")}/>
+          <WithPermission permissions='crear_material'>
+            <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>
+          </WithPermission> 
+        </div>
+        
       </div>
       <InventoryView data={estadoMateriales} refetch={refetch} onAgregarMaterial={handleAgregarMaterial}/>
       {isPopUp1 && (

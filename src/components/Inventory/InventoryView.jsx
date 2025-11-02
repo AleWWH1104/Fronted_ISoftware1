@@ -4,6 +4,7 @@ import { CirclePlus, Trash2 } from 'lucide-react';
 import WithPermission from '../WithPermission';
 import { eliminarMaterial } from '../../services/inventory';
 import { useAuth } from '../../context/AuthContext';
+import Modal from '../Modal';
 
 // Helper para badge colorido
 const getStockBadge = (nivel) => {
@@ -23,6 +24,7 @@ const getStockBadge = (nivel) => {
 export default function InventoryView({data, refetch, onAgregarMaterial}) {
   
   const [records,  setRecords] = useState([]);
+  const [modalData, setModalData] = useState(null);
   const { hasAnyPermission } = useAuth(); // o tu usePermissions()
   const canEdit = hasAnyPermission(['editar_inventario']);
   const canDelete = hasAnyPermission(['eliminar_material']);
@@ -31,16 +33,36 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
     setRecords(data);
   }, [data]);
 
-  const handleEliminar = async (id) => {
-    if (!confirm("¿Seguro que deseas eliminar este material?")) return;
-
-    try {
-      await eliminarMaterial(id);
-      alert("Material eliminado correctamente");
-      refetch();
-    } catch (error) {
-      console.error("Error detallado:", error.response?.data || error.message);
-    }
+  const handleEliminar = (id) => {
+    setModalData({
+      title: "Eliminar material",
+      message: "¿Estás seguro de eliminar este material?",
+      type: "confirm",
+      onConfirm: async () => {
+        try {
+          await eliminarMaterial(id);
+          setModalData({
+            title: "Éxito",
+            message: "Material eliminado correctamente.",
+            type: "alert",
+            onCancel: () => setModalData(null),
+          });
+          refetch();
+        } catch (error) {
+          console.error("Error eliminando material:", error);
+          const msg =
+            error.response?.data?.message ||
+            "Error del servidor al eliminar el material.";
+          setModalData({
+            title: "Error",
+            message: msg,
+            type: "alert",
+            onCancel: () => setModalData(null),
+          });
+        }
+      },
+      onCancel: () => setModalData(null),
+    });
   };
   
   const columns = [
@@ -63,7 +85,7 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
       cell: (row) => (
         <div style={{ display: 'flex', gap: 12 }}>
           {/* Botón agregar (requiere editar_inventario) */}
-          <button title="Agregar" onClick={() => onAgregarMaterial(row)}>
+          <button title="Agregar" onClick={() => onAgregarMaterial(row)} className='cursor-pointer'>
             <CirclePlus size={20} color="#046bb1" />
           </button>
 
@@ -72,8 +94,9 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
             <button
               title="Eliminar"
               onClick={() => handleEliminar(row.id_material)}
+              className='cursor-pointer'
             >
-              <Trash2 size={20} color="#6E6E71" />
+              <Trash2 size={20} color="#6E6E71"  />
             </button>
           )}
         </div>
@@ -123,9 +146,18 @@ export default function InventoryView({data, refetch, onAgregarMaterial}) {
       pagination
       responsive
       highlightOnHover
-      pointerOnHover
       customStyles={customStyles}
     />
+  
+    {modalData && (
+      <Modal
+        title={modalData.title}
+        message={modalData.message}
+        onConfirm={modalData.onConfirm}
+        onCancel={modalData.onCancel}
+        type={modalData.type}
+      />
+    )}
   </section>
   );
 }

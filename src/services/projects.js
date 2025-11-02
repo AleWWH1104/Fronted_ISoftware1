@@ -130,26 +130,69 @@ export const getMaterialsInProgress = async () => {
   }
 };
 
-export const postOfertaProyecto = async (idProyecto, materiales) => {
-  const payload = [
-    {
-      id_proyecto: Number(idProyecto),
-      materiales: materiales
-        .filter(it => Number(it.ofertada) > 0)
-        .map(it => ({
-          id_material: Number(it.id_material),
-          ofertada: Number(it.ofertada),
-        })),
-    },
-  ];
+export const postOfertaProyecto = async (projectId, materiales) => {
+  const response = await axios.post(`/proyecto-material/`, [
+    { id_proyecto: projectId, materiales }
+  ]);
+  return response.data;
+};
 
-  const { data } = await axios.post(
-    "/proyecto-material/",
-    payload,
-    {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
+
+
+export const deleteProjects = async (id) => {
+  try {
+    const response = await axios.delete(`projects/delete/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error eliminando proyecto:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const getDetalleMaterialByProject = async (projectId) => {
+  try {
+    const { data } = await axios.get(`/proyecto-material/${projectId}`);
+
+    const rows = Array.isArray(data)
+      ? data
+      : (Array.isArray(data?.data) ? data.data : []);
+
+    // Log amigable si viene mensaje y está vacío
+    if (rows.length === 0 && data?.message) {
+      console.warn(data.message);
     }
-  );
-  return data;
+
+    return rows;
+  } catch (error) {
+    console.error("Error fetching estado de materiales de proyecto:", error);
+    throw error;
+  }
+};
+
+export const patchReservarMaterial = async (id_proyecto, id_material, cantidad) => {
+  try {
+    const response = await axios.patch(
+      `/proyecto-material/reservar`,
+      { id_proyecto, id_material, cantidad },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al reservar material:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
+};
+
+export const patchEntregarMaterial = async (id_proyecto, id_material, cantidad) => {
+  try {
+    const response = await axios.patch(
+      `/proyecto-material/entregar-obra`,
+      { id_proyecto, id_material, cantidad },
+      { withCredentials: true }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error al reservar material:", error.response?.data || error);
+    throw error.response?.data || error;
+  }
 };

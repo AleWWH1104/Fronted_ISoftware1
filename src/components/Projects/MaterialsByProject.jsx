@@ -1,47 +1,114 @@
-// components/Projects/MaterialsByProject.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import DataTable from "react-data-table-component";
 import { useProjectMaterials } from "../../hooks/useProjects";
+import ReserveMaterial from "./ReserveMaterial";
+import Modal from "../Modal";
 
-export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials }) {
-  const { materials, loading, error } = useProjectMaterials(projectId);
+export default function MaterialsByProjectView({ projectId, onBack, onAsignMaterials, refreshKey, reserve, deliver }) {
+  const { materials, loading, error, refetch } = useProjectMaterials(projectId);
   const [records, setRecords] = useState([]);
   const [filterText, setFilterText] = useState("");
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [modalData, setModalData] = useState(null);
 
-  const projectMaterials = materials.map((mat, index) => {
-    const ofertada = Number(mat.ofertada) || 0;
-    const reservado = Number(mat.reservado) || 0;
-    const en_obra = Number(mat.en_obra) || 0;
 
-    const pendiente_compra = ofertada - (reservado + en_obra);
-    const pendiente_entrega = reservado;
+  const projectMaterials = useMemo(() => {
+  // Aseguramos que items sea siempre un array con los elementos correctos
+  const items = Array.isArray(materials)
+    ? materials
+    : Array.isArray(materials?.data)
+    ? materials.data
+    : [];
+
+  return (items || []).map((mat, index) => {
+    const ofertada = Number(mat.ofertado ?? mat.ofertada ?? 0);
+    const reservado = Number(mat.reservado ?? 0);
+    const en_obra   = Number(mat.en_obra ?? 0);
+
+    const pendiente_entrega = Number(
+      mat.pendiente_entrega ?? Math.max(0, ofertada - en_obra)
+    );
+
+    const en_bodega = Number(mat.en_bodega ?? 0);
+    const reservado_total = Number(mat.reservado_total ?? 0);
+
+    const disponible_global = Number(
+      mat.disponible_global ?? (en_bodega - reservado_total)
+    );
+
+    const pendiente_compra = Number(
+      mat.pendiente_compra ?? Math.max(0, ofertada - reservado - en_obra)
+    );
 
     return {
-      id: `${mat.id_material}-${index}`,
-      ...mat,
+      // usa número o string consistente para id, pero guarda el material_id original también
+      id: String(mat.material_id ?? mat.id_material ?? index),
+      material_id: mat.material_id ?? mat.id_material ?? null,
+      codigo: mat.codigo,
+      material: mat.material,
       ofertada,
       reservado,
       en_obra,
-      pendiente_compra,
       pendiente_entrega,
+      pendiente_compra,
+      en_bodega,
+      reservado_total,
+      disponible_global,
     };
   });
+}, [materials]);
+
+
 
   useEffect(() => {
     setRecords(projectMaterials);
   }, [projectMaterials]);
 
-  function handleFilter(event) {
-    const value = event.target.value.toLowerCase();
+  useEffect(() => {
+    if (projectId) refetch();
+  }, [refreshKey, projectId, refetch]);
+
+  function handleFilter(e) {
+    const value = e.target.value.toLowerCase();
     setFilterText(value);
-    
-    const filtered = projectMaterials.filter(row =>
-      Object.values(row).some(field =>
-        String(field).toLowerCase().includes(value)
-      )
+    const filtered = projectMaterials.filter((row) =>
+      Object.values(row).some((field) => String(field).toLowerCase().includes(value))
     );
     setRecords(filtered);
   }
+
+  const handleReserveClick = (row) => {
+  // Verificamos si ya llegó a lo ofertado
+  if (row.en_obra >= row.ofertada) {
+    setModalData({
+      title: "Material completado",
+      message: "El material ofertado ya ha sido entregado completamente a obra. No es necesario reservar más.",
+      type: "alert",
+      onCancel: () => setModalData(null),
+    });
+    return;
+  }
+
+  // Si aún no llega al ofertado, procede normalmente
+  setSelectedMaterial(row);
+  reserve(row);
+  };
+
+  const handleDeliverClick = (row) => {
+  if (row.en_obra >= row.ofertada) {
+    setModalData({
+      title: "Material completado",
+      message: "El material ofertado ya ha sido entregado completamente a obra. No es necesario entregar más.",
+      type: "alert",
+      onCancel: () => setModalData(null),
+    });
+    return;
+  }
+
+  setSelectedMaterial(row);
+  deliver(row);
+  };
+
 
   const columns = [
     { name: "Código", selector: (row) => row.codigo, sortable: true },
@@ -54,18 +121,18 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     {
       name: "Acciones",
       cell: (row) => (
-        <div className="flex gap-2">
+        <div className="flex flex-col lg:flex-row lg:gap-2 w-full my-2 gap-1">
           <button
-            className="rounded px-1 py-1 text-xs"
+            className="rounded p-1 boton_accion cursor-pointer"
             style={{ border: "1px solid #046BB1", color: "#046BB1" }}
-            onClick={() => alert(`Reservar ${row.material}`)}
+            onClick={() => handleReserveClick(row)}
           >
             Reservar
           </button>
           <button
-            className="rounded px-1 py-2 text-xs text-white"
+            className="rounded px-1 py-1 boton_accion text-white cursor-pointer"
             style={{ backgroundColor: "#046BB1" }}
-            onClick={() => alert(`Entregar ${row.material}`)}
+            onClick={() => handleDeliverClick(row)}
           >
             Entregar
           </button>
@@ -88,18 +155,64 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
     },
   };
 
+  // --- NUEVA LÓGICA DE RENDERIZADO ---
+  if (error) {
+    return (
+      <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto text-center">
+        <p className="text-red-600 font-semibold text-lg">
+          Ocurrió un error al cargar los materiales.
+        </p>
+        <button
+          onClick={onBack}
+          className="mt-4 text-white rounded px-4 py-2 cursor-pointer parrafo"
+          style={{ backgroundColor: "#046BB1" }}
+        >
+          Volver a proyectos
+        </button>
+      </div>
+    );
+  }
+
+  if (!loading && projectMaterials.length === 0) {
+    return (
+      <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto text-center">
+        <h2 className="text-xl subtitulo mb-4">
+          Detalle general de materiales - Proyecto {projectId}
+        </h2>
+        <p className="text-gray-600 parrafo mb-4">
+          Este proyecto no tiene materiales asignados.
+        </p>
+        <button
+          className="text-white rounded cursor-pointer parrafo"
+          style={{ backgroundColor: "#046BB1", padding: "0.5rem 1rem" }}
+          onClick={() => onAsignMaterials(projectId)}
+        >
+          + Asignar materiales
+        </button>
+        <div className="mt-4">
+          <button
+            onClick={onBack}
+            className="rounded w-full md:w-auto bg-gray-200 parrafo p-2 cursor-pointer"
+          >
+            Volver a proyectos
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- VISTA NORMAL CON TABLA ---
   return (
     <div className="p-4 bg-white rounded shadow w-full max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold mb-2 md:mb-0" style={{ color: "#046BB1" }}>
+        <h2 className="text-xl subtitulo mb-2 md:mb-0">
           Detalle general de materiales - Proyecto {projectId}
         </h2>
         <button
-          className="text-white rounded w-full md:w-auto"
+          className="text-white rounded w-full md:w-auto cursor-pointer parrafo"
           style={{
             backgroundColor: "#046BB1",
             padding: "0.4rem 0.8rem",
-            fontSize: "0.9rem",
           }}
           onClick={() => onAsignMaterials(projectId)}
         >
@@ -115,7 +228,6 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           type="text" 
           onChange={handleFilter} 
           className="ml-1 border border-gray-300 rounded-sm px-2 py-1 parrafo w-full md:w-auto"
-          placeholder="Buscar material..."
           value={filterText}
         />
       </div>
@@ -125,9 +237,10 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
           columns={columns}
           data={records}
           progressPending={loading}
+          fixedHeader
           pagination
+          responsive
           highlightOnHover
-          striped
           noDataComponent="No hay materiales disponibles"
           customStyles={customStyles}
         />
@@ -136,16 +249,23 @@ export default function MaterialsByProjectView({ projectId, onBack, onAsignMater
       <div className="mt-4 flex justify-center md:justify-start">
         <button
           onClick={onBack}
-          className="text-white rounded w-full md:w-auto"
-          style={{
-            backgroundColor: "#046BB1",
-            padding: "0.4rem 0.8rem",
-            fontSize: "0.9rem",
-          }}
+          className="rounded w-full md:w-auto bg-gray-200 parrafo p-2 cursor-pointer"
         >
           Volver a proyectos
         </button>
       </div>
+    
+    {modalData && (
+      <Modal
+        title={modalData.title}
+        message={modalData.message}
+        type={modalData.type}
+        onCancel={modalData.onCancel}
+      />
+    )}
+
     </div>
   );
 }
+
+

@@ -12,9 +12,17 @@ export function Button({ onClick, children }) {
 
 export function CreateButton ({onClick, label}){
   return(
-    <button onClick={onClick} className="bg-[#046BB1] flex gap-2 justify-center items-center py-2.5 px-4 rounded-lg">
+    <button onClick={onClick} className="bg-[#046BB1] flex gap-2 justify-center items-center py-2.5 px-4 rounded-lg cursor-pointer">
       <Plus className="text-white" size={15}/>
       <p className="boton text-white">{label}</p>
+    </button>
+  )
+}
+
+export function RedirectButton ({onClick, label}){
+  return(
+    <button onClick={onClick} className="border border-[#046BB1] flex gap-2 justify-center items-center py-2.5 px-4 rounded-lg cursor-pointer">
+      <p className="boton text-[#046BB1]">{label}</p>
     </button>
   )
 }

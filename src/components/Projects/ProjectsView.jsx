@@ -3,11 +3,14 @@ import { Pencil, Trash2, Boxes } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { patchProyectoEstado, patchProyectoTipo } from '../../services/projects';
 import { useAuth } from '../../context/AuthContext';
+import { deleteProjects } from '../../services/projects';
+import Modal from '../Modal';
 
 export default function ProjectsView({data, refetch, onEditProject, onAsignMaterials}) {
   
   const [records,  setRecords] = useState([]);
   const [saving, setSaving] = useState({}); 
+  const [modalData, setModalData] = useState(null);
   const { hasAnyPermission } = useAuth();
   const canEdit = hasAnyPermission(['editar_proyecto']);
   const canDelete = hasAnyPermission(['eliminar_proyecto']);
@@ -28,6 +31,31 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
   }, [data]);
 
   const handleEliminar = async (id) => {
+    setModalData({
+      type: "confirm",
+      title: "Eliminar proyecto",
+      message: "¿Estás seguro de eliminar este proyecto?",
+      onConfirm: async () => {
+        try {
+          await deleteProjects(id);
+          await refetch?.();
+          setModalData({
+            type: "message",
+            title: "Proyecto eliminado",
+            message: "El proyecto fue eliminado correctamente.",
+            onCancel: () => setModalData(null),
+          });
+        } catch (error) {
+          setModalData({
+            type: "message",
+            title: "Error",
+            message: error.response?.data?.message || "No se pudo eliminar el proyecto.",
+            onCancel: () => setModalData(null),
+          });
+        }
+      },
+      onCancel: () => setModalData(null),
+    });
   };
 
   const fmtDate = (iso) => {
@@ -81,7 +109,7 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
         cell: (row) => (
           
           <select
-            className="border border-gray-300 rounded-lg px-2 py-1"
+            className="border border-gray-300 rounded-lg py-1"
             value={row.tipo_servicio}
             disabled={isSaving(row.id, 'tipo_servicio')}
             onChange={(e) => updateRecordOptimistic(row.id, 'tipo_servicio', e.target.value)}
@@ -93,14 +121,14 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           </select>
         ),
       },
-      { name: 'Cliente', selector: row => row.cliente_id, sortable: "true", center: "true"},
+      { name: 'Cliente', selector: row => row.nombre_cliente, sortable: "true",},
       {
         name: "Estado",
-        sortable: true,
+        sortable:"true",
         selector: r => r.estado,
         cell: (row) => (
           <select
-            className="border border-gray-300 rounded-lg px-2 py-1"
+            className="border border-gray-300 rounded-lg py-1"
             value={row.estado}
             disabled={isSaving(row.id, 'estado')}
             onChange={(e) => updateRecordOptimistic(row.id, 'estado', e.target.value)}
@@ -115,6 +143,22 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       { name: 'Ubicacion', selector: row => row.ubicacion, sortable: "true"},
   ];
 
+  const handleAsignarMateriales = (row) => {
+    if (row.estado === 'Finalizado' || row.estado === 'Cancelado') {
+      setModalData({
+        type: "message",
+        title: "Acción no permitida",
+        message: `No se pueden asignar materiales a un proyecto en estado "${row.estado}".`,
+        onCancel: () => setModalData(null),
+      });
+      return;
+    }
+
+    // Si el estado sí permite asignar
+    onAsignMaterials(row.id);
+  };
+
+
   if (canEdit) {
       columns.push({
         name: 'Acciones',
@@ -122,19 +166,25 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
           <div style={{ display: 'flex', gap: 12 }}>
             <button 
               title="Editar"
-              onClick={() => onEditProject(row)} >
+              onClick={() => onEditProject(row)} className='cursor-pointer'>
               <Pencil size={15} color='#046bb1'/>
             </button>
+            
+            {/* Mostrar el icono solo si el estado no es Finalizado ni Cancelado */}
             <button 
-              title="Ver materiales"
-              onClick={() => onAsignMaterials(row.id)} >
+              title="Asignar materiales"
+              onClick={() => handleAsignarMateriales(row)} 
+              className='cursor-pointer'
+            >
               <Boxes size={15} color='#046bb1'/>
             </button>
+
+
             {/* Botón eliminar */}
             {canDelete && (
               <button
                 title="Eliminar"
-                onClick={() => handleEliminar(row.id_material)}
+                onClick={() => handleEliminar(row.id) } className='cursor-pointer'
               >
                 <Trash2 size={15} color="#6E6E71" />
               </button>
@@ -186,9 +236,18 @@ export default function ProjectsView({data, refetch, onEditProject, onAsignMater
       pagination
       responsive
       highlightOnHover
-      pointerOnHover
       customStyles={customStyles}
     />
+
+    {modalData && (
+        <Modal
+          title={modalData.title}
+          message={modalData.message}
+          onConfirm={modalData.onConfirm}
+          onCancel={modalData.onCancel}
+          type={modalData.type}
+        />
+      )}
   </section>
   );
 }

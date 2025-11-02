@@ -6,10 +6,10 @@ import { postOfertaProyecto } from "../../services/projects";
 import { InputForm } from "../Input";
 
 export default function AsignMaterials({ onClickCancel, onClickSave, project }) {
+  const MAX_INT = 2147483647; // límite máximo para INTEGER
   const [materialesOptions, setMaterialesOptions] = useState([]);
   const [selectedMaterialId, setSelectedMaterialId] = useState("");
   const [cantidad, setCantidad] = useState("");
-  // { id: tempId, id_material, codigo, nombre, ofertada }
   const [listaMateriales, setLista] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -17,7 +17,7 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
   useEffect(() => {
     (async () => {
       try {
-        const data = await getMateriales(); // espera [{id, codigo, material}, ...]
+        const data = await getMateriales();
         setMaterialesOptions(data || []);
       } catch (e) {
         setError(e?.response?.data?.message || "No se pudieron cargar materiales");
@@ -29,27 +29,39 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
     setError("");
     const idMat = Number(selectedMaterialId);
     const qty = Number(cantidad);
+
     if (!idMat || !Number.isFinite(qty) || qty <= 0) {
       setError("Selecciona un material y una cantidad válida (> 0).");
       return;
     }
 
-    const mat = materialesOptions.find(m => m.id === idMat);
+    if (qty > MAX_INT) {
+      setError(`*La cantidad excede el límite permitido`);
+      return;
+    }
+
+    const mat = materialesOptions.find((m) => m.id === idMat);
     if (!mat) {
       setError("Material inválido.");
       return;
     }
 
     // si ya existe en la lista, sumamos cantidades
-    const exists = listaMateriales.find(i => i.id_material === idMat);
+    const exists = listaMateriales.find((i) => i.id_material === idMat);
     if (exists) {
-      setLista(prev =>
-        prev.map(i =>
+      const nuevaCantidad = i.ofertada + qty;
+      if (nuevaCantidad > MAX_INT) {
+        setError(`La cantidad total para este material supera el límite (${MAX_INT.toLocaleString()}).`);
+        return;
+      }
+
+      setLista((prev) =>
+        prev.map((i) =>
           i.id_material === idMat ? { ...i, ofertada: i.ofertada + qty } : i
         )
       );
     } else {
-      setLista(prev => [
+      setLista((prev) => [
         ...prev,
         {
           id: Date.now(),
@@ -67,15 +79,17 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
   };
 
   const handleDelete = (id) => {
-    setLista(listaMateriales.filter(item => item.id !== id));
+    setLista(listaMateriales.filter((item) => item.id !== id));
   };
 
   const handleSubmit = async () => {
     setError("");
+
     if (!project?.id) {
       setError("Proyecto no válido.");
       return;
     }
+
     if (listaMateriales.length === 0) {
       setError("Agrega al menos un material a la lista.");
       return;
@@ -83,15 +97,22 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
 
     setSubmitting(true);
     try {
+      console.log("Datos a enviar:", {
+        id_proyecto: project.id,
+        materiales: listaMateriales,
+      });
+
       await postOfertaProyecto(
         project.id,
-        listaMateriales.map(i => ({
+        listaMateriales.map((i) => ({
           id_material: i.id_material,
           ofertada: i.ofertada,
         }))
       );
-      onClickSave?.(); // cierra popup / refresca arriba
+
+      onClickSave?.();
     } catch (e) {
+      console.error("Error al registrar oferta:", e.response?.data || e.message);
       setError(e?.response?.data?.message || "No se pudo registrar la oferta");
     } finally {
       setSubmitting(false);
@@ -106,7 +127,9 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
           Registrar la oferta de materiales estimados para el proyecto
         </p>
         {project?.nombre && (
-          <p className="text-xs text-gray-500 mt-1">Proyecto: <span className="font-medium">{project.nombre}</span></p>
+          <p className="text-xs text-gray-500 mt-1">
+            Proyecto: <span className="font-medium">{project.nombre}</span>
+          </p>
         )}
       </div>
 
@@ -120,15 +143,15 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
               onChange={(e) => setSelectedMaterialId(e.target.value)}
             >
               <option value="">Selecciona un material</option>
-              {materialesOptions.map(m => (
+              {materialesOptions.map((m) => (
                 <option key={m.id} value={String(m.id)}>
                   {m.codigo} — {m.material}
                 </option>
               ))}
             </select>
           </div>
-
-          <InputForm
+          <div>
+              <InputForm
             type="number"
             label="Cantidad"
             placeholder="0"
@@ -136,6 +159,9 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
             onChange={(e) => setCantidad(e.target.value)}
             required
           />
+          {error && <p className="errores mt-2">{error}</p>}
+          </div>
+          
         </div>
 
         <button
@@ -155,7 +181,7 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
             </div>
           ) : (
             <div className="mt-4 space-y-2">
-              {listaMateriales.map(item => (
+              {listaMateriales.map((item) => (
                 <div
                   key={item.id}
                   className="flex justify-between items-center bg-gray-100 p-2 rounded-lg"
@@ -171,8 +197,6 @@ export default function AsignMaterials({ onClickCancel, onClickSave, project }) 
             </div>
           )}
         </div>
-
-        {error && <div className="text-sm text-red-600">{error}</div>}
       </div>
 
       <SaveOrCancelButtons
