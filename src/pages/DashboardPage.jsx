@@ -1,11 +1,13 @@
-import MovementView from '../components/Dashboard/MovementView'
-import KPICard from "../components/Dashboard/KPI" 
-import Layout from '../components/Layout'
-import { Boxes, Users, ClockFading, CircleCheckBig, RefreshCw } from "lucide-react" 
-import { useCountCustomers, useFinishedProjects, useInProgressProjects, useProductCount } from '../hooks/useKPIs'
-import ServiceChart from '../components/Dashboard/ServiceChart'
-import ProjectMaterialsView from '../components/Dashboard/ProjectMaterialsView'
-import { useProjectMaterials } from '../hooks/useProjects' 
+// src/pages/DashboardPage.jsx
+import React from 'react';
+import KPICard from "../components/Dashboard/KPI";
+import Layout from '../components/Layout';
+import { Boxes, Users, ClockFading, CircleCheckBig } from "lucide-react";
+import { useCountCustomers, useFinishedProjects, useInProgressProjects, useProductCount } from '../hooks/useKPIs';
+import ServiceChart from '../components/Dashboard/ServiceChart';
+import TopProjectsBudget from '../components/Dashboard/TopProjectsBudget';
+import TopMaterialsUsed from '../components/Dashboard/TopMaterialsUsed';
+import MonthlyEntriesVsExitsChart from '../components/Dashboard/MonthlyEntriesVsExitsChart';
 
 export default function DashboardPage() {
   const { countCustomers } = useCountCustomers();
@@ -13,58 +15,62 @@ export default function DashboardPage() {
   const { inProgressProjects } = useInProgressProjects();
   const { productCount } = useProductCount();
 
-  // Hook para materiales: con fallback para evitar crash si el hook falla
-  let materials = [];
-  let loading = false;
-  let error = null;
-  let refetch = () => {}; // Fallback vacío
+  // Datos simulados para los nuevos componentes
+  const mockTopProjects = [
+    { nombre: 'Construcción Edificio A', presupuesto: 150000, estado: 'Activo' },
+    { nombre: 'Remodelación Oficinas B', presupuesto: 120000, estado: 'En pausa' },
+    { nombre: 'Instalación Parque C', presupuesto: 95000, estado: 'Terminado' },
+    { nombre: 'Ampliación Fábrica D', presupuesto: 87500, estado: 'Activo' },
+    { nombre: 'Diseño Interiores E', presupuesto: 75000, estado: 'Activo' },
+  ];
 
-  try {
-    const hookResult = useProjectMaterials();
-    materials = hookResult.materials || [];
-    loading = hookResult.loading || false;
-    error = hookResult.error || null;
-    refetch = hookResult.refetch || (() => {});
-  } catch (hookError) {
-    console.error('Error al usar useProjectMaterials:', hookError);
-    error = hookError;
-    materials = []; // Evita ReferenceError
-  }
-
-  // Debug: Log en consola para verificar
-  console.log('Dashboard - Materials loaded:', materials);
-  console.log('Dashboard - Loading:', loading, 'Error:', error);
-
-  const handleRefetchMaterials = () => {
-    refetch();
-  };
+  const mockTopMaterials = [
+    { codigo: '01123', nombre: 'Lámpara Globrite blanca', popularidad: 55 },
+    { codigo: '01123', nombre: 'Lámpara Globrite blanca', popularidad: 45 },
+    { codigo: '01123', nombre: 'Lámpara Globrite blanca', popularidad: 35 },
+    { codigo: '01123', nombre: 'Lámpara Globrite blanca', popularidad: 25 },
+    { codigo: '01123', nombre: 'Lámpara Globrite blanca', popularidad: 15 },
+  ];
 
   return (
     <Layout>
       <div className='flex justify-between items-center mb-8'>
         <h1 className='titulo'>Dashboard</h1>
       </div>
-      <section id='kpis-section' className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4'>
-        <KPICard titulo="Total de productos" valor={productCount} icono={<Boxes/>}/> 
-        <KPICard titulo="Proyectos en progreso" valor={inProgressProjects} icono={<ClockFading/>}/> 
-        <KPICard titulo="Proyectos finalizados" valor={finishedProjects} icono={<CircleCheckBig/>}/>
-        <KPICard titulo="Total de clientes" valor={countCustomers} icono={<Users/>}/>
-      </section> 
 
-      <section className='flex flex-col w-full gap-4 md:flex-row'>
-        <div className='md:w-2/3'>
-        
+      {/* Sección de KPIs */}
+      <section id='kpis-section' className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6'>
+        <KPICard titulo="Total de productos" valor={productCount} icono={<Boxes />} />
+        <KPICard titulo="Proyectos en progreso" valor={inProgressProjects} icono={<ClockFading />} />
+        <KPICard titulo="Proyectos finalizados" valor={finishedProjects} icono={<CircleCheckBig />} />
+        <KPICard titulo="Total de clientes" valor={countCustomers} icono={<Users />} />
+      </section>
+
+      {/* Segunda fila: Gráficos */}
+      <section className="flex flex-col w-full gap-4 md:flex-row mb-6">
+        {/* Gráfico de Entradas vs Salidas */}
+        <div className="md:w-1/2 w-full">
+          <MonthlyEntriesVsExitsChart />
         </div>
-        <div className='md:w-1/3'>
-          <ServiceChart/>
+
+        {/* Gráfico de Proyectos por Servicio */}
+        <div className="md:w-1/2 w-full">
+          <ServiceChart />
         </div>
       </section>
 
-      {/* Nueva tabla de materiales con datos del backend */}
-      <section className="mt-4">
-        <div className="flex justify-between items-center mb-2">
+      {/* Tercera fila: Top 5 - CORREGIDO */}
+      <section className="flex flex-col w-full gap-4 md:flex-row">
+        {/* Top 5 Materiales Usados (va a la IZQUIERDA) */}
+        <div className="md:w-1/2 w-full">
+          <TopMaterialsUsed materials={mockTopMaterials} />
+        </div>
+
+        {/* Top 5 Proyectos con Mayor Presupuesto (va a la DERECHA) */}
+        <div className="md:w-1/2 w-full">
+          <TopProjectsBudget projects={mockTopProjects} />
         </div>
       </section>
     </Layout>
-  )
+  );
 }

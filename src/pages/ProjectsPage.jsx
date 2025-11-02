@@ -142,12 +142,8 @@ export default function ProjectsPage() {
             onClickCancel={() => setPopUp3(false)}
             onClickSave={() => {
               setPopUp3(false);
-<<<<<<< HEAD
-              
-=======
               setMaterialsRefreshKey(k => k + 1);
               // opcional: refrescar materiales si tienes un hook que lo haga
->>>>>>> main
             }}
           />
         </div>
