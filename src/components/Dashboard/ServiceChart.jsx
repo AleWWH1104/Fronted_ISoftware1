@@ -16,31 +16,33 @@ export default function ServiceChart() {
   return (
     <div className="bg-white p-4 rounded-lg shadow-xs h-72 flex flex-col parrafo">
       <div className="flex justify-between items-center my-2">
-      <h2 className="subtitulo">Proyectos por servicio</h2>
-      <select
-        id="estadoSelect"
-        value={estado}
-        onChange={(e) => setEstado(e.target.value)}
-        className="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#046bb1] parrafo"
-      >
-        {ESTADOS.map((e) => (
-          <option key={e} value={e}>
-            {e}
-          </option>
-        ))}
-      </select>
-</div>
-
+        <h2 className="subtitulo">Proyectos por servicio</h2>
+        <select
+          id="estadoSelect"
+          value={estado}
+          onChange={(e) => setEstado(e.target.value)}
+          className="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-[#046bb1] parrafo"
+        >
+          {ESTADOS.map((e) => (
+            <option key={e} value={e}>
+              {e}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className="flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart layout="vertical" data={data}>
-            <XAxis type="number" allowDecimals={false} />
-            <YAxis type="category" dataKey="servicio" width={100}/>
-            <Tooltip
-              formatter={(value) => [value, 'Proyectos']}
+            {/* 👇 Eje X dinámico */}
+            <XAxis
+              type="number"
+              allowDecimals={false}
+              domain={['dataMin', (dataMax) => Math.max(dataMax, 1.5 * dataMax)]}
             />
-            <Bar dataKey="cantidad"  radius={[0, 4, 4, 0]}>
+            <YAxis type="category" dataKey="servicio" width={100} />
+            <Tooltip formatter={(value) => [value, 'Proyectos']} />
+            <Bar dataKey="cantidad" radius={[0, 4, 4, 0]}>
               {data.map((entry, idx) => (
                 <Cell key={entry.servicio} fill={COLORES[idx % COLORES.length]} />
               ))}

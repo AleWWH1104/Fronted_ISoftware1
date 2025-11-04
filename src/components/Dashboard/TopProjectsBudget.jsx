@@ -80,7 +80,7 @@ const TopProjectsBudget = () => {
                   {project.presupuesto ? `Q${project.presupuesto}` : 'Q0'}
                 </td>
                 <td className="px-2 py-3 whitespace-nowrap">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(project.estado || 'activo')}`}>
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium ${getStatusColor(project.estado || 'activo')}`}>
                     {project.estado}
                   </span>
                 </td>

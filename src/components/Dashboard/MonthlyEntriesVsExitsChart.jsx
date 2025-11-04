@@ -15,9 +15,7 @@ import {
 const MonthlyEntriesVsExitsChart = () => {
   const { entriesExits: data, loading, error } = useEntriesAndExits();
 
-  const getTotal = (data, key) => {
-    return data.reduce((sum, item) => sum + item[key], 0);
-  };
+  const getTotal = (data, key) => data.reduce((sum, item) => sum + item[key], 0);
 
   if (loading) {
     return (
@@ -49,8 +47,8 @@ const MonthlyEntriesVsExitsChart = () => {
       return (
         <div className="bg-white p-2 border border-gray-300 rounded shadow">
           <p className="text-sm font-medium">{label}</p>
-          <p className="text-xs text-blue-800">Entradas: Q{payload[0].value}</p>
-          <p className="text-xs text-green-800">Salidas: Q{payload[1].value}</p>
+          <p className="text-xs text-blue-800">Entradas: {payload[0].value}</p>
+          <p className="text-xs text-red-800">Salidas: {payload[1].value}</p>
         </div>
       );
     }
@@ -59,7 +57,7 @@ const MonthlyEntriesVsExitsChart = () => {
 
   const CustomLegend = ({ payload }) => {
     return (
-      <div className="flex justify-center space-x-8 mt-4">
+      <div className="flex justify-center space-x-8 mt-2">
         {payload.map((entry, index) => {
           const total = index === 0 ? totalEntradas : totalSalidas;
           return (
@@ -68,9 +66,9 @@ const MonthlyEntriesVsExitsChart = () => {
                 className="w-4 h-4 rounded-full"
                 style={{ backgroundColor: entry.color }}
               ></div>
-              <div className="text-xs">
-                <div className="font-medium">{entry.value}</div>
-                <div>Q{total}</div>
+              <div className="parrafo flex text-sm">
+                <span className="font-medium mr-1">{entry.value}:</span>
+                <span>{total}</span>
               </div>
             </div>
           );
@@ -80,53 +78,50 @@ const MonthlyEntriesVsExitsChart = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-xs h-72 parrafo">
-      <h2 className="subtitulo mb-4">Entradas vs Salidas Mensuales</h2>
+    <div className="bg-white p-4 rounded-lg shadow-xs parrafo">
+      <h2 className="subtitulo mb-2">Entradas vs Salidas Mensuales</h2>
 
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart
-          data={data}
-          margin={{
-            top: 10,
-            right: 30,
-            left: 0,
-            bottom: 0,
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend content={<CustomLegend />} />
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="mes" tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12 }} />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend verticalAlign="bottom" content={<CustomLegend />} />
 
-          <Area
-            type="monotone"
-            dataKey="entradas"
-            stackId="1"
-            stroke="#046bb1"
-            fill="#cfdde9"
-            dot={{
-              r: 4,
-              stroke: '#046bb1',
-              strokeWidth: 2,
-              fill: '#046bb1',
-            }}
-          />
-          <Area
-            type="monotone"
-            dataKey="salidas"
-            stackId="2"
-            stroke="#00b347"
-            fill="#d8f8e8"
-            dot={{
-              r: 4,
-              stroke: '#00b347',
-              strokeWidth: 2,
-              fill: '#00b347',
-            }}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+            <Area
+              type="monotone"
+              dataKey="entradas"
+              stackId="1"
+              stroke="#046bb1"
+              fill="#cfdde9"
+              dot={{
+                r: 4,
+                stroke: '#046bb1',
+                strokeWidth: 2,
+                fill: '#046bb1',
+              }}
+            />
+            <Area
+              type="monotone"
+              dataKey="salidas"
+              stackId="2"
+              stroke="#b10000"
+              fill="#f9d0d0"
+              dot={{
+                r: 4,
+                stroke: '#b10000',
+                strokeWidth: 2,
+                fill: '#b10000',
+              }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
