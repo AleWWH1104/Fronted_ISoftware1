@@ -1,0 +1,64 @@
+name: github-actions-frontend - Deploy Frontend to Server
+
+on:
+  push:
+    branches:
+      - DEPLOY
+
+jobs:
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Vite project
+        run: npm run build
+
+      # --- Prepare server: create temp dir and cleanup previous tmp
+      - name: Ensure remote dirs exist (create tmp dir)
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            mkdir -p /opt/Fronted_ISoftware1
+            rm -rf /opt/Fronted_ISoftware1/dist_tmp || true
+
+      # --- Copy build to server tmp dir
+      - name: Copy dist to server (tmp)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          source: "dist/*"
+          target: "/opt/Fronted_ISoftware1/dist_tmp/"
+
+      # --- Atomic swap: move tmp to dist (keeps servidor consistente)
+      - name: Atomic swap to replace dist
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            # safe atomic deploy: keep a backup briefly
+            if [ -d /opt/Fronted_ISoftware1/dist ]; then
+              mv /opt/Fronted_ISoftware1/dist /opt/Fronted_ISoftware1/dist_old || true
+            fi
+            mv /opt/Fronted_ISoftware1/dist_tmp /opt/Fronted_ISoftware1/dist
+            # remove old backup
+            rm -rf /opt/Fronted_ISoftware1/dist_old || true
