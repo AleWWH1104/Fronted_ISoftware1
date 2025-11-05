@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { useMaterialMovement } from '../../hooks/useInventory';
 
+
 export default function MovementView() {
 
   const {movimientoMaterial, loading, error, refetch} = useMaterialMovement();
@@ -17,7 +18,6 @@ export default function MovementView() {
       { name: 'Fecha', selector: row => fmtDate(row.fecha), sortable: "true" },
       { name: 'Codigo', selector: row => row.material_codigo, sortable: "true" },
       { name: 'Material', selector: row => row.material_nombre, sortable: "true" },
-      { name: 'Cantidad', selector: row => row.cantidad, sortable: "true", right: "true" },
       {
       name: 'Tipo',
       selector: row => row.tipo,
@@ -29,6 +29,7 @@ export default function MovementView() {
         </span>
       ),
     },
+      { name: 'Cantidad', selector: row => row.cantidad, sortable: "true", center: "true" },
       { name: 'Proyecto', selector: row => row.proyecto_nombre ?? '-', sortable: "true" },
       { name: 'Observaciones', selector: row => row.observaciones ?? '-', sortable: "true" },
   ];
