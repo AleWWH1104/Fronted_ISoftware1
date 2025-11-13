@@ -68,6 +68,9 @@ export default function ReportsPage() {
 
   return (
     <Layout>
+      <div className='flex justify-between items-center mb-8'>
+        <h1 className='titulo'>Reportes</h1>
+      </div>
       <ReportsView
         data={data}
         loading={loading}
