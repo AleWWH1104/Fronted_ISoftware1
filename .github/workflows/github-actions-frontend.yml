@@ -3,27 +3,32 @@ name: github-actions-frontend - Deploy Frontend to Server
 on:
   push:
     branches:
-      - DEPLOY
+      - DEPLOY  # Se ejecuta solo cuando hagas push a la rama DEPLOY
 
 jobs:
   build-and-deploy-frontend:
     runs-on: ubuntu-latest
+
     steps:
+      # --- 1. Clonar el repositorio ---
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # --- 2. Configurar Node.js ---
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      # --- 3. Instalar dependencias ---
       - name: Install dependencies
         run: npm ci
 
+      # --- 4. Compilar el proyecto (Vite build) ---
       - name: Build Vite project
         run: npm run build
 
-      # --- Prepare server: create temp dir and cleanup previous tmp
+      # --- 5. Preparar servidor remoto (crear y limpiar dist_tmp) ---
       - name: Ensure remote dirs exist (create tmp dir)
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -32,10 +37,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            mkdir -p /opt/Fronted_ISoftware1
-            rm -rf /opt/Fronted_ISoftware1/dist_tmp || true
+            mkdir -p /opt/Fronted_ISoftware1/dist_tmp
+            rm -rf /opt/Fronted_ISoftware1/dist_tmp/* || true
 
-      # --- Copy build to server tmp dir
+      # --- 6. Copiar archivos generados del build al servidor ---
       - name: Copy dist to server (tmp)
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -46,7 +51,7 @@ jobs:
           source: "dist/*"
           target: "/opt/Fronted_ISoftware1/dist_tmp/"
 
-      # --- Atomic swap: move tmp to dist (keeps servidor consistente)
+      # --- 7. Reemplazo atómico de la carpeta dist ---
       - name: Atomic swap to replace dist
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -55,10 +60,20 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            # safe atomic deploy: keep a backup briefly
             if [ -d /opt/Fronted_ISoftware1/dist ]; then
               mv /opt/Fronted_ISoftware1/dist /opt/Fronted_ISoftware1/dist_old || true
             fi
             mv /opt/Fronted_ISoftware1/dist_tmp /opt/Fronted_ISoftware1/dist
-            # remove old backup
             rm -rf /opt/Fronted_ISoftware1/dist_old || true
+
+      # --- 8. (Opcional) Verificar que el sitio responde correctamente ---
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            echo "Verificando sitio..."
+            curl -I http://localhost || true
