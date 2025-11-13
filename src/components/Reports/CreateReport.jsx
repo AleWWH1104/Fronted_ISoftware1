@@ -92,7 +92,6 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
       };
 
       await createReport(project.id, reportData);
-      alert("Reporte creado exitosamente");
       onClickSave?.(); // 🔁 para refrescar tabla o cerrar popup
     } catch (error) {
       console.error("Error al crear el reporte:", error);
