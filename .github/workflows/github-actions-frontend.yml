@@ -28,8 +28,8 @@ jobs:
       - name: Build Vite project
         run: npm run build
 
-      # --- 5. Preparar servidor remoto (crear y limpiar dist_tmp) ---
-      - name: Ensure remote dirs exist (create tmp dir)
+      # --- 5. Preparar servidor remoto ---
+      - name: Prepare remote directory
         uses: appleboy/ssh-action@v1.1.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -37,21 +37,21 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
           script: |
-            mkdir -p /opt/Fronted_ISoftware1/dist_tmp
-            rm -rf /opt/Fronted_ISoftware1/dist_tmp/* || true
+            mkdir -p /opt/Fronted_ISoftware1
+            rm -rf /opt/Fronted_ISoftware1/dist_tmp || true
 
-      # --- 6. Copiar archivos generados del build al servidor ---
-      - name: Copy dist to server (tmp)
+      # --- 6. Copiar carpeta dist completa ---
+      - name: Copy dist folder to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT || '22' }}
-          source: "dist/*"
-          target: "/opt/Fronted_ISoftware1/dist_tmp/"
+          source: "dist"
+          target: "/opt/Fronted_ISoftware1/dist_tmp"
 
-      # --- 7. Reemplazo atómico de la carpeta dist ---
+      # --- 7. Reemplazo atómico ---
       - name: Atomic swap to replace dist
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -63,10 +63,22 @@ jobs:
             if [ -d /opt/Fronted_ISoftware1/dist ]; then
               mv /opt/Fronted_ISoftware1/dist /opt/Fronted_ISoftware1/dist_old || true
             fi
-            mv /opt/Fronted_ISoftware1/dist_tmp /opt/Fronted_ISoftware1/dist
-            rm -rf /opt/Fronted_ISoftware1/dist_old || true
+            mv /opt/Fronted_ISoftware1/dist_tmp/dist /opt/Fronted_ISoftware1/dist
+            rm -rf /opt/Fronted_ISoftware1/dist_old /opt/Fronted_ISoftware1/dist_tmp || true
 
-      # --- 8. (Opcional) Verificar que el sitio responde correctamente ---
+      # --- 8. (Opcional) Ajustar permisos para Nginx ---
+      - name: Fix permissions for Nginx
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT || '22' }}
+          script: |
+            chown -R www-data:www-data /opt/Fronted_ISoftware1/dist
+            chmod -R 755 /opt/Fronted_ISoftware1/dist
+
+      # --- 9. (Opcional) Verificación de despliegue ---
       - name: Verify deployment
         uses: appleboy/ssh-action@v1.1.0
         with:
