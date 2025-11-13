@@ -10,6 +10,16 @@ export const createReport = async (projectId, data) => {
     }
 };
 
+export const getReports = async () => {
+  try {
+    const response = await axios.get(`/proyectos/reportes`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching reportes:', error);
+    throw error;
+  }
+};
+
 export const getReportsByProject = async (projectId) => {
   try {
     const { data } = await axios.get(`proyectos/${projectId}/reportes`);
