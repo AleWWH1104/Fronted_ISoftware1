@@ -62,4 +62,14 @@ export const uploadPhoto = async (reportId, files) => {
     }
 };
 
+export const getReportForPDF = async (reportId) => {
+  try {
+    const response = await axios.get(`/reportes/${reportId}/pdf`, { withCredentials: true }); 
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching report data for PDF:', error);
+    throw error; // Re-lanzar para que el hook pueda manejarlo
+  }
+};
+
 

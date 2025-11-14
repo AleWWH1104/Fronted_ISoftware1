@@ -14,7 +14,6 @@ export default function ReportsPage() {
   const handleSaveAndRefresh = () => {
     refetch(); 
     setPopUp2(false);
-    setPopUp1(true);
   };
 
   const openReportsPopup = (project) => {

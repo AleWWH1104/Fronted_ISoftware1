@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { CreateButton } from '../Button';
 import { useReportsByProject } from '../../hooks/useReports';
+import useDownloadReportPDF from '../../hooks/useDownloadReportPDF';
 
 export default function DetailsReportByProject({projectId, onClickCancel, onCreateReport}) {
   const [expandedReport, setExpandedReport] = useState(null);
   const { projectData, loading, refetch } = useReportsByProject(projectId);
+  const { downloadReportPDF } = useDownloadReportPDF();
 
   if (loading) return <div className="bg-white p-6 rounded-lg shadow">Cargando reportes...</div>;
   if (!projectData) return <div className="bg-white p-6 rounded-lg shadow">Sin datos</div>;
@@ -102,7 +104,9 @@ export default function DetailsReportByProject({projectId, onClickCancel, onCrea
                     <p className="font-semibold text-gray-800">Responsable</p>
                     <p className="text-gray-600 capitalize">{reporte.responsable}</p>
                   </div>
-                  <button className="bg-[#046BB1] text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                  <button 
+                    onClick={() => downloadReportPDF(reporte.id)}
+                    className="bg-[#046BB1] text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>

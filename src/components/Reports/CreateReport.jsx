@@ -176,7 +176,7 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
 
 
   return (
-    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
+    <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] h-[90vh] max-h-[90vh] lg:h-[95%] lg:max-h-[95%] mx-[25px] p-6 flex flex-col">
       <div id="encabezado" className="border-b border-gray-200 pb-4">
         <h2 className="titulo2">Crear nuevo reporte</h2>
         <p className="text-[#709DBB] text-sm">
