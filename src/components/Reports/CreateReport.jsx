@@ -17,8 +17,8 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
   const [errors, setErrors] = useState({});
   const [selectedFiles, setSelectedFiles] = useState([]); // Para almacenar las imágenes seleccionadas
   const [uploading, setUploading] = useState(false); // Para mostrar estado de carga
+  const [previews, setPreviews] = useState([]);
 
-  // 🔁 Si el proyecto cambia (por ejemplo, al abrir otro popup)
   useEffect(() => {
     if (project) {
       setFormData((prev) => ({
@@ -26,9 +26,13 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
         avance: project.avanceActual || 0,
       }));
     }
-    // Limpiar errores cuando cambia el proyecto
     setErrors({});
     setSelectedFiles([]);
+    setPreviews(prev => {
+      // Limpiar previews anteriores
+      prev.forEach(preview => URL.revokeObjectURL(preview.url));
+      return [];
+    });
   }, [project]);
 
   const handleInputChange = (e) => {
@@ -81,18 +85,28 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    // Validar que los archivos sean imágenes
     const validImages = files.filter(file => file.type.startsWith('image/'));
     
     if (files.length !== validImages.length) {
       alert('Solo se permiten archivos de imagen (jpg, png, etc.)');
     }
     
+    const newPreviews = validImages.map(file => ({
+      file,
+      url: URL.createObjectURL(file),
+      name: file.name
+    }));
+
     setSelectedFiles(prev => [...prev, ...validImages]);
+    setPreviews(prev => [...prev, ...newPreviews]);
   };
 
   const removeFile = (index) => {
+    // Liberar la URL del objeto para evitar fugas de memoria
+    URL.revokeObjectURL(previews[index].url);
+    
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const uploadFiles = async (reportId) => {
@@ -101,74 +115,65 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
     }
 
     setUploading(true);
+
     try {
-      // Convertir archivos a URLs (esto es solo para el ejemplo del body)
-      // En la práctica, es posible que necesites subir los archivos directamente a Cloudinary
-      // y luego enviar las URLs generadas
-      const fileUrls = await Promise.all(selectedFiles.map(async (file) => {
-        // Aquí necesitarás tu lógica específica para subir a Cloudinary o tu servicio de almacenamiento
-        // Por ahora, simularemos la subida y devolveremos una URL de ejemplo
-        // Puedes usar una librería como 'react-cloudinary-upload-widget' o implementar tu propia lógica
-        return URL.createObjectURL(file); // URL temporal para el ejemplo
-      }));
-
-      const photoData = {
-        fotos: fileUrls
-      };
-
-      await uploadPhoto(reportId, photoData);
+      // Enviar los archivos directamente (no URLs)
+      await uploadPhoto(reportId, selectedFiles);
       console.log('Fotos subidas exitosamente');
+      return true;
     } catch (error) {
       console.error('Error al subir fotos:', error);
-      alert('Error al subir las fotos');
-      throw error; // Lanzar el error para que el componente padre pueda manejarlo
+      throw error;
     } finally {
       setUploading(false);
     }
   };
 
-  // ...
-const handleSubmit = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
-  try {
-    const reportData = {
-      id_proyecto: project.id,
-      avance: formData.avance,
-      actividades: formData.actividades,
-      problemas_obs: formData.problemas_obs,
-      proximos_pasos: formData.proximos_pasos,
-      responsable_id: user.id, 
-    };
-
-    // Crear el reporte
-    const reportResponse = await createReport(project.id, reportData);
-    // El ID está en reportResponse.data.id, no en reportResponse.id
-    const reportId = reportResponse.data?.id;
-
-    if (!reportId) {
-      throw new Error('No se pudo obtener el ID del reporte recién creado');
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
     }
 
-    // Subir las fotos al reporte recién creado
-    if (selectedFiles.length > 0) {
-      await uploadFiles(reportId);
-    }
+    setUploading(true);
 
-    onClickSave?.(); 
-  } catch (error) {
-    console.error("Error al crear el reporte:", error);
-    // Mostrar mensaje de error más específico si está disponible
-    if (error.response && error.response.data && error.response.data.message) {
-      alert(`Error al crear el reporte: ${error.response.data.message}`);
-    } else {
-      alert("Error al crear el reporte");
+    try {
+      const reportData = {
+        id_proyecto: project.id,
+        avance: formData.avance,
+        actividades: formData.actividades,
+        problemas_obs: formData.problemas_obs,
+        proximos_pasos: formData.proximos_pasos,
+        responsable_id: user.id, 
+      };
+
+      // Crear el reporte
+      const reportResponse = await createReport(project.id, reportData);
+      // El ID está en reportResponse.data.id, no en reportResponse.id
+      const reportId = reportResponse.data?.id;
+
+      if (!reportId) {
+        throw new Error('No se pudo obtener el ID del reporte recién creado');
+      }
+
+      // Subir las fotos al reporte recién creado
+      if (selectedFiles.length > 0) {
+        await uploadFiles(reportId);
+      }
+      previews.forEach(preview => URL.revokeObjectURL(preview.url));
+
+      onClickSave?.(); 
+    } catch (error) {
+      console.error("Error al crear el reporte:", error);
+      if (error.response?.data?.message) {
+        alert(`Error al crear el reporte: ${error.response.data.message}`);
+      } else {
+        alert("Error al crear el reporte");
+      }
+    } finally {
+      setUploading(false);
     }
-  }
-};
-// ...
+  };
+
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
@@ -295,6 +300,7 @@ const handleSubmit = async () => {
               onChange={handleFileChange}
               className="hidden"
               id="file-upload"
+              disabled={uploading}
             />
             <label htmlFor="file-upload" className="cursor-pointer">
               <svg
@@ -316,20 +322,21 @@ const handleSubmit = async () => {
           </div>
 
           {/* Vista previa de archivos seleccionados */}
-          {selectedFiles.length > 0 && (
+          {previews.length > 0 && (
             <div className="mt-4">
-              <p className="parrafo mb-2">Archivos seleccionados:</p>
+              <p className="parrafo mb-2">Archivos seleccionados ({previews.length}):</p>
               <div className="grid grid-cols-2 gap-2">
-                {selectedFiles.map((file, index) => (
+                {previews.map((preview, index) => (
                   <div key={index} className="relative group">
                     <img
-                      src={URL.createObjectURL(file)}
+                      src={preview.url}
                       alt={`Preview ${index}`}
                       className="w-full h-20 object-cover rounded border"
                     />
                     <button
                       type="button"
                       onClick={() => removeFile(index)}
+                      disabled={uploading}
                       className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       ×
@@ -341,17 +348,11 @@ const handleSubmit = async () => {
           )}
         </div>
       </div>
-
-      <div className="flex justify-between items-center">
-        <SaveOrCancelButtons 
+      <SaveOrCancelButtons 
           onClick1={onClickCancel} 
           onClick2={handleSubmit} 
           disabled2={uploading} // Deshabilitar botón mientras se suben fotos
-        />
-        {uploading && (
-          <p className="text-sm text-gray-600">Subiendo fotos...</p>
-        )}
-      </div>
+      />
     </div>
   );
 }

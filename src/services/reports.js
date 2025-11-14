@@ -33,15 +33,33 @@ export const getReportsByProject = async (projectId) => {
   }
 };
 
-export const uploadPhoto = async (reportId, data) => {
+// services/reports.js
+
+export const uploadPhoto = async (reportId, files) => {
     try {
-        const response = await axios.post(`/${reportId}/fotos`, data, { withCredentials: true });
+        const formData = new FormData();
+        
+        // Asegúrate de usar el nombre correcto del campo ('fotos' según tu multer)
+        files.forEach(file => {
+            formData.append('fotos', file); 
+        });
+
+        const response = await axios.post(
+            `/${reportId}/fotos`, // Asegúrate que la ruta coincida con tu backend
+            formData,
+            { 
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+        );
+        
         return response.data;
     } catch (error) {
-        console.error('Error subiendo foto a reporte:', error);
+        console.error('Error subiendo fotos a reporte:', error);
         throw error;
     }
 };
-
 
 
