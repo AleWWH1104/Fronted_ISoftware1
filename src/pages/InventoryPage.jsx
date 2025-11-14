@@ -52,9 +52,9 @@ export default function InventoryPage() {
 
   return (
     <Layout>
-      <div className='flex justify-between items-center mb-8'>
-        <h1 className='titulo'>Inventario</h1>
-        <div className='flex gap-4'>
+      <div className='flex flex-col md:flex-row md:justify-between md:items-center mb-8'>
+        <h1 className='titulo mb-4 md:mb-0'>Inventario</h1>
+        <div className='flex flex-col md:flex-row gap-2 md:gap-4'>
           <RedirectButton label="Ver historial de movimientos" onClick={() => navigate("/movements")}/>
           <WithPermission permissions='crear_material'>
             <CreateButton label="Nuevo material" onClick={() => setPopUp1(true)}/>

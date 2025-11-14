@@ -29,6 +29,7 @@
     "datatables.net-select-dt": "^3.0.1",
     "framer-motion": "^12.11.3",
     "js-cookie": "^3.0.5",
+    "jspdf": "^3.0.3",
     "lucide-react": "^0.503.0",
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
     "react-data-table-component": "^7.7.0",
