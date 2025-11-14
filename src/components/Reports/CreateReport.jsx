@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { SaveOrCancelButtons } from "../Button";
 import { InputForm } from "../Input";
-import { createReport } from "../../services/reports";
+import { createReport, uploadPhoto } from "../../services/reports"; // Asegúrate de importar la función de subida
 import { useAuth } from "../../context/AuthContext";
 
 export default function CreateReport({ project, onClickCancel, onClickSave }) {
@@ -15,6 +15,8 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
   });
 
   const [errors, setErrors] = useState({});
+  const [selectedFiles, setSelectedFiles] = useState([]); // Para almacenar las imágenes seleccionadas
+  const [uploading, setUploading] = useState(false); // Para mostrar estado de carga
 
   // 🔁 Si el proyecto cambia (por ejemplo, al abrir otro popup)
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
     }
     // Limpiar errores cuando cambia el proyecto
     setErrors({});
+    setSelectedFiles([]);
   }, [project]);
 
   const handleInputChange = (e) => {
@@ -42,7 +45,7 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
 
   const handleSliderChange = (e) => {
     const value = parseInt(e.target.value);
-    // 🧠 Evitar que el usuario baje el valor debajo del avance actual
+    // Evitar que el usuario baje el valor debajo del avance actual
     if (value >= project.avanceActual) {
       setFormData((prev) => ({ ...prev, avance: value }));
       // Limpiar error si existe
@@ -76,33 +79,96 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    // Validar que los archivos sean imágenes
+    const validImages = files.filter(file => file.type.startsWith('image/'));
+    
+    if (files.length !== validImages.length) {
+      alert('Solo se permiten archivos de imagen (jpg, png, etc.)');
+    }
+    
+    setSelectedFiles(prev => [...prev, ...validImages]);
+  };
+
+  const removeFile = (index) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadFiles = async (reportId) => {
+    if (selectedFiles.length === 0) {
       return;
     }
 
+    setUploading(true);
     try {
-      const reportData = {
-        id_proyecto: project.id,
-        avance: formData.avance,
-        actividades: formData.actividades,
-        problemas_obs: formData.problemas_obs,
-        proximos_pasos: formData.proximos_pasos,
-        responsable_id: user.id, // temporal
+      // Convertir archivos a URLs (esto es solo para el ejemplo del body)
+      // En la práctica, es posible que necesites subir los archivos directamente a Cloudinary
+      // y luego enviar las URLs generadas
+      const fileUrls = await Promise.all(selectedFiles.map(async (file) => {
+        // Aquí necesitarás tu lógica específica para subir a Cloudinary o tu servicio de almacenamiento
+        // Por ahora, simularemos la subida y devolveremos una URL de ejemplo
+        // Puedes usar una librería como 'react-cloudinary-upload-widget' o implementar tu propia lógica
+        return URL.createObjectURL(file); // URL temporal para el ejemplo
+      }));
+
+      const photoData = {
+        fotos: fileUrls
       };
 
-      await createReport(project.id, reportData);
-      onClickSave?.(); // 🔁 para refrescar tabla o cerrar popup
+      await uploadPhoto(reportId, photoData);
+      console.log('Fotos subidas exitosamente');
     } catch (error) {
-      console.error("Error al crear el reporte:", error);
-      // Mostrar mensaje de error más específico si está disponible
-      if (error.response && error.response.data && error.response.data.message) {
-        alert(`Error al crear el reporte: ${error.response.data.message}`);
-      } else {
-        alert("Error al crear el reporte");
-      }
+      console.error('Error al subir fotos:', error);
+      alert('Error al subir las fotos');
+      throw error; // Lanzar el error para que el componente padre pueda manejarlo
+    } finally {
+      setUploading(false);
     }
   };
+
+  // ...
+const handleSubmit = async () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  try {
+    const reportData = {
+      id_proyecto: project.id,
+      avance: formData.avance,
+      actividades: formData.actividades,
+      problemas_obs: formData.problemas_obs,
+      proximos_pasos: formData.proximos_pasos,
+      responsable_id: user.id, 
+    };
+
+    // Crear el reporte
+    const reportResponse = await createReport(project.id, reportData);
+    // El ID está en reportResponse.data.id, no en reportResponse.id
+    const reportId = reportResponse.data?.id;
+
+    if (!reportId) {
+      throw new Error('No se pudo obtener el ID del reporte recién creado');
+    }
+
+    // Subir las fotos al reporte recién creado
+    if (selectedFiles.length > 0) {
+      await uploadFiles(reportId);
+    }
+
+    onClickSave?.(); 
+  } catch (error) {
+    console.error("Error al crear el reporte:", error);
+    // Mostrar mensaje de error más específico si está disponible
+    if (error.response && error.response.data && error.response.data.message) {
+      alert(`Error al crear el reporte: ${error.response.data.message}`);
+    } else {
+      alert("Error al crear el reporte");
+    }
+  }
+};
+// ...
 
   return (
     <div className="bg-white rounded-lg shadow-lg w-full lg:w-[30%] lg:h-[95%] mx-[25px] p-6 flex flex-col">
@@ -217,28 +283,75 @@ export default function CreateReport({ project, onClickCancel, onClickSave }) {
         </div>
 
         {/* Fotos del avance */}
-        <div>
+        <div className="mb-4">
           <label className="block parrafo font-medium mb-2">Fotos del avance</label>
+          
+          {/* Contenedor de subida de archivos */}
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-[#046BB1] transition-colors cursor-pointer">
-            <svg
-              className="mx-auto h-10 w-10 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              />
-            </svg>
-            <p className="mt-2 parrafo text-gray-600">Subir fotos</p>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              id="file-upload"
+            />
+            <label htmlFor="file-upload" className="cursor-pointer">
+              <svg
+                className="mx-auto h-10 w-10 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                />
+              </svg>
+              <p className="mt-2 parrafo text-gray-600">Haz clic para subir fotos</p>
+              <p className="text-xs text-gray-500">Solo imágenes (JPG, PNG)</p>
+            </label>
           </div>
+
+          {/* Vista previa de archivos seleccionados */}
+          {selectedFiles.length > 0 && (
+            <div className="mt-4">
+              <p className="parrafo mb-2">Archivos seleccionados:</p>
+              <div className="grid grid-cols-2 gap-2">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`Preview ${index}`}
+                      className="w-full h-20 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeFile(index)}
+                      className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <SaveOrCancelButtons onClick1={onClickCancel} onClick2={handleSubmit} />
+      <div className="flex justify-between items-center">
+        <SaveOrCancelButtons 
+          onClick1={onClickCancel} 
+          onClick2={handleSubmit} 
+          disabled2={uploading} // Deshabilitar botón mientras se suben fotos
+        />
+        {uploading && (
+          <p className="text-sm text-gray-600">Subiendo fotos...</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -33,5 +33,15 @@ export const getReportsByProject = async (projectId) => {
   }
 };
 
+export const uploadPhoto = async (reportId, data) => {
+    try {
+        const response = await axios.post(`/${reportId}/fotos`, data, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        console.error('Error subiendo foto a reporte:', error);
+        throw error;
+    }
+};
+
 
 
